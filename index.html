@@ -1,10 +1,518 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Glacier BioLabs</title>
-  </head>
-  <body>
-    <h1>Glacier BioLabs</h1>
-    <p>Site is live.</p>
-  </body>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Glacier BioLabs — Research Peptides</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Glacier BioLabs — Research Use Only peptides." />
+  <style>
+    /* Minimal professional styling: light red / white / black */
+    :root { --accent:#d9534f; --bg:#fff; --text:#111; --muted:#666; --card:#fff; }
+    *{box-sizing:border-box}
+    body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0}
+    .container{max-width:1100px;margin:0 auto;padding:20px}
+    header.site-header{border-bottom:1px solid #eee}
+    header .container{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .brand .logo{font-weight:700;color:var(--accent);font-size:18px}
+    nav a{margin-left:14px;color:var(--text);text-decoration:none}
+    .hero{padding:24px 0}
+    .subtitle{color:var(--muted);margin:6px 0}
+    .banner{background:#f8dede;color:#7a1b1b;padding:8px;border-radius:4px;display:inline-block;margin-top:8px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:20px}
+    .card{background:var(--card);border:1px solid #eee;padding:12px;border-radius:8px}
+    .card .img{height:140px;background:#f6f6f6;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999;margin-bottom:8px}
+    .price{font-size:1.15rem;color:var(--accent);margin:6px 0}
+    .btn{background:var(--accent);color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-block}
+    main{padding:18px 0}
+    footer.site-footer{border-top:1px solid #eee;margin-top:32px;padding:12px 0;color:var(--muted);text-align:center}
+    .product-page{display:flex;flex-wrap:wrap;gap:20px}
+    .product-page .img-large{width:360px;height:360px;background:#f6f6f6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;border:1px solid #eee}
+    .product-info{flex:1;min-width:300px}
+    .ruo{color:#b33;font-weight:700;margin-top:8px}
+    label{display:block;margin:8px 0}
+    input[type="text"], input[type="email"], textarea, select {padding:8px;border:1px solid #ddd;border-radius:6px;width:100%;max-width:420px}
+    .small{font-size:0.9rem;color:var(--muted)}
+    .order{border:1px solid #f0f0f0;padding:8px;margin-bottom:8px;border-radius:6px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:800px){ .product-page{flex-direction:column} .product-page .img-large{width:100%;height:220px} }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <div class="logo">Glacier BioLabs</div>
+        <div class="small">Research Use Only</div>
+      </div>
+
+      <nav id="main-nav" aria-label="Main navigation">
+        <a href="#/">Home</a>
+        <a href="#/learn">Learn</a>
+        <a href="#/faq">FAQ</a>
+        <a href="#/account" id="nav-account">Account</a>
+        <a href="#/admin">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="app">
+    <!-- Content injected by JS router -->
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      &copy; Glacier BioLabs — Research Use Only
+    </div>
+  </footer>
+
+  <script>
+  /* =========
+     Single-file SPA for the whole site.
+     - Client-side routing uses hash routes: #/, #/product/slug, #/learn, #/faq, #/account, #/admin
+     - Product checkout calls /.netlify/functions/create-checkout-session (Netlify Functions) when deployed.
+     - Contact form posts to /.netlify/functions/contact
+     - Account sign-in uses Netlify Identity widget (deployed site must enable Identity).
+     - Admin login posts to /.netlify/functions/admin-auth (protected by ADMIN_PASSWORD env var)
+     - Promo codes: 5OFF, 10OFF (server expects promoCode param; server-side implements discount).
+     NOTE: To get full functionality deploy Netlify functions from the scaffold I gave earlier.
+     ========= */
+
+  // Product catalog (prices in cents)
+  const PRODUCTS = [
+    {
+      slug:'retatrutide',
+      name:'Retatrutide (10 mg)',
+      price:13500,
+      short:'High‑purity research peptide. For research use only.',
+      long:`Retatrutide is a synthetic multi-agonist peptide supplied as a lyophilized powder for research use only. In scientific and clinical literature, it is primarily investigated for its effects on body weight regulation, appetite signaling, and metabolic control through pathways associated with glucose and energy balance. This compound is intended strictly for in‑vitro, analytical, and preclinical research applications.`
+    },
+    {
+      slug:'ghk-cu',
+      name:'GHK‑Cu (Copper Peptide) – 50 mg',
+      price:3500,
+      short:'Copper‑binding tripeptide for research purposes.',
+      long:`GHK-Cu is a naturally occurring copper-binding tripeptide provided in lyophilized form for research purposes only. Human-focused research commonly examines this compound for its role in skin biology, connective tissue signaling, wound repair pathways, and hair follicle-related cellular activity. Intended exclusively for laboratory and biochemical research.`
+    },
+    {
+      slug:'melanotan-ii',
+      name:'Melanotan II (10 mg)',
+      price:4000,
+      short:'Synthetic melanocortin analog for research use only.',
+      long:`Melanotan II is a synthetic melanocortin analog peptide supplied as a lyophilized powder for research use only. It is studied in human-related research for its interaction with melanocortin receptors involved in pigmentation processes, UV response signaling, and appetite-related neuroendocrine pathways. Not intended for human or animal use.`
+    },
+    {
+      slug:'bpc-157',
+      name:'BPC‑157 (10 mg)',
+      price:5500,
+      short:'Peptide fragment commonly used in lab research.',
+      long:`BPC-157 is a synthetic peptide fragment derived from a body protection compound sequence, provided strictly for research and laboratory investigation. Human research models commonly explore this compound for its involvement in tissue repair signaling, gastrointestinal integrity pathways, tendon and ligament response mechanisms, and inflammation-related cellular processes. For scientific and analytical research use only.`
+    },
+    {
+      slug:'water',
+      name:'Bacteriostatic Water (10 mL)',
+      price:1000,
+      short:'Sterile diluent for reconstitution of lyophilized compounds.',
+      long:`Bacteriostatic Water is a sterile aqueous solution containing benzyl alcohol, supplied for laboratory reconstitution of lyophilized research compounds. It is referenced in laboratory and clinical research settings as a standard diluent used to maintain solution stability during controlled experimental handling. Intended solely for non-clinical laboratory use.`
+    }
+  ];
+
+  // Simple router
+  function route() {
+    const hash = location.hash || '#/';
+    const app = document.getElementById('app');
+
+    if (hash === '#/' || hash === '#') {
+      renderHome(app);
+    } else if (hash.startsWith('#/product/')) {
+      const slug = hash.split('/')[2];
+      renderProduct(app, slug);
+    } else if (hash === '#/learn') {
+      renderLearn(app);
+    } else if (hash === '#/faq') {
+      renderFAQ(app);
+    } else if (hash === '#/account') {
+      renderAccount(app);
+    } else if (hash === '#/admin') {
+      renderAdmin(app);
+    } else {
+      app.innerHTML = '<p>Page not found</p>';
+    }
+  }
+
+  // Helpers
+  function money(cents){ return '$' + (cents/100).toFixed(2); }
+  function findProduct(slug){ return PRODUCTS.find(p=>p.slug===slug); }
+
+  // Home / Product list
+  function renderHome(container){
+    container.innerHTML = `
+      <section class="hero">
+        <h1>Research-Grade Peptides</h1>
+        <p class="subtitle">Research Use Only — Not for human or veterinary use. Not for diagnostic or therapeutic use.</p>
+        <div class="banner">Free US shipping • Free priority (1–3 business days) on orders over $199</div>
+      </section>
+
+      <section>
+        <h2>Products</h2>
+        <div class="grid" id="product-grid"></div>
+      </section>
+    `;
+    const grid = document.getElementById('product-grid');
+    PRODUCTS.forEach(p => {
+      grid.insertAdjacentHTML('beforeend', `
+        <article class="card">
+          <div class="img">Image</div>
+          <h3>${p.name}</h3>
+          <div class="price">${money(p.price)}</div>
+          <div class="small">${p.short}</div>
+          <div style="margin-top:12px"><a class="btn" href="#/product/${encodeURIComponent(p.slug)}">View</a></div>
+        </article>
+      `);
+    });
+  }
+
+  // Product page
+  function renderProduct(container, slug){
+    const p = findProduct(slug);
+    if (!p) { container.innerHTML = '<p>Product not found</p>'; return; }
+
+    container.innerHTML = `
+      <div class="product-page">
+        <div class="img-large">Image</div>
+        <div class="product-info">
+          <h1>${p.name}</h1>
+          <div class="price">${money(p.price)}</div>
+          <p>${p.long}</p>
+          <p class="ruo">Research Use Only — Not for human or veterinary use. Not for diagnostic or therapeutic use.</p>
+
+          <label><input type="checkbox" id="add-water" /> Add Bacteriostatic Water (10 mL) — ${money(findProduct('water').price)}</label>
+
+          <div class="two-col">
+            <label>Quantity <input id="qty" type="number" value="1" min="1" /></label>
+            <label>Shipping country
+              <select id="ship-country">
+                <option value="US" selected>United States</option>
+                <option value="OTHER">International</option>
+              </select>
+            </label>
+          </div>
+
+          <label>Promo code <input id="promo" placeholder="5OFF or 10OFF" /></label>
+
+          <label class="confirm">
+            <input id="confirm" type="checkbox" /> I confirm that I am purchasing this product ONLY for research purposes. I will not use it on or in humans or animals, and I understand this product is not for diagnostic or therapeutic use.
+          </label>
+
+          <div style="margin-top:10px">
+            <button id="buy-btn" class="btn">Buy with Card</button>
+            <a href="#/" style="margin-left:10px">Back</a>
+          </div>
+
+          <p class="small" style="margin-top:12px">Certificates of Analysis (COA) available in your account after purchase.</p>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('buy-btn').addEventListener('click', async () => {
+      const confirmed = document.getElementById('confirm').checked;
+      if (!confirmed) return alert('Please confirm research-only use before purchasing.');
+      const qty = parseInt(document.getElementById('qty').value||'1',10) || 1;
+      const addWater = document.getElementById('add-water').checked;
+      const promo = (document.getElementById('promo').value||'').trim().toUpperCase() || null;
+      const shipCountry = document.getElementById('ship-country').value;
+
+      // Ask for email for receipt/account (simple prompt for prototype)
+      const email = prompt('Enter your email for receipt and account (you will be able to sign-in later):');
+      if (!email) return alert('Email required to proceed to checkout.');
+
+      const payload = {
+        items: [{ slug: p.slug, quantity: qty }],
+        addWater,
+        promoCode: promo,
+        email,
+        shipCountry
+      };
+
+      try {
+        document.getElementById('buy-btn').disabled = true;
+        document.getElementById('buy-btn').textContent = 'Opening checkout...';
+
+        const res = await fetch('/.netlify/functions/create-checkout-session', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.url) { window.location = json.url; }
+        else { alert('Checkout error: ' + (json.error || 'unknown')); document.getElementById('buy-btn').disabled=false; document.getElementById('buy-btn').textContent='Buy with Card'; }
+      } catch (err) {
+        console.error(err);
+        alert('Network error starting checkout.');
+        document.getElementById('buy-btn').disabled=false;
+        document.getElementById('buy-btn').textContent='Buy with Card';
+      }
+    });
+  }
+
+  // Learn page (user provided content)
+  function renderLearn(container){
+    container.innerHTML = `
+      <article>
+        <h1>What Are Peptides? (Research Education)</h1>
+        <p>Peptides are molecular compounds composed of short sequences of amino acids. In scientific and laboratory settings, peptides are commonly examined for their structural properties and biological signaling behavior. This section provides a general educational overview of peptides strictly within a research and analytical context.</p>
+
+        <h2>Understanding Amino Acids and Peptides</h2>
+        <p>Amino acids are organic molecules that serve as the foundational components of proteins. When amino acids bond together in short chains, they form peptides. These chains are typically shorter than full proteins, allowing researchers to study their characteristics in isolation.</p>
+
+        <h2>Difference Between Peptides and Proteins</h2>
+        <p>Proteins are large, complex molecules that may consist of hundreds or thousands of amino acids. Peptides, by contrast, are smaller and more structurally simple. This distinction makes peptides useful in controlled laboratory environments where targeted molecular behavior is being examined.</p>
+
+        <h2>Common Peptide Categories in Research</h2>
+        <ul>
+          <li>Synthetic peptides created for experimental study</li>
+          <li>Naturally occurring peptide fragments isolated for analysis</li>
+          <li>Modified peptides designed for biochemical and analytical research</li>
+        </ul>
+
+        <h2>Research Applications</h2>
+        <p>Peptides are widely utilized in biochemical research, molecular biology studies, and analytical testing. Researchers investigate peptide structure, stability, and receptor interaction under controlled experimental conditions.</p>
+
+        <h2>Peptide Storage and Handling (Research Guidance)</h2>
+        <p>Proper storage and handling are important considerations when working with peptides in laboratory and research environments...</p>
+
+        <h3>Lyophilized Peptides</h3>
+        <p>Many research peptides are supplied in lyophilized (freeze-dried) form. This process is used to improve stability during storage and transportation.</p>
+
+        <h3>Temperature Guidelines</h3>
+        <ul>
+          <li>Short-term storage is commonly performed under refrigerated conditions</li>
+          <li>Long-term storage may require frozen conditions depending on the compound</li>
+          <li>Repeated temperature fluctuations should generally be minimized</li>
+        </ul>
+
+        <h3>Environmental Exposure</h3>
+        <p>Light and moisture exposure may affect peptide stability. Research guidelines typically recommend sealed storage and controlled environmental conditions.</p>
+
+        <h3>Laboratory Handling</h3>
+        <p>Handling practices vary depending on the research application. All procedures should follow institutional laboratory safety standards and applicable research guidelines.</p>
+
+        <h3>Research Disclaimer</h3>
+        <p>This content is provided for informational and educational purposes only. All products referenced are designated for research use only and are not intended for human or veterinary use.</p>
+
+        <hr/>
+
+        <h2>Product Research Overviews</h2>
+        <h3>Retatrutide (Research Overview)</h3>
+        <p>Retatrutide is a synthetic multi-agonist peptide supplied as a lyophilized powder in a sealed sterile vial. ... Research Use Only (RUO).</p>
+
+        <h3>GHK-Cu (Research Overview)</h3>
+        <p>GHK-Cu, commonly referred to as a copper peptide, is a research compound frequently referenced in scientific literature. ... Research Use Only (RUO).</p>
+
+        <h3>Melanotan II (Research Overview)</h3>
+        <p>Melanotan II is a synthetic peptide supplied for laboratory and analytical research. ... Research Use Only (RUO).</p>
+
+        <h3>BPC-157 (Research Overview)</h3>
+        <p>BPC-157 is a synthetic peptide fragment provided strictly for research and laboratory investigation. ... Research Use Only (RUO).</p>
+
+        <h3>Bacteriostatic Water</h3>
+        <p>Bacteriostatic Water is a sterile aqueous solution containing benzyl alcohol, intended solely for non-clinical laboratory use.</p>
+      </article>
+    `;
+  }
+
+  // FAQ + Contact
+  function renderFAQ(container){
+    container.innerHTML = `
+      <article>
+        <h1>FAQ</h1>
+
+        <h3>What are peptides?</h3>
+        <p>Peptides are molecular compounds composed of short sequences of amino acids linked together. They are smaller than proteins and are commonly examined in scientific and laboratory research.</p>
+
+        <h3>How are peptides studied in research?</h3>
+        <p>In research environments, peptides are studied for how they interact with cellular receptors and signaling pathways. Different peptides are investigated for different biochemical behaviors depending on their structure and research application.</p>
+
+        <h3>Do your products meet quality and testing standards?</h3>
+        <p>All products are produced under controlled manufacturing conditions and are tested by independent laboratories to verify identity, purity, and consistency. All materials sold by Glacier BioLabs are designated strictly for research and laboratory use and are not intended for human consumption.</p>
+
+        <h3>What are the recommended storage conditions?</h3>
+        <p>Peptides should be stored in a dry, temperature-controlled environment and protected from direct light. Long-term storage may require frozen conditions depending on the compound. Always follow the storage guidance provided with each product.</p>
+
+        <h3>How do I place an order?</h3>
+        <p>Orders can be placed directly through our website. Select the desired products, add them to your cart, and complete the checkout process. For assistance, please contact our support team.</p>
+
+        <h3>What forms of payment are accepted?</h3>
+        <p>We accept major credit cards. We use Stripe Checkout for processing payments.</p>
+
+        <h3>Do you ship internationally?</h3>
+        <p>Yes — free shipping in the United States; international flat rate $20.</p>
+
+        <h3>How can I track my shipment?</h3>
+        <p>Once your order has shipped, you will receive a confirmation email with tracking information.</p>
+
+        <h3>What is your cancellation or return policy?</h3>
+        <p>To request a cancellation or return, please contact customer support with your order details. A 10% processing fee applies to cancellations, returns, or refunds due to non-refundable payment processor charges.</p>
+
+        <h3>How can I contact customer support?</h3>
+        <p>You can reach our support team through the contact form below or by email at <a href="mailto:placeholder@example.com">placeholder@example.com</a>.</p>
+
+        <h3>Do you offer discounts or promotions?</h3>
+        <p>Current promo codes: <code>5OFF</code> (5% off), <code>10OFF</code> (10% off).</p>
+
+        <hr/>
+
+        <h2>Contact Us</h2>
+        <form id="contact-form">
+          <label>Name <input name="name" type="text" required /></label>
+          <label>Email <input name="email" type="email" required /></label>
+          <label>Message <textarea name="message" rows="6" required></textarea></label>
+          <div style="margin-top:8px"><button class="btn" type="submit">Send</button></div>
+          <p id="contact-res" class="small"></p>
+        </form>
+      </article>
+    `;
+
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = { name: form.name.value, email: form.email.value, message: form.message.value };
+      try {
+        const res = await fetch('/.netlify/functions/contact', {
+          method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        document.getElementById('contact-res').textContent = json.ok ? 'Message sent — we will reply to your email.' : ('Error: ' + (json.error||'unknown'));
+      } catch (err) {
+        console.error(err);
+        document.getElementById('contact-res').textContent = 'Network error sending message.';
+      }
+    });
+  }
+
+  // Account page (Netlify Identity + order fetch)
+  function renderAccount(container){
+    container.innerHTML = `
+      <section>
+        <h1>Account</h1>
+        <div id="not-signed-in">
+          <p>Sign in with your email to receive a magic link (Netlify Identity must be enabled on your site).</p>
+          <label>Email <input id="auth-email" type="email" /></label>
+          <div style="margin-top:8px"><button id="send-link" class="btn">Send Magic Link</button></div>
+          <p id="auth-msg" class="small"></p>
+        </div>
+        <div id="signed-in" style="display:none;">
+          <p>Signed in as <strong id="user-email"></strong></p>
+          <div style="margin:8px 0"><button id="sign-out" class="btn">Sign out</button></div>
+          <h2>Your Orders</h2>
+          <div id="orders">Loading orders...</div>
+        </div>
+      </section>
+    `;
+
+    // If Netlify Identity is available, use it for magic-link auth.
+    const sendLinkBtn = document.getElementById('send-link');
+    sendLinkBtn.addEventListener('click', async () => {
+      const email = document.getElementById('auth-email').value;
+      if (!email) return alert('Email required');
+      // For a deployed Netlify site, this will work when Identity is enabled.
+      try {
+        // Netlify Identity HTTP endpoint for sending invite/magic link isn't officially exposed via simple fetch.
+        // For deployed Netlify Identity, use the Identity widget or flow in the scaffold. Here we show a helpful message.
+        document.getElementById('auth-msg').textContent = 'If Netlify Identity is enabled, enter your email on the hosted site and use the built-in magic link. (Local dev may not send link.)';
+      } catch (err) {
+        document.getElementById('auth-msg').textContent = 'Error initiating sign-in.';
+      }
+    });
+
+    // Attempt to load orders if user email known via URL param ?email=...
+    const params = new URLSearchParams(location.search);
+    const emailParam = params.get('email');
+    if (emailParam) loadOrders(emailParam);
+
+    // Basic sign-out / pseudo-signed-in flow is not fully implemented in this single-file prototype.
+    // Full magic-link sign-in requires Netlify Identity widget and proper deployment.
+  }
+
+  // Admin page (simple password-protected panel)
+  function renderAdmin(container){
+    container.innerHTML = `
+      <section>
+        <h1>Admin</h1>
+        <p>This admin panel calls /.netlify/functions/admin-auth and list-orders. Set ADMIN_PASSWORD in Netlify env.</p>
+        <div id="admin-login">
+          <label>Password <input id="admin-pass" type="password" /></label>
+          <div style="margin-top:8px"><button id="admin-login-btn" class="btn">Login</button></div>
+          <p id="admin-msg" class="small"></p>
+        </div>
+        <div id="admin-panel" style="display:none">
+          <h2>Recent Orders</h2>
+          <div id="admin-orders">Loading...</div>
+        </div>
+      </section>
+    `;
+
+    document.getElementById('admin-login-btn').addEventListener('click', async () => {
+      const pass = document.getElementById('admin-pass').value;
+      try {
+        const res = await fetch('/.netlify/functions/admin-auth', {
+          method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pass })
+        });
+        const j = await res.json();
+        if (j.ok) {
+          document.getElementById('admin-login').style.display = 'none';
+          document.getElementById('admin-panel').style.display = 'block';
+          loadAdminOrders();
+        } else {
+          document.getElementById('admin-msg').textContent = 'Invalid password';
+        }
+      } catch (err) {
+        document.getElementById('admin-msg').textContent = 'Error contacting server.';
+      }
+    });
+  }
+
+  // Fetch orders for admin
+  async function loadAdminOrders(){
+    const node = document.getElementById('admin-orders');
+    try {
+      const res = await fetch('/.netlify/functions/list-orders');
+      const json = await res.json();
+      if (!json.orders) { node.textContent = 'No orders or error.'; return; }
+      node.innerHTML = json.orders.map(o => `<div class="order"><strong>${o.id}</strong> — ${money(o.amount_total)} — ${o.customer_email || '—'}</div>`).join('');
+    } catch (err) {
+      node.textContent = 'Failed to load orders.';
+    }
+  }
+
+  // Load orders by email for account page (used if email known)
+  async function loadOrders(email){
+    const node = document.getElementById('orders');
+    if (!node) return;
+    node.textContent = 'Loading orders...';
+    try {
+      const res = await fetch('/.netlify/functions/get-orders?email=' + encodeURIComponent(email));
+      const json = await res.json();
+      if (!json.orders || json.orders.length === 0) { node.textContent = 'No orders found.'; return; }
+      node.innerHTML = json.orders.map(o => {
+        const items = (o.items||[]).map(i=>`${i.name} x${i.quantity}`).join(', ');
+        const coa = (o.metadata && o.metadata.coa_url) ? `<a href="${o.metadata.coa_url}">Download COA</a>` : 'COA after fulfillment';
+        return `<div class="order"><strong>${o.id}</strong> — ${money(o.amount_total)}<div>Items: ${items}</div><div>${coa}</div></div>`;
+      }).join('');
+    } catch (err) {
+      node.textContent = 'Error loading orders.';
+    }
+  }
+
+  // Initialize router and link clicks
+  window.addEventListener('hashchange', route);
+  window.addEventListener('load', () => {
+    // Ensure default hash
+    if (!location.hash) location.hash = '#/';
+    route();
+
+    // If product links created outside router, intercept (not required here).
+  });
+
+  </script>
+</body>
 </html>
