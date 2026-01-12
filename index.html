@@ -14,7 +14,7 @@
     header.site-header{border-bottom:1px solid #eee}
     header .container{display:flex;justify-content:space-between;align-items:center;gap:12px}
     .brand { display:flex; align-items:center; gap:12px; }
-    .brand .logo-text{font-weight:700;color:var(--accent);font-size:18px}
+    .logo-text{font-weight:700;color:var(--accent);font-size:18px}
     nav a{margin-left:14px;color:var(--text);text-decoration:none}
     .hero{padding:24px 0}
     .subtitle{color:var(--muted);margin:6px 0}
@@ -44,8 +44,8 @@
   <header class="site-header">
     <div class="container">
       <div class="brand">
-        <!-- logo.png should be in the same folder as this HTML -->
-        <img src="logo.png" alt="Glacier BioLabs" class="logo-img" onerror="this.style.display='none'"/>
+        <!-- logo.png is inside the images/ folder -->
+        <img id="site-logo" src="" alt="Glacier BioLabs" class="logo-img" onerror="this.style.display='none'" />
         <div class="logo-text">Glacier BioLabs</div>
         <div class="small" style="margin-left:8px">Research Use Only</div>
       </div>
@@ -72,22 +72,21 @@
 
   <script>
   /*
-    Single-file SPA (images wired to your files).
-    Place these image files in the same folder as this HTML:
-      - logo.png
-      - retatrutide-10mg.png
-      - ghk-cu-50mg.png
-      - mt2-10mg.png
-      - bpc-157-10mg.png
-      - bacteriostatic-water-10ml.png
-
-    Server endpoints (for full functionality when deployed to Netlify):
-      /.netlify/functions/create-checkout-session
-      /.netlify/functions/contact
-      /.netlify/functions/admin-auth
-      /.netlify/functions/list-orders
-      /.netlify/functions/get-orders
+    This version expects your images to be inside a folder named "images"
+    located next to this index.html file (images/logo.png, images/retatrutide-10mg.png, etc).
   */
+
+  const IMAGE_DIR = 'images/'; // folder name (you said it's "images")
+
+  // Filenames (must match exactly inside the images/ folder)
+  const IMAGE_FILES = {
+    logo: 'logo.png',
+    retatrutide: 'retatrutide-10mg.png',
+    ghk: 'ghk-cu-50mg.png',
+    mt2: 'mt2-10mg.png',
+    bpc: 'bpc-157-10mg.png',
+    water: 'bacteriostatic-water-10ml.png'
+  };
 
   // Product catalog (prices in cents) with image filenames
   const PRODUCTS = [
@@ -95,7 +94,7 @@
       slug: 'retatrutide',
       name: 'Retatrutide (10 mg)',
       price: 13500,
-      image: 'retatrutide-10mg.png',
+      image: IMAGE_FILES.retatrutide,
       short: 'High‑purity research peptide. For research use only.',
       long: `Retatrutide is a synthetic multi-agonist peptide supplied as a lyophilized powder for research use only. In scientific and clinical literature, it is primarily investigated for its effects on body weight regulation, appetite signaling, and metabolic control through pathways associated with glucose and energy balance. This compound is intended strictly for in‑vitro, analytical, and preclinical research applications.`
     },
@@ -103,7 +102,7 @@
       slug: 'ghk-cu',
       name: 'GHK‑Cu (Copper Peptide) – 50 mg',
       price: 3500,
-      image: 'ghk-cu-50mg.png',
+      image: IMAGE_FILES.ghk,
       short: 'Copper‑binding tripeptide for research purposes.',
       long: `GHK-Cu is a naturally occurring copper-binding tripeptide provided in lyophilized form for research purposes only. Human-focused research commonly examines this compound for its role in skin biology, connective tissue signaling, wound repair pathways, and hair follicle-related cellular activity. Intended exclusively for laboratory and biochemical research.`
     },
@@ -111,7 +110,7 @@
       slug: 'melanotan-ii',
       name: 'Melanotan II (10 mg)',
       price: 4000,
-      image: 'mt2-10mg.png',
+      image: IMAGE_FILES.mt2,
       short: 'Synthetic melanocortin analog for research use only.',
       long: `Melanotan II is a synthetic melanocortin analog peptide supplied as a lyophilized powder for research use only. It is studied in human-related research for its interaction with melanocortin receptors involved in pigmentation processes, UV response signaling, and appetite-related neuroendocrine pathways. Not intended for human or animal use.`
     },
@@ -119,7 +118,7 @@
       slug: 'bpc-157',
       name: 'BPC‑157 (10 mg)',
       price: 5500,
-      image: 'bpc-157-10mg.png',
+      image: IMAGE_FILES.bpc,
       short: 'Peptide fragment commonly used in lab research.',
       long: `BPC-157 is a synthetic peptide fragment derived from a body protection compound sequence, provided strictly for research and laboratory investigation. Human research models commonly explore this compound for its involvement in tissue repair signaling, gastrointestinal integrity pathways, tendon and ligament response mechanisms, and inflammation-related cellular processes. For scientific and analytical research use only.`
     },
@@ -127,11 +126,16 @@
       slug: 'water',
       name: 'Bacteriostatic Water (10 mL)',
       price: 1000,
-      image: 'bacteriostatic-water-10ml.png',
+      image: IMAGE_FILES.water,
       short: 'Sterile diluent for reconstitution of lyophilized compounds.',
       long: `Bacteriostatic Water is a sterile aqueous solution containing benzyl alcohol, supplied for laboratory reconstitution of lyophilized research compounds. It is referenced in laboratory and clinical research settings as a standard diluent used to maintain solution stability during controlled experimental handling. Intended solely for non-clinical laboratory use.`
     }
   ];
+
+  // Small data URI placeholder (gray)
+  const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="#f6f6f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-family="Arial" font-size="16">Image not available</text></svg>'
+  );
 
   // Router
   function route() {
@@ -160,7 +164,16 @@
   // Helpers
   function money(cents) { return '$' + (cents / 100).toFixed(2); }
   function findProduct(slug) { return PRODUCTS.find(p => p.slug === slug); }
-  function imgUrl(name) { return name ? encodeURI(name) : ''; }
+  function imgPath(filename) { return IMAGE_DIR + filename; }
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   // Home / product grid
   function renderHome(container) {
@@ -178,10 +191,10 @@
     `;
     const grid = document.getElementById('product-grid');
     PRODUCTS.forEach(p => {
-      const src = imgUrl(p.image);
+      const src = imgPath(p.image);
       grid.insertAdjacentHTML('beforeend', `
         <article class="card">
-          <img src="${src}" alt="${escapeHtml(p.name)}" onerror="this.style.objectFit='contain'" />
+          <img src="${src}" alt="${escapeHtml(p.name)}" onerror="this.src='${PLACEHOLDER}'; console.warn('Image failed:', '${src}')" />
           <h3>${escapeHtml(p.name)}</h3>
           <div class="price">${money(p.price)}</div>
           <div class="small">${escapeHtml(p.short)}</div>
@@ -189,6 +202,10 @@
         </article>
       `);
     });
+
+    // set header logo src
+    const logoEl = document.getElementById('site-logo');
+    if (logoEl) logoEl.src = imgPath(IMAGE_FILES.logo);
   }
 
   // Product page
@@ -196,10 +213,10 @@
     const p = findProduct(slug);
     if (!p) { container.innerHTML = '<p>Product not found</p>'; return; }
 
-    const src = imgUrl(p.image);
+    const src = imgPath(p.image);
     container.innerHTML = `
       <div class="product-page">
-        <div class="img-large"><img src="${src}" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'"/></div>
+        <div class="img-large"><img src="${src}" alt="${escapeHtml(p.name)}" onerror="this.src='${PLACEHOLDER}'; console.warn('Image failed:', '${src}')" /></div>
         <div class="product-info">
           <h1>${escapeHtml(p.name)}</h1>
           <div class="price">${money(p.price)}</div>
@@ -501,20 +518,20 @@
     }
   }
 
-  // Basic XSS-safe text escape for inserted content
+  // Small helpers
+  function money(cents) { return '$' + (cents / 100).toFixed(2); }
   function escapeHtml(str) {
     if (str == null) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
   // Init
   window.addEventListener('hashchange', route);
   window.addEventListener('load', () => {
+    // set logo src now (so it uses IMAGE_DIR)
+    const logoEl = document.getElementById('site-logo');
+    if (logoEl) logoEl.src = imgPath(IMAGE_FILES.logo);
+
     if (!location.hash) location.hash = '#/';
     route();
   });
