@@ -3,148 +3,1561 @@
 <head>
   <meta charset="utf-8" />
   <title>Glacier BioLabs — Research Peptides</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Glacier BioLabs — Research Use Only compounds." />
+  <style>
+    :root{
+      --accent:#d0352c;           /* primary red */
+      --accent-2:#b12a24;         /* darker red */
+      --accent-soft: rgba(208,53,44,.10);
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --bg:#ffffff;
+      --card:#ffffff;
+      --shadow: 0 10px 25px rgba(2,6,23,.08);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --max: 1180px;
 
-  <link rel="stylesheet" href="assets/styles.css">
+      --topbar-h: 36px;
+      --header-h: 72px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:var(--bg);
+      color:var(--ink);
+    }
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 16px}
+    .muted{color:var(--muted)}
+    .sr-only{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+
+    /* ===== Topbar + Header ===== */
+    .topbar{
+      height:var(--topbar-h);
+      background:var(--accent-2);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      font-size:13px;
+    }
+    .topbar .wrap{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .topbar .right{
+      display:flex; gap:14px; align-items:center;
+      opacity:.95;
+    }
+    .topbar a{color:#fff; opacity:.95}
+    .topbar a:hover{opacity:1; text-decoration:underline}
+
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+    }
+    .header{
+      height:var(--header-h);
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 220px;
+    }
+    .logo{
+      height:40px;width:auto; display:block;
+    }
+    .brand-text{
+      display:flex; flex-direction:column; line-height:1.05;
+    }
+    .brand-text strong{font-size:15px; letter-spacing:.2px}
+    .brand-text span{font-size:12px; color:var(--muted)}
+
+    nav.desktop-nav{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      font-weight:600;
+      font-size:14px;
+    }
+    nav.desktop-nav a{
+      padding:10px 8px;
+      border-radius:10px;
+    }
+    nav.desktop-nav a:hover{background:rgba(2,6,23,.04)}
+    nav.desktop-nav a.active{
+      color:var(--accent-2);
+      background:var(--accent-soft);
+    }
+
+    .search{
+      display:flex; align-items:center; gap:0;
+      width: 360px;
+      max-width: 38vw;
+    }
+    .search input{
+      width:100%;
+      border:1px solid var(--line);
+      border-right:none;
+      padding:11px 12px;
+      border-radius:999px 0 0 999px;
+      outline:none;
+    }
+    .search input:focus{
+      border-color: rgba(208,53,44,.45);
+      box-shadow: 0 0 0 4px rgba(208,53,44,.12);
+    }
+    .search button{
+      border:1px solid var(--line);
+      background:var(--accent);
+      color:#fff;
+      padding:11px 14px;
+      border-radius:0 999px 999px 0;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .search button:hover{background:var(--accent-2)}
+
+    .header-actions{
+      display:flex; align-items:center; gap:10px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+      background:#fff;
+      cursor:pointer;
+    }
+    .pill:hover{box-shadow:0 6px 16px rgba(2,6,23,.08)}
+
+    /* ===== Mobile controls ===== */
+    .hamburger{
+      display:none;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+    }
+
+    .drawer-backdrop{
+      position:fixed; inset:0;
+      background:rgba(2,6,23,.55);
+      display:none;
+      z-index:60;
+    }
+    .drawer{
+      position:fixed; top:0; right:0;
+      height:100%;
+      width:min(420px, 92vw);
+      background:#fff;
+      z-index:70;
+      transform:translateX(100%);
+      transition:transform .25s ease;
+      display:flex;
+      flex-direction:column;
+    }
+    .drawer.open{transform:translateX(0)}
+    .drawer .head{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .drawer .body{padding:16px; display:flex; flex-direction:column; gap:8px}
+    .drawer .body a{
+      padding:12px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      font-weight:700;
+    }
+    .drawer .body a:hover{background:rgba(2,6,23,.03)}
+    .drawer .close{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:800;
+    }
+
+    /* ===== Hero ===== */
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(1200px 500px at 20% 30%, rgba(208,53,44,.35), transparent 55%),
+        radial-gradient(1000px 500px at 75% 30%, rgba(2,6,23,.18), transparent 60%),
+        linear-gradient(135deg, rgba(2,6,23,.75), rgba(2,6,23,.45));
+    }
+    .hero::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        url("images/hero.jpg") center/cover no-repeat;
+      opacity:.22;
+      filter:saturate(1.1) contrast(1.05);
+    }
+    .hero .wrap{
+      position:relative;
+      padding:56px 16px 48px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:center;
+      gap:26px;
+    }
+    .hero h1{
+      margin:0;
+      color:#fff;
+      font-size:42px;
+      letter-spacing:.4px;
+    }
+    .hero p{
+      margin:10px 0 0;
+      color:rgba(255,255,255,.88);
+      font-size:16px;
+      max-width: 56ch;
+      line-height:1.45;
+    }
+    .hero .kicker{
+      display:inline-flex;
+      gap:10px; align-items:center;
+      color:rgba(255,255,255,.85);
+      font-weight:800;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-bottom:10px;
+    }
+    .hero .cta-row{
+      margin-top:18px;
+      display:flex; gap:12px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid transparent;
+      font-weight:800;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .btn.primary{
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 14px 30px rgba(208,53,44,.28);
+    }
+    .btn.primary:hover{background:var(--accent-2)}
+    .btn.ghost{
+      background:transparent;
+      border-color:rgba(255,255,255,.25);
+      color:#fff;
+    }
+    .btn.ghost:hover{background:rgba(255,255,255,.08)}
+    .hero .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.18);
+      font-weight:700;
+      margin-top:14px;
+    }
+    .hero .panel{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius);
+      padding:16px;
+      backdrop-filter: blur(6px);
+      color:#fff;
+    }
+    .hero .panel strong{display:block; font-size:14px; letter-spacing:.2px}
+    .hero .panel small{display:block; opacity:.88; margin-top:6px; line-height:1.35}
+
+    /* ===== Page sections ===== */
+    main{padding:24px 0 0}
+    .section{padding:26px 0}
+    .section h2{
+      margin:0 0 14px;
+      font-size:26px;
+      letter-spacing:.3px;
+    }
+    .subhead{
+      margin:-8px 0 18px;
+      color:var(--muted);
+      line-height:1.45;
+      max-width: 70ch;
+    }
+    .divider{height:1px; background:var(--line); margin:20px 0}
+
+    /* ===== Catalog layout ===== */
+    .catalog{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap:26px;
+      align-items:start;
+    }
+    aside.filters{
+      border-right:1px solid var(--line);
+      padding-right:18px;
+    }
+    .filter-block{padding:6px 0 16px}
+    .filter-block h3{
+      margin:0 0 10px;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .filter-line{height:1px; background:var(--line); margin:10px 0 14px}
+    .check{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 0;
+      cursor:pointer;
+      user-select:none;
+      font-weight:600;
+      color:var(--ink);
+    }
+    .check input{width:18px;height:18px}
+    .chip{
+      display:inline-flex; align-items:center;
+      font-size:12px;
+      font-weight:800;
+      border-radius:999px;
+      padding:4px 8px;
+      background:rgba(2,6,23,.05);
+      margin-left:auto;
+      color:var(--muted);
+    }
+    .price-range{
+      display:flex; gap:10px; align-items:center;
+      flex-wrap:wrap;
+    }
+    .price-range input{
+      width:120px;
+      padding:10px 10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+    }
+    .price-range button{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .price-range button:hover{box-shadow:0 10px 22px rgba(2,6,23,.08)}
+
+    .catalog-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .catalog-head .count{
+      font-weight:700;
+      color:var(--muted);
+    }
+    .sort{
+      display:flex; align-items:center; gap:10px;
+    }
+    .sort select{
+      padding:10px 10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      font-weight:700;
+    }
+
+    /* ===== Product cards ===== */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+      transition:transform .14s ease, box-shadow .14s ease;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .card .img-wrap{
+      position:relative;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      padding:12px;
+    }
+    .card .img-topbar{
+      position:absolute; left:0; top:0; right:0;
+      height:6px;
+      background:var(--accent);
+      opacity:.95;
+    }
+    .card img{
+      width:100%;
+      height:170px;
+      object-fit:contain;
+      background:#fff;
+      border-radius:12px;
+      display:block;
+    }
+    .tag-sale{
+      position:absolute;
+      left:12px; top:14px;
+      background:var(--accent);
+      color:#fff;
+      font-weight:900;
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      box-shadow:0 12px 24px rgba(208,53,44,.25);
+    }
+    .card .body{
+      padding:14px 14px 16px;
+    }
+    .card h3{
+      margin:0;
+      font-size:15px;
+      line-height:1.25;
+      letter-spacing:.2px;
+      min-height: 38px;
+    }
+    .stars{
+      display:flex; align-items:center; justify-content:center;
+      gap:2px;
+      margin:10px 0 6px;
+      color: var(--accent-2);
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:.05em;
+    }
+    .price{
+      text-align:center;
+      font-weight:900;
+      color: var(--accent-2);
+      margin:6px 0 10px;
+      font-size:15px;
+    }
+    .card .small{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+      min-height: 36px;
+    }
+    .card .actions{
+      margin-top:12px;
+      display:flex; justify-content:center;
+    }
+    .card .actions a{
+      width:100%;
+      text-align:center;
+    }
+
+    /* ===== Product detail page ===== */
+    .crumbs{
+      font-size:13px;
+      color:var(--muted);
+      margin:6px 0 16px;
+    }
+    .product-page{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:26px;
+      align-items:start;
+      padding-bottom: 12px;
+    }
+    .media{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:14px;
+      background:#fff;
+    }
+    .media .img-topbar{height:6px;background:var(--accent);border-radius:999px;margin-bottom:12px}
+    .media img{
+      width:100%;
+      height:420px;
+      object-fit:contain;
+      display:block;
+      background:#fff;
+      border-radius:12px;
+    }
+    .pinfo h1{margin:0; font-size:34px; letter-spacing:.3px}
+    .pinfo .rating-row{
+      display:flex; align-items:center; gap:10px;
+      margin:10px 0 10px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:14px;
+    }
+    .pinfo .big-price{
+      font-size:34px;
+      font-weight:950;
+      color:var(--accent-2);
+      margin:10px 0 12px;
+    }
+    .pinfo .desc{color:var(--ink); line-height:1.5}
+    .ruo{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:12px;
+      background: var(--accent-soft);
+      border:1px solid rgba(208,53,44,.18);
+      color: var(--accent-2);
+      font-weight:900;
+      line-height:1.35;
+      font-size:13px;
+    }
+    .form{
+      margin-top:14px;
+      display:grid;
+      gap:12px;
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .field label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .field input, .field select, .field textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      outline:none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus{
+      border-color: rgba(208,53,44,.45);
+      box-shadow: 0 0 0 4px rgba(208,53,44,.12);
+    }
+    .confirm{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:700;
+      color:var(--ink);
+      line-height:1.35;
+    }
+    .confirm input{width:18px;height:18px;margin-top:2px}
+    .cta-bar{
+      display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .backlink{color:var(--muted); font-weight:800}
+    .backlink:hover{color:var(--ink)}
+
+    /* ===== Trust icons section ===== */
+    .trust{
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+    .trust .wrap{padding:28px 16px}
+    .trust h2{
+      text-align:center;
+      margin:0 0 18px;
+      letter-spacing:.4px;
+    }
+    .trust-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:16px;
+      align-items:start;
+      text-align:center;
+    }
+    .trust-card{
+      padding:14px 12px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .icon{
+      width:66px;height:66px;
+      border-radius:18px;
+      border:2px solid var(--accent);
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 10px;
+      background: rgba(208,53,44,.06);
+      font-weight:950;
+      color:var(--accent-2);
+    }
+    .trust-card h3{margin:0 0 6px; font-size:15px; letter-spacing:.2px}
+    .trust-card p{margin:0; color:var(--muted); line-height:1.45; font-size:13px}
+
+    /* ===== Newsletter/footer block ===== */
+    .newsletter{
+      margin-top:28px;
+      background:#0b0f19;
+      color:#fff;
+      padding:34px 0;
+    }
+    .newsletter .wrap{
+      display:grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap:18px;
+      align-items:center;
+    }
+    .newsletter h3{margin:0 0 6px; font-size:18px; letter-spacing:.2px}
+    .newsletter p{margin:0; color:rgba(255,255,255,.75)}
+    .nl-form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .nl-form input{
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      outline:none;
+    }
+    .nl-form input::placeholder{color:rgba(255,255,255,.55)}
+    .nl-form .wide{grid-column: 1 / -1}
+    .nl-form button{
+      grid-column: 1 / -1;
+      padding:12px 14px;
+      border-radius:12px;
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .nl-form button:hover{background:var(--accent-2)}
+
+    footer{
+      border-top:1px solid rgba(255,255,255,.10);
+      color:rgba(255,255,255,.70);
+      font-size:12px;
+      padding:14px 0;
+      text-align:center;
+      background:#0b0f19;
+    }
+
+    /* ===== Floating “offer” tab ===== */
+    .float-offer{
+      position:fixed;
+      right:0;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:40;
+      writing-mode:vertical-rl;
+      text-orientation:mixed;
+      background:var(--accent);
+      color:#fff;
+      padding:12px 10px;
+      border-radius:12px 0 0 12px;
+      font-weight:950;
+      letter-spacing:.06em;
+      box-shadow:0 18px 35px rgba(208,53,44,.30);
+      cursor:pointer;
+      user-select:none;
+    }
+    .float-offer:hover{background:var(--accent-2)}
+
+    /* ===== Simple content pages ===== */
+    .page{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:18px;
+      background:#fff;
+    }
+    .page h1{margin:0 0 8px; letter-spacing:.2px}
+    .page p{margin:10px 0; color:var(--muted); line-height:1.55}
+    .faq{
+      display:grid; gap:10px;
+      margin-top:12px;
+    }
+    details{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:900;
+    }
+    details p{margin:10px 0 0; color:var(--muted)}
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1100px){
+      .grid{grid-template-columns: repeat(3, minmax(0,1fr))}
+    }
+    @media (max-width: 900px){
+      .search{display:none}
+      nav.desktop-nav{display:none}
+      .hamburger{display:inline-flex}
+      .brand{min-width: unset}
+      .hero .wrap{grid-template-columns: 1fr; padding:42px 16px 36px}
+      .hero h1{font-size:34px}
+      .catalog{grid-template-columns: 1fr}
+      aside.filters{display:none}
+      .grid{grid-template-columns: repeat(2, minmax(0,1fr))}
+      .product-page{grid-template-columns: 1fr}
+      .media img{height:320px}
+      .trust-grid{grid-template-columns:1fr}
+      .newsletter .wrap{grid-template-columns:1fr}
+      .nl-form{grid-template-columns:1fr}
+      .float-offer{display:none}
+    }
+    @media (max-width: 430px){
+      .header{gap:10px}
+      .brand-text strong{font-size:14px}
+      .hero h1{font-size:30px}
+      .grid{gap:14px}
+      .card img{height:150px}
+    }
+  </style>
 </head>
-<body>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="wrap">
-    <div>support@glacierbiolabs.com</div>
-    <div class="right">
-      <a href="#/shop">Shop</a>
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <div>support@glacierbiolabs.com</div>
+      <div class="right">
+        <a href="#/shop">Shop</a>
+        <a href="#/account">My Account</a>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- HEADER -->
-<header>
-  <div class="wrap header">
-    <button class="hamburger" id="open-drawer">☰</button>
+  <header>
+    <div class="wrap header">
+      <button class="hamburger" id="open-drawer" aria-label="Open menu">☰</button>
 
-    <a class="brand" href="index.html">
-      <img class="logo" src="images/logo.png" alt="Glacier BioLabs">
-      <div class="brand-text">
-        <strong>Glacier BioLabs</strong>
-        <span>Research Use Only</span>
+      <a class="brand" href="#/">
+        <img id="site-logo" class="logo" src="" alt="Glacier BioLabs" onerror="this.style.display='none'">
+        <div class="brand-text">
+          <strong>Glacier BioLabs</strong>
+          <span>Research Use Only</span>
+        </div>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Main navigation" id="desktop-nav">
+        <a href="#/shop" data-nav="shop">BUY PEPTIDES</a>
+        <a href="#/learn" data-nav="learn">ABOUT</a>
+        <a href="#/learn" data-nav="knowledge">KNOWLEDGE</a>
+        <a href="#/faq" data-nav="contact">CONTACT</a>
+      </nav>
+
+      <form class="search" id="search-form">
+        <label class="sr-only" for="q">Search</label>
+        <input id="q" type="search" placeholder="Search products..." autocomplete="off">
+        <button type="submit" aria-label="Search">🔎</button>
+      </form>
+
+      <div class="header-actions">
+        <a class="pill" href="#/shop" title="Browse products">Shop</a>
       </div>
-    </a>
+    </div>
+  </header>
 
-    <nav class="desktop-nav">
+  <!-- Mobile drawer -->
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="head">
+      <strong>Menu</strong>
+      <button class="close" id="close-drawer" aria-label="Close menu">✕</button>
+    </div>
+    <div class="body">
       <a href="#/shop">BUY PEPTIDES</a>
-      <a href="pages/about.html">ABOUT</a>
-      <a href="pages/knowledge.html">KNOWLEDGE</a>
+      <a href="#/learn">ABOUT</a>
+      <a href="#/learn">KNOWLEDGE</a>
       <a href="#/faq">CONTACT</a>
-    </nav>
-  </div>
-</header>
+      <a href="#/account">MY ACCOUNT</a>
+    </div>
+  </aside>
 
-<!-- MOBILE DRAWER -->
-<div class="drawer-backdrop" id="drawer-backdrop"></div>
-<aside class="drawer" id="drawer">
-  <div class="head">
-    <strong>Menu</strong>
-    <button class="close" id="close-drawer">✕</button>
-  </div>
-  <div class="body">
-    <a href="#/shop">BUY PEPTIDES</a>
-    <a href="pages/about.html">ABOUT</a>
-    <a href="pages/knowledge.html">KNOWLEDGE</a>
-    <a href="#/faq">CONTACT</a>
-  </div>
-</aside>
+  <div class="float-offer" id="offer-tab">15% OFF YOUR FIRST ORDER</div>
 
-<!-- MAIN APP -->
-<main id="app"></main>
+  <main id="app"></main>
 
-<!-- FOOTER -->
-<footer>
-  <div class="wrap">
-    © <span id="year"></span> Glacier BioLabs — Research Use Only — Not for human or veterinary use.
-  </div>
-</footer>
-
-<script>
-/* YEAR */
-document.getElementById("year").textContent = new Date().getFullYear();
-
-/* SIMPLE ROUTER */
-function route() {
-  const app = document.getElementById("app");
-  const hash = location.hash;
-
-  if (!hash || hash === "#/" || hash === "#") {
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <h1>Research Compounds</h1>
-          <p>Research Use Only. Not for human or veterinary use.</p>
-          <a class="btn primary" href="#/shop">Shop Peptides</a>
-        </div>
-      </section>
-    `;
-    return;
-  }
-
-  if (hash === "#/shop") {
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <h1>Shop</h1>
-          <p>Product catalog goes here.</p>
-        </div>
-      </section>
-    `;
-    return;
-  }
-
-  if (hash === "#/faq") {
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <h1>Contact</h1>
-          <p>Email: support@glacierbiolabs.com</p>
-        </div>
-      </section>
-    `;
-    return;
-  }
-
-  app.innerHTML = `
-    <section class="section">
-      <div class="wrap">
-        <h1>Page not found</h1>
-        <a href="index.html">Go Home</a>
+  <section class="newsletter">
+    <div class="wrap">
+      <div>
+        <h3>SUBSCRIBE TO OUR NEWSLETTER</h3>
+        <p>Get promotions and updates sent to your inbox.</p>
       </div>
-    </section>
-  `;
-}
+      <form class="nl-form" id="nl-form">
+        <input placeholder="First Name" name="first" />
+        <input placeholder="Last Name" name="last" />
+        <input class="wide" placeholder="Email" name="email" type="email" required />
+        <input class="wide" placeholder="Phone (optional)" name="phone" />
+        <button type="submit">SUBSCRIBE</button>
+      </form>
+    </div>
+  </section>
 
-window.addEventListener("hashchange", route);
-route();
+  <footer>
+    <div class="wrap">
+      © <span id="year"></span> Glacier BioLabs — Research Use Only — Not for human or veterinary use.
+    </div>
+  </footer>
 
-/* DRAWER */
-const drawer = document.getElementById("drawer");
-const backdrop = document.getElementById("drawer-backdrop");
+  <script>
+  // ===== Images folder setup =====
+  const IMAGE_DIR = 'images/';
+  const IMAGE_FILES = {
+    logo: 'logo.png',
+    retatrutide: 'retatrutide-10mg.png',
+    ghk: 'ghk-cu-50mg.png',
+    mt2: 'mt2-10mg.png',
+    bpc: 'bpc-157-10mg.png',
+    water: 'bacteriostatic-water-10ml.png'
+  };
 
-document.getElementById("open-drawer").onclick = () => {
-  drawer.classList.add("open");
-  backdrop.style.display = "block";
-};
+  // ===== Products =====
+  // Keep RUO language. Do not add human/vet claims here.
+  const PRODUCTS = [
+    {
+      slug: 'retatrutide',
+      name: 'Retatrutide (10 mg)',
+      price: 13500,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'High-purity compound supplied for controlled laboratory research.',
+      long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. In published literature it has been examined in controlled models related to metabolic signaling pathways. This listing is for research use only (RUO).`,
+      sale: true
+    },
+    {
+      slug: 'ghk-cu',
+      name: 'GHK-Cu (Copper Peptide) – 50 mg',
+      price: 3500,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.ghk,
+      short: 'Copper-binding peptide used in research models of skin and tissue biology.',
+      long: `GHK-Cu is supplied as a research compound intended for laboratory use only. It is frequently referenced in studies investigating cellular signaling in skin and connective tissue models under controlled experimental conditions.`,
+      sale: true
+    },
+    {
+      slug: 'melanotan-ii',
+      name: 'Melanotan II (10 mg)',
+      price: 4000,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.mt2,
+      short: 'Research analog used to study melanocortin receptor pathways.',
+      long: `Melanotan II is supplied as a lyophilized research compound. It is commonly referenced in literature exploring melanocortin receptor signaling pathways in controlled study environments. Research use only.`,
+      sale: true
+    },
+    {
+      slug: 'bpc-157',
+      name: 'BPC-157 (10 mg)',
+      price: 5500,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.bpc,
+      short: 'Peptide fragment used in controlled research models.',
+      long: `BPC-157 is provided strictly as a research compound. It appears in literature related to cellular response and signaling in controlled experimental models. Not for human or veterinary use.`,
+      sale: false
+    },
+    {
+      slug: 'water',
+      name: 'Bacteriostatic Water (10 mL)',
+      price: 1000,
+      category: 'Supplies',
+      inStock: true,
+      image: IMAGE_FILES.water,
+      short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
+      long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
+      sale: false
+    }
+  ];
 
-document.getElementById("close-drawer").onclick = () => {
-  drawer.classList.remove("open");
-  backdrop.style.display = "none";
-};
+  // ===== Helpers =====
+  const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Image not available</text></svg>'
+  );
+  const imgPath = (f) => IMAGE_DIR + f;
+  const money = (cents) => '$' + (cents/100).toFixed(2);
+  const escapeHtml = (str) => String(str ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 
-backdrop.onclick = () => {
-  drawer.classList.remove("open");
-  backdrop.style.display = "none";
-};
-</script>
+  // ===== State for catalog filters/search =====
+  const state = {
+    q: '',
+    inStockOnly: false,
+    categories: new Set(),
+    minPrice: '',
+    maxPrice: '',
+    sort: 'default'
+  };
 
+  function setActiveNav() {
+    const hash = location.hash || '#/';
+    document.querySelectorAll('[data-nav]').forEach(a => a.classList.remove('active'));
+    if (hash.startsWith('#/shop') || hash === '#/' || hash === '#') {
+      const shop = document.querySelector('[data-nav="shop"]');
+      if (shop) shop.classList.add('active');
+    }
+    if (hash.startsWith('#/learn')) {
+      const learn = document.querySelector('[data-nav="learn"]');
+      if (learn) learn.classList.add('active');
+    }
+    if (hash.startsWith('#/faq')) {
+      const contact = document.querySelector('[data-nav="contact"]');
+      if (contact) contact.classList.add('active');
+    }
+  }
+
+  function filterAndSortProducts() {
+    let list = PRODUCTS.slice();
+
+    // search
+    const q = (state.q || '').trim().toLowerCase();
+    if (q) {
+      list = list.filter(p => (p.name + ' ' + (p.short||'') + ' ' + (p.category||'')).toLowerCase().includes(q));
+    }
+
+    // in stock
+    if (state.inStockOnly) list = list.filter(p => p.inStock);
+
+    // categories
+    if (state.categories.size > 0) {
+      list = list.filter(p => state.categories.has(p.category));
+    }
+
+    // price range
+    const min = state.minPrice !== '' ? Number(state.minPrice) : null;
+    const max = state.maxPrice !== '' ? Number(state.maxPrice) : null;
+    if (min != null && !Number.isNaN(min)) list = list.filter(p => p.price >= min*100);
+    if (max != null && !Number.isNaN(max)) list = list.filter(p => p.price <= max*100);
+
+    // sort
+    if (state.sort === 'price-asc') list.sort((a,b)=>a.price-b.price);
+    if (state.sort === 'price-desc') list.sort((a,b)=>b.price-a.price);
+    if (state.sort === 'name-asc') list.sort((a,b)=>a.name.localeCompare(b.name));
+
+    return list;
+  }
+
+  // ===== Reusable HTML blocks =====
+  function productCardHTML(p){
+    const img = imgPath(p.image);
+    const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
+    return `
+      <article class="card">
+        <a href="#/product/${encodeURIComponent(p.slug)}" aria-label="${escapeHtml(p.name)}">
+          <div class="img-wrap">
+            <div class="img-topbar"></div>
+            ${p.sale ? `<div class="tag-sale">SALE</div>` : ``}
+            <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}"
+                 onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+          </div>
+          <div class="body">
+            <h3>${escapeHtml(p.name)}</h3>
+            <div class="stars">★★★★★</div>
+            <div class="price">${money(p.price)}</div>
+            <div class="small">${escapeHtml(p.short || '')}</div>
+            <div class="small" style="text-align:center;margin-top:10px;font-weight:900;color:${p.inStock ? 'var(--accent-2)' : 'var(--muted)'}">${stockText}</div>
+            <div class="actions">
+              <span class="btn primary" style="width:100%">${p.inStock ? 'VIEW PRODUCT' : 'VIEW DETAILS'}</span>
+            </div>
+          </div>
+        </a>
+      </article>
+    `;
+  }
+
+  function trustSectionHTML(){
+    return `
+      <section class="trust">
+        <div class="wrap">
+          <h2>BUY ONLINE — QUALITY SECOND TO NONE</h2>
+          <div class="trust-grid">
+            <div class="trust-card">
+              <div class="icon">QC</div>
+              <h3>RIGOROUS QUALITY CONTROL</h3>
+              <p>Clear labeling, consistent presentation, and research-only positioning.</p>
+            </div>
+            <div class="trust-card">
+              <div class="icon">US</div>
+              <h3>SAME DAY SHIPPING (US)</h3>
+              <p>Fast fulfillment messaging and mobile-first checkout flow.</p>
+            </div>
+            <div class="trust-card">
+              <div class="icon">24</div>
+              <h3>SUPPORT THAT RESPONDS</h3>
+              <p>Make your contact + FAQ feel real, not placeholder fluff.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function bestSellersHTML() {
+    return PRODUCTS.slice(0,4).map(p => productCardHTML(p)).join('');
+  }
+
+  // ===== Views =====
+  function renderHome(app) {
+    app.innerHTML = `
+      <section class="hero">
+        <div class="wrap">
+          <div>
+            <div class="kicker">FREE SAME DAY PRIORITY SHIPPING</div>
+            <h1>RESEARCH COMPOUNDS</h1>
+            <p>Research Use Only — Not for human or veterinary use. Built for clean catalog browsing and fast mobile checkout.</p>
+
+            <div class="cta-row">
+              <a class="btn primary" href="#/shop">BUY PEPTIDES ONLINE</a>
+              <a class="btn ghost" href="#/learn">LEARN MORE</a>
+            </div>
+
+            <div class="badge">Free US shipping • Priority (1–3 business days) on orders over $199</div>
+          </div>
+
+          <div class="panel">
+            <strong>Research-first storefront</strong>
+            <small>
+              Mobile-optimized catalog layout, clean product detail pages, and a consistent red brand system.
+              Add your own <code style="color:#fff;opacity:.9">images/hero.jpg</code> later to match the reference even tighter.
+            </small>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <h2>OUR BEST SELLERS</h2>
+          <p class="subhead">Clean product cards, consistent spacing, and a layout that looks legit on iPhone.</p>
+          <div class="grid">
+            ${bestSellersHTML()}
+          </div>
+        </div>
+      </section>
+
+      ${trustSectionHTML()}
+
+      <section class="section">
+        <div class="wrap">
+          <h2>Shop All Products</h2>
+          <p class="subhead">Browse the full catalog with filters and sorting.</p>
+          <a class="btn primary" href="#/shop">Open Catalog</a>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderShop(app) {
+    const categories = Array.from(new Set(PRODUCTS.map(p=>p.category))).sort();
+    const filtered = filterAndSortProducts();
+
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="catalog">
+            <aside class="filters" aria-label="Filters">
+              <div class="filter-block">
+                <h3>Price</h3>
+                <div class="filter-line"></div>
+                <div class="price-range">
+                  <input id="minPrice" inputmode="numeric" placeholder="Min" value="${escapeHtml(state.minPrice)}">
+                  <input id="maxPrice" inputmode="numeric" placeholder="Max" value="${escapeHtml(state.maxPrice)}">
+                  <button id="applyPrice">Apply</button>
+                </div>
+              </div>
+
+              <div class="filter-block">
+                <h3>Stock</h3>
+                <div class="filter-line"></div>
+                <label class="check">
+                  <input id="inStock" type="checkbox" ${state.inStockOnly ? 'checked' : ''}>
+                  In Stock
+                </label>
+              </div>
+
+              <div class="filter-block">
+                <h3>Category</h3>
+                <div class="filter-line"></div>
+                ${categories.map(cat => `
+                  <label class="check">
+                    <input class="cat" type="checkbox" value="${escapeHtml(cat)}" ${state.categories.has(cat) ? 'checked' : ''}>
+                    ${escapeHtml(cat)}
+                    <span class="chip">${PRODUCTS.filter(p=>p.category===cat).length}</span>
+                  </label>
+                `).join('')}
+              </div>
+            </aside>
+
+            <div>
+              <div class="catalog-head">
+                <div class="count">Showing ${filtered.length} result${filtered.length===1?'':'s'}</div>
+                <div class="sort">
+                  <label class="sr-only" for="sort">Sort</label>
+                  <select id="sort">
+                    <option value="default" ${state.sort==='default'?'selected':''}>Default sorting</option>
+                    <option value="price-asc" ${state.sort==='price-asc'?'selected':''}>Price: low to high</option>
+                    <option value="price-desc" ${state.sort==='price-desc'?'selected':''}>Price: high to low</option>
+                    <option value="name-asc" ${state.sort==='name-asc'?'selected':''}>Name: A to Z</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid" id="shop-grid">
+                ${filtered.map(p=>productCardHTML(p)).join('')}
+              </div>
+
+              <div class="divider"></div>
+              <div class="ruo">
+                All products are supplied strictly for Research Use Only (RUO). Not for human or veterinary use.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      ${trustSectionHTML()}
+    `;
+
+    // Wire filters
+    const inStock = document.getElementById('inStock');
+    if (inStock){
+      inStock.addEventListener('change', () => {
+        state.inStockOnly = inStock.checked;
+        navigate('#/shop', { replace:true });
+      });
+    }
+
+    document.querySelectorAll('.cat').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (e.target.checked) state.categories.add(val);
+        else state.categories.delete(val);
+        navigate('#/shop', { replace:true });
+      });
+    });
+
+    const applyPrice = document.getElementById('applyPrice');
+    if (applyPrice){
+      applyPrice.addEventListener('click', () => {
+        const minEl = document.getElementById('minPrice');
+        const maxEl = document.getElementById('maxPrice');
+        state.minPrice = (minEl?.value ?? '').trim();
+        state.maxPrice = (maxEl?.value ?? '').trim();
+        navigate('#/shop', { replace:true });
+      });
+    }
+
+    const sort = document.getElementById('sort');
+    if (sort){
+      sort.addEventListener('change', () => {
+        state.sort = sort.value;
+        navigate('#/shop', { replace:true });
+      });
+    }
+  }
+
+  function renderProduct(app, slug){
+    const p = PRODUCTS.find(x => x.slug === slug);
+    if (!p){
+      app.innerHTML = `
+        <section class="section">
+          <div class="wrap">
+            <div class="page">
+              <h1>Product not found</h1>
+              <p>That product slug doesn’t exist. Go back to the catalog.</p>
+              <a class="btn primary" href="#/shop">Back to Shop</a>
+            </div>
+          </div>
+        </section>
+      `;
+      return;
+    }
+
+    const img = imgPath(p.image);
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="crumbs">
+            <a class="backlink" href="#/shop">← Back to Shop</a>
+          </div>
+
+          <div class="product-page">
+            <div class="media">
+              <div class="img-topbar"></div>
+              <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}"
+                   onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+            </div>
+
+            <div class="pinfo">
+              <h1>${escapeHtml(p.name)}</h1>
+              <div class="rating-row">
+                <span style="color:var(--accent-2);font-weight:950">★★★★★</span>
+                <span class="muted">Top rated</span>
+                <span class="muted">•</span>
+                <span class="muted">${escapeHtml(p.category)}</span>
+                <span class="muted">•</span>
+                <span class="muted">${p.inStock ? 'In Stock' : 'Out of Stock'}</span>
+              </div>
+
+              <div class="big-price">${money(p.price)}</div>
+
+              <div class="desc">
+                <p>${escapeHtml(p.long)}</p>
+              </div>
+
+              <div class="ruo">
+                Research Use Only (RUO). Not for human or veterinary use. Buyer affirms qualified laboratory handling.
+              </div>
+
+              <form class="form" id="order-form">
+                <div class="row2">
+                  <div class="field">
+                    <label for="qty">Quantity</label>
+                    <select id="qty">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="variant">Variant</label>
+                    <select id="variant">
+                      <option value="default">Default</option>
+                      <option value="sealed-vial">Sealed vial</option>
+                      <option value="lab-pack">Lab pack</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="notes">Notes (optional)</label>
+                  <textarea id="notes" rows="3" placeholder="Add any handling or order notes..."></textarea>
+                </div>
+
+                <label class="confirm">
+                  <input id="ruo-check" type="checkbox" required>
+                  <span>I acknowledge this product is sold strictly for laboratory research use only (RUO) and is not for human or veterinary use.</span>
+                </label>
+
+                <div class="cta-bar">
+                  <button class="btn primary" type="submit" ${p.inStock ? '' : 'disabled style="opacity:.6;cursor:not-allowed"'}>${p.inStock ? 'REQUEST CHECKOUT' : 'OUT OF STOCK'}</button>
+                  <a class="btn ghost" style="border-color:rgba(2,6,23,.12);color:var(--ink)" href="#/shop">Continue Shopping</a>
+                </div>
+
+                <p class="muted" style="margin:6px 0 0;font-size:13px">
+                  Checkout is currently a demo flow. Connect a compliant payment processor before going live.
+                </p>
+              </form>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <h2>You may also like</h2>
+          <p class="subhead">More research compounds from the catalog.</p>
+          <div class="grid">
+            ${PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,4).map(productCardHTML).join('')}
+          </div>
+        </div>
+      </section>
+    `;
+
+    const form = document.getElementById('order-form');
+    if (form){
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const ok = document.getElementById('ruo-check')?.checked;
+        if (!ok){
+          alert('You must acknowledge the RUO disclaimer to proceed.');
+          return;
+        }
+        alert('Demo checkout: connect a compliant processor before enabling real payments.');
+      });
+    }
+  }
+
+  function renderLearn(app){
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>About Glacier BioLabs</h1>
+            <p>
+              Glacier BioLabs is a research-first storefront focused on clean presentation, consistent labeling, and RUO-only positioning.
+              All compounds listed here are intended strictly for laboratory research, analytical testing, and scientific investigation.
+            </p>
+
+            <div class="divider"></div>
+
+            <h2>Research Use Only (RUO)</h2>
+            <p>
+              Products are not intended for human or veterinary use. Nothing on this site is medical advice and no claims are made about diagnosis,
+              treatment, prevention, or curing any disease.
+            </p>
+
+            <div class="divider"></div>
+
+            <h2>Quality & handling</h2>
+            <p>
+              Use qualified laboratory handling procedures, proper storage conditions, and comply with all applicable laws and regulations.
+            </p>
+
+            <a class="btn primary" href="#/shop">Browse Products</a>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderFAQ(app){
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>Contact & FAQ</h1>
+            <p>Email: <strong>support@glacierbiolabs.com</strong></p>
+
+            <div class="faq">
+              <details>
+                <summary>Are these products for human use?</summary>
+                <p>No. All products are sold strictly for Research Use Only (RUO) and are not for human or veterinary use.</p>
+              </details>
+
+              <details>
+                <summary>Do you provide medical guidance or dosing?</summary>
+                <p>No. This site does not provide medical guidance, protocols, dosing, or usage instructions for humans or animals.</p>
+              </details>
+
+              <details>
+                <summary>How do I track my order?</summary>
+                <p>Once a shipping label is created, you’ll receive tracking information by email (demo on this template).</p>
+              </details>
+
+              <details>
+                <summary>What’s your refund policy?</summary>
+                <p>Define a clear refund/returns policy before going live. RUO sellers often use strict policies for opened/handled items.</p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderAccount(app){
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>My Account</h1>
+            <p>This is a placeholder. If you want login/accounts, you’ll need a backend (or a hosted auth provider).</p>
+            <div class="divider"></div>
+            <p class="muted">For now, keep it simple: remove this page or turn it into an order lookup form.</p>
+            <a class="btn primary" href="#/shop">Back to Shop</a>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  // ===== Router =====
+  function parseRoute(){
+    const hash = location.hash || '#/';
+    const clean = hash.replace(/^#/, '');
+    const parts = clean.split('/').filter(Boolean); // ["shop"] or ["product","slug"]
+    return parts;
+  }
+
+  function navigate(hash, opts={}){
+    if (opts.replace) {
+      history.replaceState(null, '', hash);
+      route();
+    } else {
+      location.hash = hash;
+    }
+  }
+
+  function route(){
+    setActiveNav();
+    const app = document.getElementById('app');
+    const parts = parseRoute();
+
+    // default
+    if (parts.length === 0) {
+      renderHome(app);
+      window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+
+    if (parts[0] === 'shop') {
+      renderShop(app);
+      window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+
+    if (parts[0] === 'product' && parts[1]) {
+      renderProduct(app, decodeURIComponent(parts[1]));
+      window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+
+    if (parts[0] === 'learn') {
+      renderLearn(app);
+      window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+
+    if (parts[0] === 'faq') {
+      renderFAQ(app);
+      window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+
+    if (parts[0] === 'account') {
+      renderAccount(app);
+      window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+
+    // fallback
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>Page not found</h1>
+            <p>That route doesn’t exist. Go back home.</p>
+            <a class="btn primary" href="#/">Home</a>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  // ===== Global UI wiring =====
+  function setupDrawer(){
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('drawer-backdrop');
+
+    const open = () => {
+      drawer.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      backdrop.style.display = 'block';
+    };
+
+    const close = () => {
+      drawer.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      backdrop.style.display = 'none';
+    };
+
+    document.getElementById('open-drawer')?.addEventListener('click', open);
+    document.getElementById('close-drawer')?.addEventListener('click', close);
+    backdrop?.addEventListener('click', close);
+
+    drawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', close);
+    });
+  }
+
+  function setupSearch(){
+    const form = document.getElementById('search-form');
+    const q = document.getElementById('q');
+
+    if (!form || !q) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      state.q = q.value || '';
+      // always route to shop when searching
+      navigate('#/shop');
+    });
+  }
+
+  function setupOfferTab(){
+    const tab = document.getElementById('offer-tab');
+    if (!tab) return;
+    tab.addEventListener('click', () => {
+      // Keep it compliant: no medical claims, just store promo
+      state.q = '';
+      navigate('#/shop');
+      setTimeout(() => alert('Promo applied (demo): 15% OFF first order.'), 100);
+    });
+  }
+
+  function setupNewsletter(){
+    const form = document.getElementById('nl-form');
+    if (!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const email = (data.get('email') || '').toString().trim();
+      if (!email) return;
+      alert('Subscribed (demo): ' + email);
+      form.reset();
+    });
+  }
+
+  function setupBrandAssets(){
+    // set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // set logo
+    const logoEl = document.getElementById('site-logo');
+    if (logoEl){
+      logoEl.src = imgPath(IMAGE_FILES.logo);
+    }
+  }
+
+  // ===== Boot =====
+  window.addEventListener('hashchange', route);
+
+  setupDrawer();
+  setupSearch();
+  setupOfferTab();
+  setupNewsletter();
+  setupBrandAssets();
+
+  // Default route
+  if (!location.hash) location.hash = '#/';
+  route();
+  </script>
 </body>
 </html>
