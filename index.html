@@ -13,20 +13,22 @@
     .container{max-width:1100px;margin:0 auto;padding:20px}
     header.site-header{border-bottom:1px solid #eee}
     header .container{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .brand .logo{font-weight:700;color:var(--accent);font-size:18px}
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand .logo-text{font-weight:700;color:var(--accent);font-size:18px}
     nav a{margin-left:14px;color:var(--text);text-decoration:none}
     .hero{padding:24px 0}
     .subtitle{color:var(--muted);margin:6px 0}
     .banner{background:#f8dede;color:#7a1b1b;padding:8px;border-radius:4px;display:inline-block;margin-top:8px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:20px}
     .card{background:var(--card);border:1px solid #eee;padding:12px;border-radius:8px}
-    .card .img{height:140px;background:#f6f6f6;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999;margin-bottom:8px}
+    .card img{width:100%;height:140px;object-fit:cover;border-radius:6px;margin-bottom:8px;background:#f6f6f6}
     .price{font-size:1.15rem;color:var(--accent);margin:6px 0}
     .btn{background:var(--accent);color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-block}
     main{padding:18px 0}
     footer.site-footer{border-top:1px solid #eee;margin-top:32px;padding:12px 0;color:var(--muted);text-align:center}
     .product-page{display:flex;flex-wrap:wrap;gap:20px}
-    .product-page .img-large{width:360px;height:360px;background:#f6f6f6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;border:1px solid #eee}
+    .product-page .img-large{width:360px;height:360px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;border:1px solid #eee;background:#f6f6f6;padding:8px}
+    .product-page .img-large img{width:100%;height:100%;object-fit:contain;border-radius:6px}
     .product-info{flex:1;min-width:300px}
     .ruo{color:#b33;font-weight:700;margin-top:8px}
     label{display:block;margin:8px 0}
@@ -34,6 +36,7 @@
     .small{font-size:0.9rem;color:var(--muted)}
     .order{border:1px solid #f0f0f0;padding:8px;margin-bottom:8px;border-radius:6px}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .logo-img { height:40px; width:auto; display:block; }
     @media (max-width:800px){ .product-page{flex-direction:column} .product-page .img-large{width:100%;height:220px} }
   </style>
 </head>
@@ -41,8 +44,10 @@
   <header class="site-header">
     <div class="container">
       <div class="brand">
-        <div class="logo">Glacier BioLabs</div>
-        <div class="small">Research Use Only</div>
+        <!-- logo.png should be in the same folder as this HTML -->
+        <img src="logo.png" alt="Glacier BioLabs" class="logo-img" onerror="this.style.display='none'"/>
+        <div class="logo-text">Glacier BioLabs</div>
+        <div class="small" style="margin-left:8px">Research Use Only</div>
       </div>
 
       <nav id="main-nav" aria-label="Main navigation">
@@ -66,57 +71,69 @@
   </footer>
 
   <script>
-  /* =========
-     Single-file SPA for the whole site.
-     - Client-side routing uses hash routes: #/, #/product/slug, #/learn, #/faq, #/account, #/admin
-     - Product checkout calls /.netlify/functions/create-checkout-session (Netlify Functions) when deployed.
-     - Contact form posts to /.netlify/functions/contact
-     - Account sign-in uses Netlify Identity widget (deployed site must enable Identity).
-     - Admin login posts to /.netlify/functions/admin-auth (protected by ADMIN_PASSWORD env var)
-     - Promo codes: 5OFF, 10OFF (server expects promoCode param; server-side implements discount).
-     NOTE: To get full functionality deploy Netlify functions from the scaffold I gave earlier.
-     ========= */
+  /*
+    Single-file SPA (images wired to your files).
+    Place these image files in the same folder as this HTML:
+      - logo.png
+      - retatrutide-10mg.png
+      - ghk-cu-50mg.png
+      - mt2-10mg.png
+      - bpc-157-10mg.png
+      - bacteriostatic-water-10ml.png
 
-  // Product catalog (prices in cents)
+    Server endpoints (for full functionality when deployed to Netlify):
+      /.netlify/functions/create-checkout-session
+      /.netlify/functions/contact
+      /.netlify/functions/admin-auth
+      /.netlify/functions/list-orders
+      /.netlify/functions/get-orders
+  */
+
+  // Product catalog (prices in cents) with image filenames
   const PRODUCTS = [
     {
-      slug:'retatrutide',
-      name:'Retatrutide (10 mg)',
-      price:13500,
-      short:'High‑purity research peptide. For research use only.',
-      long:`Retatrutide is a synthetic multi-agonist peptide supplied as a lyophilized powder for research use only. In scientific and clinical literature, it is primarily investigated for its effects on body weight regulation, appetite signaling, and metabolic control through pathways associated with glucose and energy balance. This compound is intended strictly for in‑vitro, analytical, and preclinical research applications.`
+      slug: 'retatrutide',
+      name: 'Retatrutide (10 mg)',
+      price: 13500,
+      image: 'retatrutide-10mg.png',
+      short: 'High‑purity research peptide. For research use only.',
+      long: `Retatrutide is a synthetic multi-agonist peptide supplied as a lyophilized powder for research use only. In scientific and clinical literature, it is primarily investigated for its effects on body weight regulation, appetite signaling, and metabolic control through pathways associated with glucose and energy balance. This compound is intended strictly for in‑vitro, analytical, and preclinical research applications.`
     },
     {
-      slug:'ghk-cu',
-      name:'GHK‑Cu (Copper Peptide) – 50 mg',
-      price:3500,
-      short:'Copper‑binding tripeptide for research purposes.',
-      long:`GHK-Cu is a naturally occurring copper-binding tripeptide provided in lyophilized form for research purposes only. Human-focused research commonly examines this compound for its role in skin biology, connective tissue signaling, wound repair pathways, and hair follicle-related cellular activity. Intended exclusively for laboratory and biochemical research.`
+      slug: 'ghk-cu',
+      name: 'GHK‑Cu (Copper Peptide) – 50 mg',
+      price: 3500,
+      image: 'ghk-cu-50mg.png',
+      short: 'Copper‑binding tripeptide for research purposes.',
+      long: `GHK-Cu is a naturally occurring copper-binding tripeptide provided in lyophilized form for research purposes only. Human-focused research commonly examines this compound for its role in skin biology, connective tissue signaling, wound repair pathways, and hair follicle-related cellular activity. Intended exclusively for laboratory and biochemical research.`
     },
     {
-      slug:'melanotan-ii',
-      name:'Melanotan II (10 mg)',
-      price:4000,
-      short:'Synthetic melanocortin analog for research use only.',
-      long:`Melanotan II is a synthetic melanocortin analog peptide supplied as a lyophilized powder for research use only. It is studied in human-related research for its interaction with melanocortin receptors involved in pigmentation processes, UV response signaling, and appetite-related neuroendocrine pathways. Not intended for human or animal use.`
+      slug: 'melanotan-ii',
+      name: 'Melanotan II (10 mg)',
+      price: 4000,
+      image: 'mt2-10mg.png',
+      short: 'Synthetic melanocortin analog for research use only.',
+      long: `Melanotan II is a synthetic melanocortin analog peptide supplied as a lyophilized powder for research use only. It is studied in human-related research for its interaction with melanocortin receptors involved in pigmentation processes, UV response signaling, and appetite-related neuroendocrine pathways. Not intended for human or animal use.`
     },
     {
-      slug:'bpc-157',
-      name:'BPC‑157 (10 mg)',
-      price:5500,
-      short:'Peptide fragment commonly used in lab research.',
-      long:`BPC-157 is a synthetic peptide fragment derived from a body protection compound sequence, provided strictly for research and laboratory investigation. Human research models commonly explore this compound for its involvement in tissue repair signaling, gastrointestinal integrity pathways, tendon and ligament response mechanisms, and inflammation-related cellular processes. For scientific and analytical research use only.`
+      slug: 'bpc-157',
+      name: 'BPC‑157 (10 mg)',
+      price: 5500,
+      image: 'bpc-157-10mg.png',
+      short: 'Peptide fragment commonly used in lab research.',
+      long: `BPC-157 is a synthetic peptide fragment derived from a body protection compound sequence, provided strictly for research and laboratory investigation. Human research models commonly explore this compound for its involvement in tissue repair signaling, gastrointestinal integrity pathways, tendon and ligament response mechanisms, and inflammation-related cellular processes. For scientific and analytical research use only.`
     },
     {
-      slug:'water',
-      name:'Bacteriostatic Water (10 mL)',
-      price:1000,
-      short:'Sterile diluent for reconstitution of lyophilized compounds.',
-      long:`Bacteriostatic Water is a sterile aqueous solution containing benzyl alcohol, supplied for laboratory reconstitution of lyophilized research compounds. It is referenced in laboratory and clinical research settings as a standard diluent used to maintain solution stability during controlled experimental handling. Intended solely for non-clinical laboratory use.`
+      slug: 'water',
+      name: 'Bacteriostatic Water (10 mL)',
+      price: 1000,
+      image: 'bacteriostatic-water-10ml.png',
+      short: 'Sterile diluent for reconstitution of lyophilized compounds.',
+      long: `Bacteriostatic Water is a sterile aqueous solution containing benzyl alcohol, supplied for laboratory reconstitution of lyophilized research compounds. It is referenced in laboratory and clinical research settings as a standard diluent used to maintain solution stability during controlled experimental handling. Intended solely for non-clinical laboratory use.`
     }
   ];
 
-  // Simple router
+  // Router
   function route() {
     const hash = location.hash || '#/';
     const app = document.getElementById('app');
@@ -124,7 +141,8 @@
     if (hash === '#/' || hash === '#') {
       renderHome(app);
     } else if (hash.startsWith('#/product/')) {
-      const slug = hash.split('/')[2];
+      const parts = hash.split('/');
+      const slug = decodeURIComponent(parts.slice(2).join('/'));
       renderProduct(app, slug);
     } else if (hash === '#/learn') {
       renderLearn(app);
@@ -140,11 +158,12 @@
   }
 
   // Helpers
-  function money(cents){ return '$' + (cents/100).toFixed(2); }
-  function findProduct(slug){ return PRODUCTS.find(p=>p.slug===slug); }
+  function money(cents) { return '$' + (cents / 100).toFixed(2); }
+  function findProduct(slug) { return PRODUCTS.find(p => p.slug === slug); }
+  function imgUrl(name) { return name ? encodeURI(name) : ''; }
 
-  // Home / Product list
-  function renderHome(container){
+  // Home / product grid
+  function renderHome(container) {
     container.innerHTML = `
       <section class="hero">
         <h1>Research-Grade Peptides</h1>
@@ -159,12 +178,13 @@
     `;
     const grid = document.getElementById('product-grid');
     PRODUCTS.forEach(p => {
+      const src = imgUrl(p.image);
       grid.insertAdjacentHTML('beforeend', `
         <article class="card">
-          <div class="img">Image</div>
-          <h3>${p.name}</h3>
+          <img src="${src}" alt="${escapeHtml(p.name)}" onerror="this.style.objectFit='contain'" />
+          <h3>${escapeHtml(p.name)}</h3>
           <div class="price">${money(p.price)}</div>
-          <div class="small">${p.short}</div>
+          <div class="small">${escapeHtml(p.short)}</div>
           <div style="margin-top:12px"><a class="btn" href="#/product/${encodeURIComponent(p.slug)}">View</a></div>
         </article>
       `);
@@ -172,17 +192,18 @@
   }
 
   // Product page
-  function renderProduct(container, slug){
+  function renderProduct(container, slug) {
     const p = findProduct(slug);
     if (!p) { container.innerHTML = '<p>Product not found</p>'; return; }
 
+    const src = imgUrl(p.image);
     container.innerHTML = `
       <div class="product-page">
-        <div class="img-large">Image</div>
+        <div class="img-large"><img src="${src}" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'"/></div>
         <div class="product-info">
-          <h1>${p.name}</h1>
+          <h1>${escapeHtml(p.name)}</h1>
           <div class="price">${money(p.price)}</div>
-          <p>${p.long}</p>
+          <p>${escapeHtml(p.long)}</p>
           <p class="ruo">Research Use Only — Not for human or veterinary use. Not for diagnostic or therapeutic use.</p>
 
           <label><input type="checkbox" id="add-water" /> Add Bacteriostatic Water (10 mL) — ${money(findProduct('water').price)}</label>
@@ -216,12 +237,12 @@
     document.getElementById('buy-btn').addEventListener('click', async () => {
       const confirmed = document.getElementById('confirm').checked;
       if (!confirmed) return alert('Please confirm research-only use before purchasing.');
-      const qty = parseInt(document.getElementById('qty').value||'1',10) || 1;
+      const qty = parseInt(document.getElementById('qty').value || '1', 10) || 1;
       const addWater = document.getElementById('add-water').checked;
-      const promo = (document.getElementById('promo').value||'').trim().toUpperCase() || null;
+      const promo = (document.getElementById('promo').value || '').trim().toUpperCase() || null;
       const shipCountry = document.getElementById('ship-country').value;
 
-      // Ask for email for receipt/account (simple prompt for prototype)
+      // Prototype: quick prompt for email. Replace with proper form in production.
       const email = prompt('Enter your email for receipt and account (you will be able to sign-in later):');
       if (!email) return alert('Email required to proceed to checkout.');
 
@@ -234,28 +255,34 @@
       };
 
       try {
-        document.getElementById('buy-btn').disabled = true;
-        document.getElementById('buy-btn').textContent = 'Opening checkout...';
+        const buyBtn = document.getElementById('buy-btn');
+        buyBtn.disabled = true;
+        buyBtn.textContent = 'Opening checkout...';
 
         const res = await fetch('/.netlify/functions/create-checkout-session', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const json = await res.json();
         if (json.url) { window.location = json.url; }
-        else { alert('Checkout error: ' + (json.error || 'unknown')); document.getElementById('buy-btn').disabled=false; document.getElementById('buy-btn').textContent='Buy with Card'; }
+        else {
+          alert('Checkout error: ' + (json.error || 'unknown'));
+          buyBtn.disabled = false;
+          buyBtn.textContent = 'Buy with Card';
+        }
       } catch (err) {
         console.error(err);
         alert('Network error starting checkout.');
-        document.getElementById('buy-btn').disabled=false;
-        document.getElementById('buy-btn').textContent='Buy with Card';
+        const buyBtn = document.getElementById('buy-btn');
+        buyBtn.disabled = false;
+        buyBtn.textContent = 'Buy with Card';
       }
     });
   }
 
-  // Learn page (user provided content)
-  function renderLearn(container){
+  // Learn page
+  function renderLearn(container) {
     container.innerHTML = `
       <article>
         <h1>What Are Peptides? (Research Education)</h1>
@@ -298,34 +325,15 @@
 
         <h3>Research Disclaimer</h3>
         <p>This content is provided for informational and educational purposes only. All products referenced are designated for research use only and are not intended for human or veterinary use.</p>
-
-        <hr/>
-
-        <h2>Product Research Overviews</h2>
-        <h3>Retatrutide (Research Overview)</h3>
-        <p>Retatrutide is a synthetic multi-agonist peptide supplied as a lyophilized powder in a sealed sterile vial. ... Research Use Only (RUO).</p>
-
-        <h3>GHK-Cu (Research Overview)</h3>
-        <p>GHK-Cu, commonly referred to as a copper peptide, is a research compound frequently referenced in scientific literature. ... Research Use Only (RUO).</p>
-
-        <h3>Melanotan II (Research Overview)</h3>
-        <p>Melanotan II is a synthetic peptide supplied for laboratory and analytical research. ... Research Use Only (RUO).</p>
-
-        <h3>BPC-157 (Research Overview)</h3>
-        <p>BPC-157 is a synthetic peptide fragment provided strictly for research and laboratory investigation. ... Research Use Only (RUO).</p>
-
-        <h3>Bacteriostatic Water</h3>
-        <p>Bacteriostatic Water is a sterile aqueous solution containing benzyl alcohol, intended solely for non-clinical laboratory use.</p>
       </article>
     `;
   }
 
   // FAQ + Contact
-  function renderFAQ(container){
+  function renderFAQ(container) {
     container.innerHTML = `
       <article>
         <h1>FAQ</h1>
-
         <h3>What are peptides?</h3>
         <p>Peptides are molecular compounds composed of short sequences of amino acids linked together. They are smaller than proteins and are commonly examined in scientific and laboratory research.</p>
 
@@ -372,16 +380,18 @@
       </article>
     `;
 
-    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const form = e.target;
       const data = { name: form.name.value, email: form.email.value, message: form.message.value };
       try {
         const res = await fetch('/.netlify/functions/contact', {
-          method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
         });
         const json = await res.json();
-        document.getElementById('contact-res').textContent = json.ok ? 'Message sent — we will reply to your email.' : ('Error: ' + (json.error||'unknown'));
+        document.getElementById('contact-res').textContent = json.ok ? 'Message sent — we will reply to your email.' : ('Error: ' + (json.error || 'unknown'));
       } catch (err) {
         console.error(err);
         document.getElementById('contact-res').textContent = 'Network error sending message.';
@@ -389,8 +399,8 @@
     });
   }
 
-  // Account page (Netlify Identity + order fetch)
-  function renderAccount(container){
+  // Account page (basic UI)
+  function renderAccount(container) {
     container.innerHTML = `
       <section>
         <h1>Account</h1>
@@ -409,36 +419,22 @@
       </section>
     `;
 
-    // If Netlify Identity is available, use it for magic-link auth.
     const sendLinkBtn = document.getElementById('send-link');
-    sendLinkBtn.addEventListener('click', async () => {
-      const email = document.getElementById('auth-email').value;
-      if (!email) return alert('Email required');
-      // For a deployed Netlify site, this will work when Identity is enabled.
-      try {
-        // Netlify Identity HTTP endpoint for sending invite/magic link isn't officially exposed via simple fetch.
-        // For deployed Netlify Identity, use the Identity widget or flow in the scaffold. Here we show a helpful message.
-        document.getElementById('auth-msg').textContent = 'If Netlify Identity is enabled, enter your email on the hosted site and use the built-in magic link. (Local dev may not send link.)';
-      } catch (err) {
-        document.getElementById('auth-msg').textContent = 'Error initiating sign-in.';
-      }
+    sendLinkBtn.addEventListener('click', () => {
+      document.getElementById('auth-msg').textContent = 'Enable Netlify Identity on your site and use the Identity widget to send magic links. (Local dev may not send links.)';
     });
 
-    // Attempt to load orders if user email known via URL param ?email=...
     const params = new URLSearchParams(location.search);
     const emailParam = params.get('email');
     if (emailParam) loadOrders(emailParam);
-
-    // Basic sign-out / pseudo-signed-in flow is not fully implemented in this single-file prototype.
-    // Full magic-link sign-in requires Netlify Identity widget and proper deployment.
   }
 
-  // Admin page (simple password-protected panel)
-  function renderAdmin(container){
+  // Admin page
+  function renderAdmin(container) {
     container.innerHTML = `
       <section>
         <h1>Admin</h1>
-        <p>This admin panel calls /.netlify/functions/admin-auth and list-orders. Set ADMIN_PASSWORD in Netlify env.</p>
+        <p>This admin panel calls /.netlify/functions/admin-auth and /.netlify/functions/list-orders. Set ADMIN_PASSWORD in Netlify env.</p>
         <div id="admin-login">
           <label>Password <input id="admin-pass" type="password" /></label>
           <div style="margin-top:8px"><button id="admin-login-btn" class="btn">Login</button></div>
@@ -455,7 +451,9 @@
       const pass = document.getElementById('admin-pass').value;
       try {
         const res = await fetch('/.netlify/functions/admin-auth', {
-          method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: pass })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass })
         });
         const j = await res.json();
         if (j.ok) {
@@ -471,21 +469,21 @@
     });
   }
 
-  // Fetch orders for admin
-  async function loadAdminOrders(){
+  // Load admin orders
+  async function loadAdminOrders() {
     const node = document.getElementById('admin-orders');
     try {
       const res = await fetch('/.netlify/functions/list-orders');
       const json = await res.json();
       if (!json.orders) { node.textContent = 'No orders or error.'; return; }
-      node.innerHTML = json.orders.map(o => `<div class="order"><strong>${o.id}</strong> — ${money(o.amount_total)} — ${o.customer_email || '—'}</div>`).join('');
+      node.innerHTML = json.orders.map(o => `<div class="order"><strong>${escapeHtml(o.id)}</strong> — ${money(o.amount_total)} — ${escapeHtml(o.customer_email || '—')}</div>`).join('');
     } catch (err) {
       node.textContent = 'Failed to load orders.';
     }
   }
 
-  // Load orders by email for account page (used if email known)
-  async function loadOrders(email){
+  // Load orders for account by email
+  async function loadOrders(email) {
     const node = document.getElementById('orders');
     if (!node) return;
     node.textContent = 'Loading orders...';
@@ -494,25 +492,32 @@
       const json = await res.json();
       if (!json.orders || json.orders.length === 0) { node.textContent = 'No orders found.'; return; }
       node.innerHTML = json.orders.map(o => {
-        const items = (o.items||[]).map(i=>`${i.name} x${i.quantity}`).join(', ');
-        const coa = (o.metadata && o.metadata.coa_url) ? `<a href="${o.metadata.coa_url}">Download COA</a>` : 'COA after fulfillment';
-        return `<div class="order"><strong>${o.id}</strong> — ${money(o.amount_total)}<div>Items: ${items}</div><div>${coa}</div></div>`;
+        const items = (o.items || []).map(i => `${escapeHtml(i.name)} x${i.quantity}`).join(', ');
+        const coa = (o.metadata && o.metadata.coa_url) ? `<a href="${escapeHtml(o.metadata.coa_url)}">Download COA</a>` : 'COA after fulfillment';
+        return `<div class="order"><strong>${escapeHtml(o.id)}</strong> — ${money(o.amount_total)}<div>Items: ${items}</div><div>${coa}</div></div>`;
       }).join('');
     } catch (err) {
       node.textContent = 'Error loading orders.';
     }
   }
 
-  // Initialize router and link clicks
+  // Basic XSS-safe text escape for inserted content
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // Init
   window.addEventListener('hashchange', route);
   window.addEventListener('load', () => {
-    // Ensure default hash
     if (!location.hash) location.hash = '#/';
     route();
-
-    // If product links created outside router, intercept (not required here).
   });
-
   </script>
 </body>
 </html>
