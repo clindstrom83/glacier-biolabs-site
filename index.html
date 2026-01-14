@@ -519,6 +519,7 @@
       color:var(--muted);
       font-weight:700;
       font-size:14px;
+      flex-wrap:wrap;
     }
     .pinfo .big-price{
       font-size:34px;
@@ -719,6 +720,42 @@
     }
     details p{margin:10px 0 0; color:var(--muted)}
 
+    /* ===== Knowledge page styles ===== */
+    .kgrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (min-width: 980px){
+      .kgrid{grid-template-columns: 1fr 1fr}
+    }
+    .kcard{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .kcard h3{margin:0 0 8px; letter-spacing:.2px}
+    .kcard p{margin:0; color:var(--muted); line-height:1.55}
+    .klist{
+      margin:10px 0 0;
+      padding-left:18px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    .kcallout{
+      border-radius:12px;
+      border:1px solid rgba(208,53,44,.20);
+      background: var(--accent-soft);
+      padding:14px;
+      color: var(--accent-2);
+      font-weight:900;
+      line-height:1.4;
+      margin-top:12px;
+      font-size:13px;
+    }
+
     /* ===== Responsive ===== */
     @media (max-width: 1100px){
       .grid{grid-template-columns: repeat(3, minmax(0,1fr))}
@@ -753,7 +790,7 @@
 <body>
   <div class="topbar">
     <div class="wrap">
-      <div>support@glacierbiolabs.com</div>
+      <div>GlacierBioLabs@outlook.com</div>
       <div class="right">
         <a href="#/shop">Shop</a>
         <a href="#/account">My Account</a>
@@ -776,7 +813,7 @@
       <nav class="desktop-nav" aria-label="Main navigation" id="desktop-nav">
         <a href="#/shop" data-nav="shop">BUY PEPTIDES</a>
         <a href="#/learn" data-nav="learn">ABOUT</a>
-        <a href="#/learn" data-nav="knowledge">KNOWLEDGE</a>
+        <a href="#/knowledge" data-nav="knowledge">KNOWLEDGE</a>
         <a href="#/faq" data-nav="contact">CONTACT</a>
       </nav>
 
@@ -802,7 +839,7 @@
     <div class="body">
       <a href="#/shop">BUY PEPTIDES</a>
       <a href="#/learn">ABOUT</a>
-      <a href="#/learn">KNOWLEDGE</a>
+      <a href="#/knowledge">KNOWLEDGE</a>
       <a href="#/faq">CONTACT</a>
       <a href="#/account">MY ACCOUNT</a>
     </div>
@@ -914,7 +951,8 @@
   const money = (cents) => '$' + (cents/100).toFixed(2);
   const escapeHtml = (str) => String(str ?? '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 
   // ===== State for catalog filters/search =====
@@ -930,6 +968,7 @@
   function setActiveNav() {
     const hash = location.hash || '#/';
     document.querySelectorAll('[data-nav]').forEach(a => a.classList.remove('active'));
+
     if (hash.startsWith('#/shop') || hash === '#/' || hash === '#') {
       const shop = document.querySelector('[data-nav="shop"]');
       if (shop) shop.classList.add('active');
@@ -937,6 +976,10 @@
     if (hash.startsWith('#/learn')) {
       const learn = document.querySelector('[data-nav="learn"]');
       if (learn) learn.classList.add('active');
+    }
+    if (hash.startsWith('#/knowledge')) {
+      const k = document.querySelector('[data-nav="knowledge"]');
+      if (k) k.classList.add('active');
     }
     if (hash.startsWith('#/faq')) {
       const contact = document.querySelector('[data-nav="contact"]');
@@ -1046,7 +1089,7 @@
 
             <div class="cta-row">
               <a class="btn primary" href="#/shop">BUY PEPTIDES ONLINE</a>
-              <a class="btn ghost" href="#/learn">LEARN MORE</a>
+              <a class="btn ghost" href="#/knowledge">KNOWLEDGE CENTER</a>
             </div>
 
             <div class="badge">Free US shipping • Priority (1–3 business days) on orders over $199</div>
@@ -1142,67 +1185,58 @@
               <div class="grid" id="shop-grid">
                 ${filtered.map(p=>productCardHTML(p)).join('')}
               </div>
-
-              <div class="divider"></div>
-              <div class="ruo">
-                All products are supplied strictly for Research Use Only (RUO). Not for human or veterinary use.
-              </div>
             </div>
           </div>
         </div>
       </section>
-
-      ${trustSectionHTML()}
     `;
 
-    // Wire filters
+    // wire controls
     const inStock = document.getElementById('inStock');
-    if (inStock){
+    if (inStock) {
       inStock.addEventListener('change', () => {
         state.inStockOnly = inStock.checked;
-        navigate('#/shop', { replace:true });
+        renderShop(app);
       });
     }
 
     document.querySelectorAll('.cat').forEach(cb => {
-      cb.addEventListener('change', (e) => {
-        const val = e.target.value;
-        if (e.target.checked) state.categories.add(val);
+      cb.addEventListener('change', () => {
+        const val = cb.value;
+        if (cb.checked) state.categories.add(val);
         else state.categories.delete(val);
-        navigate('#/shop', { replace:true });
+        renderShop(app);
       });
     });
 
     const applyPrice = document.getElementById('applyPrice');
-    if (applyPrice){
+    if (applyPrice) {
       applyPrice.addEventListener('click', () => {
-        const minEl = document.getElementById('minPrice');
-        const maxEl = document.getElementById('maxPrice');
-        state.minPrice = (minEl?.value ?? '').trim();
-        state.maxPrice = (maxEl?.value ?? '').trim();
-        navigate('#/shop', { replace:true });
+        state.minPrice = document.getElementById('minPrice').value.trim();
+        state.maxPrice = document.getElementById('maxPrice').value.trim();
+        renderShop(app);
       });
     }
 
     const sort = document.getElementById('sort');
-    if (sort){
+    if (sort) {
       sort.addEventListener('change', () => {
         state.sort = sort.value;
-        navigate('#/shop', { replace:true });
+        renderShop(app);
       });
     }
   }
 
-  function renderProduct(app, slug){
+  function renderProduct(app, slug) {
     const p = PRODUCTS.find(x => x.slug === slug);
-    if (!p){
+    if (!p) {
       app.innerHTML = `
         <section class="section">
           <div class="wrap">
             <div class="page">
               <h1>Product not found</h1>
-              <p>That product slug doesn’t exist. Go back to the catalog.</p>
-              <a class="btn primary" href="#/shop">Back to Shop</a>
+              <p class="muted">That product doesn’t exist. Go back to the catalog.</p>
+              <a class="btn primary" href="#/shop">Back to shop</a>
             </div>
           </div>
         </section>
@@ -1210,40 +1244,32 @@
       return;
     }
 
-    const img = imgPath(p.image);
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
-          <div class="crumbs">
-            <a class="backlink" href="#/shop">← Back to Shop</a>
-          </div>
+          <div class="crumbs"><a class="backlink" href="#/shop">← Back to Shop</a></div>
 
           <div class="product-page">
             <div class="media">
               <div class="img-topbar"></div>
-              <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}"
+              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}"
                    onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
             </div>
 
             <div class="pinfo">
               <h1>${escapeHtml(p.name)}</h1>
               <div class="rating-row">
-                <span style="color:var(--accent-2);font-weight:950">★★★★★</span>
-                <span class="muted">Top rated</span>
-                <span class="muted">•</span>
-                <span class="muted">${escapeHtml(p.category)}</span>
+                <span style="color:var(--accent-2);font-weight:950;">★★★★★</span>
+                <span class="muted">Trusted by researchers</span>
                 <span class="muted">•</span>
                 <span class="muted">${p.inStock ? 'In Stock' : 'Out of Stock'}</span>
               </div>
 
               <div class="big-price">${money(p.price)}</div>
-
-              <div class="desc">
-                <p>${escapeHtml(p.long)}</p>
-              </div>
+              <div class="desc">${escapeHtml(p.long)}</div>
 
               <div class="ruo">
-                Research Use Only (RUO). Not for human or veterinary use. Buyer affirms qualified laboratory handling.
+                RESEARCH USE ONLY — Not for human or veterinary use. No medical claims are made.
               </div>
 
               <form class="form" id="order-form">
@@ -1251,129 +1277,143 @@
                   <div class="field">
                     <label for="qty">Quantity</label>
                     <select id="qty">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
+                      <option>1</option><option>2</option><option>3</option><option>4</option>
                     </select>
                   </div>
                   <div class="field">
-                    <label for="variant">Variant</label>
-                    <select id="variant">
-                      <option value="default">Default</option>
-                      <option value="sealed-vial">Sealed vial</option>
-                      <option value="lab-pack">Lab pack</option>
-                    </select>
+                    <label for="email">Email</label>
+                    <input id="email" type="email" placeholder="you@email.com" required>
                   </div>
                 </div>
 
                 <div class="field">
-                  <label for="notes">Notes (optional)</label>
-                  <textarea id="notes" rows="3" placeholder="Add any handling or order notes..."></textarea>
+                  <label for="notes">Research Notes (optional)</label>
+                  <textarea id="notes" rows="3" placeholder="Optional notes for your order..."></textarea>
                 </div>
 
                 <label class="confirm">
-                  <input id="ruo-check" type="checkbox" required>
-                  <span>I acknowledge this product is sold strictly for laboratory research use only (RUO) and is not for human or veterinary use.</span>
+                  <input type="checkbox" id="confirm" required>
+                  <span>I confirm these products are purchased strictly for laboratory research use only, and not for human or animal use.</span>
                 </label>
 
                 <div class="cta-bar">
-                  <button class="btn primary" type="submit" ${p.inStock ? '' : 'disabled style="opacity:.6;cursor:not-allowed"'}>${p.inStock ? 'REQUEST CHECKOUT' : 'OUT OF STOCK'}</button>
-                  <a class="btn ghost" style="border-color:rgba(2,6,23,.12);color:var(--ink)" href="#/shop">Continue Shopping</a>
+                  <button class="btn primary" type="submit" ${p.inStock ? '' : 'disabled'}>${p.inStock ? 'REQUEST CHECKOUT' : 'OUT OF STOCK'}</button>
+                  <a class="btn" style="border:1px solid var(--line);background:#fff" href="#/shop">Continue Shopping</a>
                 </div>
 
-                <p class="muted" style="margin:6px 0 0;font-size:13px">
-                  Checkout is currently a demo flow. Connect a compliant payment processor before going live.
+                <p class="muted" style="margin:0;">
+                  Checkout is demo-style right now. Replace the submit handler with your payment flow when ready.
                 </p>
               </form>
             </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <h2>You may also like</h2>
-          <p class="subhead">More research compounds from the catalog.</p>
-          <div class="grid">
-            ${PRODUCTS.filter(x=>x.slug!==p.slug).slice(0,4).map(productCardHTML).join('')}
           </div>
         </div>
       </section>
     `;
 
     const form = document.getElementById('order-form');
-    if (form){
+    if (form) {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const ok = document.getElementById('ruo-check')?.checked;
-        if (!ok){
-          alert('You must acknowledge the RUO disclaimer to proceed.');
-          return;
-        }
-        alert('Demo checkout: connect a compliant processor before enabling real payments.');
+        alert('Order request received (demo). Hook this to your checkout when ready.');
       });
     }
   }
 
-  function renderLearn(app){
+  function renderLearn(app) {
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
           <div class="page">
             <h1>About Glacier BioLabs</h1>
             <p>
-              Glacier BioLabs is a research-first storefront focused on clean presentation, consistent labeling, and RUO-only positioning.
-              All compounds listed here are intended strictly for laboratory research, analytical testing, and scientific investigation.
+              Glacier BioLabs is a research-first storefront for laboratory and scientific research materials.
+              All products are offered strictly for research use only (RUO) and are not intended for human or veterinary use.
             </p>
-
-            <div class="divider"></div>
-
-            <h2>Research Use Only (RUO)</h2>
             <p>
-              Products are not intended for human or veterinary use. Nothing on this site is medical advice and no claims are made about diagnosis,
-              treatment, prevention, or curing any disease.
+              Our mission is to support responsible research with consistent presentation, transparent batch handling,
+              and a clean browsing experience for customers.
             </p>
-
             <div class="divider"></div>
-
-            <h2>Quality & handling</h2>
-            <p>
-              Use qualified laboratory handling procedures, proper storage conditions, and comply with all applicable laws and regulations.
+            <p class="muted">
+              Looking for education content? Visit our <a href="#/knowledge" style="color:var(--accent-2);font-weight:900;">Knowledge Center</a>.
             </p>
-
-            <a class="btn primary" href="#/shop">Browse Products</a>
           </div>
         </div>
       </section>
     `;
   }
 
-  function renderFAQ(app){
+  function renderKnowledge(app) {
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
           <div class="page">
-            <h1>Contact & FAQ</h1>
-            <p>Email: <strong>support@glacierbiolabs.com</strong></p>
+            <h1>Knowledge Center</h1>
+            <p>
+              This page provides general, non-clinical information about research compounds, testing, and lab handling.
+              Content is educational only and not medical advice.
+            </p>
 
+            <div class="kcallout">
+              RESEARCH USE ONLY — Not for human or veterinary use. No medical claims. No dosing or application guidance is provided.
+            </div>
+
+            <div class="kgrid">
+              <div class="kcard">
+                <h3>What Are Research Compounds?</h3>
+                <p>
+                  Research compounds are substances supplied exclusively for laboratory and scientific investigation.
+                  They may be studied in controlled settings to evaluate molecular behavior, stability, and analytical properties.
+                </p>
+              </div>
+
+              <div class="kcard">
+                <h3>Purity & Testing</h3>
+                <p>
+                  Product quality is commonly verified using analytical methods such as HPLC. Certificates of Analysis (COAs)
+                  may be used to confirm identity and purity for a given batch.
+                </p>
+              </div>
+
+              <div class="kcard">
+                <h3>Storage & Handling</h3>
+                <p>
+                  Proper storage may include temperature-controlled environments, protection from moisture and light,
+                  secure containment, and adherence to standard lab safety protocols.
+                </p>
+              </div>
+
+              <div class="kcard">
+                <h3>Compound Education</h3>
+                <p>
+                  We provide high-level summaries of compounds commonly referenced in scientific literature—without instructions,
+                  protocols, or use guidance.
+                </p>
+                <ul class="klist">
+                  <li><strong>BPC-157:</strong> peptide referenced in controlled research models</li>
+                  <li><strong>GHK-Cu:</strong> copper-binding peptide studied in biochemical research</li>
+                  <li><strong>MT-2:</strong> receptor-binding research analog in controlled settings</li>
+                  <li><strong>Retatrutide:</strong> research compound referenced in receptor-focused studies</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <h2>FAQ</h2>
             <div class="faq">
               <details>
-                <summary>Are these products for human use?</summary>
-                <p>No. All products are sold strictly for Research Use Only (RUO) and are not for human or veterinary use.</p>
+                <summary>Are these products legal?</summary>
+                <p>Products are intended for legitimate research purposes. Buyers are responsible for complying with applicable local laws and regulations.</p>
               </details>
-
               <details>
-                <summary>Do you provide medical guidance or dosing?</summary>
-                <p>No. This site does not provide medical guidance, protocols, dosing, or usage instructions for humans or animals.</p>
+                <summary>Are COAs available?</summary>
+                <p>Yes — COAs can be provided upon request for supported batches when available.</p>
               </details>
-
               <details>
-                <summary>How do I track my order?</summary>
-                <p>Once a shipping label is created, you’ll receive tracking information by email (demo on this template).</p>
-              </details>
-
-              <details>
-                <summary>What’s your refund policy?</summary>
-                <p>Define a clear refund/returns policy before going live. RUO sellers often use strict policies for opened/handled items.</p>
+                <summary>Do you provide usage instructions?</summary>
+                <p>No. We do not provide dosing, protocols, or application guidance. Products are research use only.</p>
               </details>
             </div>
           </div>
@@ -1382,16 +1422,44 @@
     `;
   }
 
-  function renderAccount(app){
+  function renderFAQ(app) {
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>Contact</h1>
+            <p>For support, reach us at <strong>support@glacierbiolabs.com</strong>.</p>
+
+            <div class="divider"></div>
+
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq">
+              <details>
+                <summary>What does “Research Use Only” mean?</summary>
+                <p>Products are sold strictly for laboratory research and analytical purposes. They are not intended for human or veterinary use.</p>
+              </details>
+              <details>
+                <summary>Do you offer refunds?</summary>
+                <p>Due to the nature of research materials, all sales are final unless otherwise stated.</p>
+              </details>
+              <details>
+                <summary>How fast is shipping?</summary>
+                <p>Shipping times vary by location. Tracking is provided once an order ships.</p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderAccount(app) {
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
           <div class="page">
             <h1>My Account</h1>
-            <p>This is a placeholder. If you want login/accounts, you’ll need a backend (or a hosted auth provider).</p>
-            <div class="divider"></div>
-            <p class="muted">For now, keep it simple: remove this page or turn it into an order lookup form.</p>
-            <a class="btn primary" href="#/shop">Back to Shop</a>
+            <p class="muted">Account/login is a placeholder right now. Add auth later (Shopify, Supabase, custom, etc.).</p>
           </div>
         </div>
       </section>
@@ -1399,115 +1467,83 @@
   }
 
   // ===== Router =====
-  function parseRoute(){
-    const hash = location.hash || '#/';
-    const clean = hash.replace(/^#/, '');
-    const parts = clean.split('/').filter(Boolean); // ["shop"] or ["product","slug"]
-    return parts;
-  }
-
-  function navigate(hash, opts={}){
-    if (opts.replace) {
-      history.replaceState(null, '', hash);
-      route();
-    } else {
-      location.hash = hash;
-    }
-  }
-
-  function route(){
-    setActiveNav();
+  function route() {
     const app = document.getElementById('app');
-    const parts = parseRoute();
+    if (!app) return;
 
-    // default
-    if (parts.length === 0) {
-      renderHome(app);
-      window.scrollTo({top:0, behavior:'smooth'});
+    const hash = location.hash || '#/';
+    setActiveNav();
+
+    // Product route: #/product/:slug
+    if (hash.startsWith('#/product/')) {
+      const slug = decodeURIComponent(hash.split('#/product/')[1] || '');
+      renderProduct(app, slug);
       return;
     }
 
-    if (parts[0] === 'shop') {
-      renderShop(app);
-      window.scrollTo({top:0, behavior:'smooth'});
-      return;
+    switch (hash) {
+      case '#/':
+      case '#':
+        renderHome(app);
+        break;
+      case '#/shop':
+        renderShop(app);
+        break;
+      case '#/learn':
+        renderLearn(app);
+        break;
+      case '#/knowledge':
+        renderKnowledge(app);
+        break;
+      case '#/faq':
+        renderFAQ(app);
+        break;
+      case '#/account':
+        renderAccount(app);
+        break;
+      default:
+        // fallback
+        location.hash = '#/';
+        break;
     }
-
-    if (parts[0] === 'product' && parts[1]) {
-      renderProduct(app, decodeURIComponent(parts[1]));
-      window.scrollTo({top:0, behavior:'smooth'});
-      return;
-    }
-
-    if (parts[0] === 'learn') {
-      renderLearn(app);
-      window.scrollTo({top:0, behavior:'smooth'});
-      return;
-    }
-
-    if (parts[0] === 'faq') {
-      renderFAQ(app);
-      window.scrollTo({top:0, behavior:'smooth'});
-      return;
-    }
-
-    if (parts[0] === 'account') {
-      renderAccount(app);
-      window.scrollTo({top:0, behavior:'smooth'});
-      return;
-    }
-
-    // fallback
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <div class="page">
-            <h1>Page not found</h1>
-            <p>That route doesn’t exist. Go back home.</p>
-            <a class="btn primary" href="#/">Home</a>
-          </div>
-        </div>
-      </section>
-    `;
   }
 
-  // ===== Global UI wiring =====
+  // ===== UX Wiring =====
   function setupDrawer(){
     const drawer = document.getElementById('drawer');
     const backdrop = document.getElementById('drawer-backdrop');
+    const openBtn = document.getElementById('open-drawer');
+    const closeBtn = document.getElementById('close-drawer');
 
-    const open = () => {
+    function open(){
       drawer.classList.add('open');
-      drawer.setAttribute('aria-hidden', 'false');
       backdrop.style.display = 'block';
-    };
-
-    const close = () => {
+      drawer.setAttribute('aria-hidden','false');
+    }
+    function close(){
       drawer.classList.remove('open');
-      drawer.setAttribute('aria-hidden', 'true');
       backdrop.style.display = 'none';
-    };
+      drawer.setAttribute('aria-hidden','true');
+    }
 
-    document.getElementById('open-drawer')?.addEventListener('click', open);
-    document.getElementById('close-drawer')?.addEventListener('click', close);
-    backdrop?.addEventListener('click', close);
+    if (openBtn) openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (backdrop) backdrop.addEventListener('click', close);
 
-    drawer.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', close);
-    });
+    // close drawer when clicking any link inside
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
   }
 
   function setupSearch(){
     const form = document.getElementById('search-form');
     const q = document.getElementById('q');
-
     if (!form || !q) return;
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       state.q = q.value || '';
-      // always route to shop when searching
-      navigate('#/shop');
+      location.hash = '#/shop';
+      route();
     });
   }
 
@@ -1515,10 +1551,7 @@
     const tab = document.getElementById('offer-tab');
     if (!tab) return;
     tab.addEventListener('click', () => {
-      // Keep it compliant: no medical claims, just store promo
-      state.q = '';
-      navigate('#/shop');
-      setTimeout(() => alert('Promo applied (demo): 15% OFF first order.'), 100);
+      alert('Offer tab is demo text. Replace with a real promo modal when ready.');
     });
   }
 
@@ -1527,23 +1560,17 @@
     if (!form) return;
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const data = new FormData(form);
-      const email = (data.get('email') || '').toString().trim();
-      if (!email) return;
-      alert('Subscribed (demo): ' + email);
+      alert('Subscribed (demo). Hook this to your email provider later.');
       form.reset();
     });
   }
 
   function setupBrandAssets(){
-    // set year
-    document.getElementById('year').textContent = new Date().getFullYear();
+    const logo = document.getElementById('site-logo');
+    if (logo) logo.src = imgPath(IMAGE_FILES.logo);
 
-    // set logo
-    const logoEl = document.getElementById('site-logo');
-    if (logoEl){
-      logoEl.src = imgPath(IMAGE_FILES.logo);
-    }
+    const year = document.getElementById('year');
+    if (year) year.textContent = String(new Date().getFullYear());
   }
 
   // ===== Boot =====
