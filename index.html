@@ -824,8 +824,8 @@
       </form>
 
       <div class="header-actions">
-        <a class="pill" href="#/shop" title="Browse products">Shop</a>
-      </div>
+  <a class="pill" href="#/cart" title="View cart">🛒 Cart</a>
+</div>
     </div>
   </header>
 
@@ -1476,30 +1476,39 @@
     }
 
     switch (hash) {
-      case '#/':
-      case '#':
-        renderHome(app);
-        break;
-      case '#/shop':
-        renderShop(app);
-        break;
-      case '#/learn':
-        renderLearn(app);
-        break;
-      case '#/knowledge':
-        renderKnowledge(app);
-        break;
-      case '#/faq':
-        renderFAQ(app);
-        break;
-      case '#/account':
-        renderAccount(app);
-        break;
-      default:
-        // fallback
-        location.hash = '#/';
-        break;
-    }
+  case '#/':
+  case '#':
+    renderHome(app);
+    break;
+
+  case '#/shop':
+    renderShop(app);
+    break;
+
+  case '#/cart':
+    app.innerHTML = '<h1 style="padding:40px">Cart coming soon</h1>';
+    break;
+
+  case '#/learn':
+    renderLearn(app);
+    break;
+
+  case '#/knowledge':
+    renderKnowledge(app);
+    break;
+
+  case '#/faq':
+    renderFAQ(app);
+    break;
+
+  case '#/account':
+    renderAccount(app);
+    break;
+
+  default:
+    location.hash = '#/';
+    break;
+}
   }
 
   // ===== UX Wiring =====
