@@ -39,45 +39,72 @@
   --header-h: 72px;
 }
 
-/* PRODUCT TEXT OVERRIDE */
-.product h3,
-.product h4,
-.product p,
-.product span,
-.product li {
-  color: #ffffff;
+* { box-sizing:border-box; }
+
+html, body { height:100%; }
+
+body {
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Apple Color Emoji","Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--ink);
 }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:var(--bg);
-      color:var(--ink);
-    }
-    a{color:inherit;text-decoration:none}
-    button,input,select,textarea{font:inherit}
 
-    .wrap{max-width:var(--max); margin:0 auto; padding:0 16px}
-    .muted{color:var(--muted)}
-    .sr-only{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
 
-    /* ===== Topbar + Header ===== */
-    .topbar{
-      height:var(--topbar-h);
-      background:var(--accent-2);
-      color:#fff;
-      display:flex;
-      align-items:center;
-      font-size:13px;
-    }
-    .topbar .wrap{
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.muted { color: var(--muted); }
+
+.sr-only {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ===== Topbar + Header ===== */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--accent-2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+.topbar .wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* ===== FORCE PRODUCT TEXT TO WHITE ===== */
+/* THIS MUST BE LAST */
+.product,
+.product *,
+.product-card,
+.product-card *,
+.item,
+.item *,
+.product-item,
+.product-item *,
+.products,
+.products *,
+.products-grid,
+.products-grid * {
+  color: #ffffff !important;
+}
     .topbar .right{
       display:flex; gap:14px; align-items:center;
       opacity:.95;
