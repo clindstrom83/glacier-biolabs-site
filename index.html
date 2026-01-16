@@ -65,15 +65,33 @@ button, input, select, textarea { font: inherit; }
 
 .muted { color: var(--muted); }
 
-/* ===== Topbar ===== */
-.topbar {
-  height: var(--topbar-h);
-  background: var(--accent-2);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  font-size: 13px;
+/* FIX TOPBAR WRAPPING */
+.topbar { overflow: hidden; }
+
+.topbar .wrap{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:nowrap;            /* <- stop line breaks */
 }
+
+.topbar .left,
+.topbar .right{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  white-space:nowrap;          /* <- keep each side on one line */
+}
+
+.topbar .left{
+  min-width:0;                 /* <- allows ellipsis */
+  overflow:hidden;
+  text-overflow:ellipsis;      /* <- email won’t push everything */
+}
+
+.topbar .right{ margin-left:auto; }
 
 /* ===== Header ===== */
 header {
