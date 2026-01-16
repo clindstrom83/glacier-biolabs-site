@@ -26,8 +26,8 @@
   --accent:#d0352c;           /* primary red */
   --accent-2:#b12a24;         /* darker red */
   --accent-soft: rgba(208,53,44,.10);
-  --ink:#0e1622;
-  --muted:#0e1622;
+  --ink:#0e1622;              /* NAVY */
+  --muted:#0e1622;            /* NAVY */
   --line:#e5e7eb;
   --bg: radial-gradient(circle at top, #1b2a3a, #0e1622 45%, #070b12);
   --card: rgba(255,255,255,0.06);
@@ -65,13 +65,12 @@ button, input, select, textarea { font: inherit; }
 .sr-only {
   position: absolute;
   left: -9999px;
-  top: auto;
   width: 1px;
   height: 1px;
   overflow: hidden;
 }
 
-/* ===== Topbar + Header ===== */
+/* ===== Topbar ===== */
 .topbar {
   height: var(--topbar-h);
   background: var(--accent-2);
@@ -80,84 +79,78 @@ button, input, select, textarea { font: inherit; }
   align-items: center;
   font-size: 13px;
 }
-
 .topbar .wrap {
-  width: 100%;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.topbar a { color:#fff; opacity:.95; }
+.topbar a:hover { opacity:1; }
+
+/* ===== Header ===== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.header {
+  height: var(--header-h);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
   gap: 10px;
 }
 
-/* ===== FORCE PRODUCT TEXT TO WHITE ===== */
-/* THIS MUST BE LAST */
-.product,
-.product *,
-.product-card,
-.product-card *,
-.item,
-.item *,
-.product-item,
-.product-item *,
-.products,
-.products *,
-.products-grid,
-.products-grid * {
+.brand-text strong { font-size: 15px; }
+.brand-text span { font-size: 12px; }
+
+/* ===== Nav ===== */
+nav.desktop-nav {
+  flex:1;
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  font-weight:600;
+}
+
+nav.desktop-nav a {
+  padding:10px 8px;
+  border-radius:10px;
+  color: var(--ink);
+}
+
+nav.desktop-nav a:hover {
+  background: rgba(2,6,23,.04);
+}
+
+nav.desktop-nav a.active {
+  color: var(--accent-2);
+  background: var(--accent-soft);
+}
+
+/* ===================================================== */
+/* ===== FORCE PRODUCT TEXT TO WHITE — MUST BE LAST ===== */
+/* ===================================================== */
+
+.products h1, .products h2, .products h3, .products h4,
+.products p, .products span, .products li,
+.products-grid h1, .products-grid h2, .products-grid h3, .products-grid h4,
+.products-grid p, .products-grid span, .products-grid li,
+.product h1, .product h2, .product h3, .product h4,
+.product p, .product span, .product li,
+.product-card h1, .product-card h2, .product-card h3, .product-card h4,
+.product-card p, .product-card span, .product-card li {
   color: #ffffff !important;
 }
-    .topbar .right{
-      display:flex; gap:14px; align-items:center;
-      opacity:.95;
-    }
-    .topbar a{color:#fff; opacity:.95}
-    .topbar a:hover{opacity:1; text-decoration:underline}
-
-    header{
-      position:sticky;
-      top:0;
-      z-index:50;
-      background:#fff;
-      border-bottom:1px solid var(--line);
-    }
-    .header{
-      height:var(--header-h);
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 220px;
-    }
-    .logo{
-      height:40px;width:auto; display:block;
-    }
-    .brand-text{
-      display:flex; flex-direction:column; line-height:1.05;
-    }
-    .brand-text strong{font-size:15px; letter-spacing:.2px}
-    .brand-text span{font-size:12px; color:var(--muted)}
-
-    nav.desktop-nav{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:18px;
-      font-weight:600;
-      font-size:14px;
-    }
-    nav.desktop-nav a{
-      padding:10px 8px;
-      border-radius:10px;
-    }
-    nav.desktop-nav a:hover{background:rgba(2,6,23,.04)}
-    nav.desktop-nav a.active{
-      color:var(--accent-2);
-      background:var(--accent-soft);
-    }
 
     .search{
       display:flex; align-items:center; gap:0;
