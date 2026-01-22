@@ -778,6 +778,18 @@
     .cart-total{font-weight:900;text-align:right;margin-top:8px}
     .cart-empty{color:var(--muted);text-align:center;padding:14px 0}
 
+    /* ===== Improved product-page checkout button (new) ===== */
+    .product-page { gap: 30px; }
+    .pinfo { display:flex; flex-direction:column; gap:12px; }
+    .pinfo .big-price { font-size:36px; font-weight:950; color:var(--accent-2); margin:4px 0 8px; }
+    .order-row{ display:flex; gap:12px; align-items:center; }
+    .order-row .field{ flex:1; margin:0; }
+    .btn.primary.full { width:100%; padding:14px 16px; font-size:16px; border-radius:12px; }
+    .order-help{ color:var(--muted); font-size:13px; margin-top:8px; }
+    @media (max-width:900px){
+      .order-row{ flex-direction:column; align-items:stretch; }
+    }
+
     /* ===== Responsive ===== */
     @media (max-width: 1100px){
       .grid{grid-template-columns: repeat(3, minmax(0,1fr))}
@@ -921,7 +933,7 @@
   <script src="https://js.stripe.com/v3/"></script>
 
   <script>
-  // ===== Stripe client setup (no secret key here) =====
+  // ===== Stripe client setup (no secret key in client) =====
   // Client expects server to expose:
   // GET  /config  -> { publishableKey: 'pk_test_...' }
   // POST /create-checkout-session -> { sessionId: 'cs_...' }
@@ -942,7 +954,7 @@
   }
   loadStripeKey();
 
-  // ===== Products (using the prices you provided; prices in cents) =====
+  // ===== Images folder setup =====
   const IMAGE_DIR = 'images/';
   const IMAGE_FILES = {
     logo: 'logo.png',
@@ -953,6 +965,7 @@
     water: 'bacteriostatic-water-10ml.png'
   };
 
+  // ===== Products (prices in cents) =====
   const PRODUCTS = [
     {
       slug: 'retatrutide',
@@ -1019,11 +1032,10 @@
   const money = (cents) => '$' + (cents/100).toFixed(2);
   const escapeHtml = (str) => String(str ?? '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 
-  // ===== State for catalog filters/search (restored from original) =====
+  // ===== State for catalog filters/search =====
   const state = {
     q: '',
     inStockOnly: false,
@@ -1399,6 +1411,7 @@
     });
   }
 
+  // ===== Improved product page (replaces previous renderProduct) =====
   function renderProduct(app, slug) {
     const p = PRODUCTS.find(x => x.slug === slug);
     if (!p) {
@@ -1430,6 +1443,7 @@
 
             <div class="pinfo">
               <h1>${escapeHtml(p.name)}</h1>
+
               <div class="rating-row">
                 <span style="color:var(--accent-2);font-weight:950;">★★★★★</span>
                 <span class="muted">Trusted by researchers</span>
@@ -1438,6 +1452,7 @@
               </div>
 
               <div class="big-price">${money(p.price)}</div>
+
               <div class="desc">${escapeHtml(p.long)}</div>
 
               <div class="ruo">
@@ -1445,13 +1460,14 @@
               </div>
 
               <form class="form" id="order-form">
-                <div class="row2">
+                <div class="order-row">
                   <div class="field">
                     <label for="qty">Quantity</label>
                     <select id="qty">
                       <option>1</option><option>2</option><option>3</option><option>4</option>
                     </select>
                   </div>
+
                   <div class="field">
                     <label for="email">Email</label>
                     <input id="email" type="email" placeholder="you@email.com" required>
@@ -1468,14 +1484,12 @@
                   <span>I confirm these products are purchased strictly for laboratory research use only, and not for human or animal use.</span>
                 </label>
 
-                <div class="cta-bar">
-                  <button class="btn primary" id="checkout-btn" type="submit" ${p.inStock ? '' : 'disabled'}>${p.inStock ? 'REQUEST CHECKOUT' : 'OUT OF STOCK'}</button>
+                <div class="cta-bar" style="margin-top:8px">
+                  <button class="btn primary full" id="checkout-btn" type="submit" ${p.inStock ? '' : 'disabled'}>BUY NOW — ${money(p.price)}</button>
                   <a class="btn" style="border:1px solid var(--line);background:#fff" href="#/shop">Continue Shopping</a>
                 </div>
 
-                <p class="muted" style="margin:0;">
-                  Checkout uses Stripe Checkout. Enter your email and confirm RUO statement to proceed.
-                </p>
+                <p class="order-help" id="order-help">Clicking BUY NOW will redirect you to Stripe Checkout to complete payment.</p>
               </form>
             </div>
           </div>
@@ -1483,7 +1497,21 @@
       </section>
     `;
 
+    // wire up interactions: dynamic button label and submit handler
     const form = document.getElementById('order-form');
+    const qtyEl = document.getElementById('qty');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    function updateButtonLabel(){
+      const qty = Number(qtyEl.value || 1);
+      checkoutBtn.textContent = `${p.inStock ? 'BUY NOW' : 'OUT OF STOCK'} — ${money(p.price * qty)}`;
+    }
+
+    if (qtyEl) {
+      qtyEl.addEventListener('change', updateButtonLabel);
+      updateButtonLabel();
+    }
+
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1502,7 +1530,11 @@
           return;
         }
 
-        // create session on the server
+        // disable while creating session
+        checkoutBtn.disabled = true;
+        const prevText = checkoutBtn.textContent;
+        checkoutBtn.textContent = 'Preparing checkout...';
+
         try {
           const resp = await fetch('/create-checkout-session', {
             method: 'POST',
@@ -1518,32 +1550,41 @@
           });
 
           const data = await resp.json();
-
           if (!resp.ok) {
             console.error(data);
             alert(data.message || 'Failed to create checkout session');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
             return;
           }
 
           const sessionId = data.sessionId;
           if (!sessionId) {
             alert('No session returned from server');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
             return;
           }
 
           if (!stripeReady) {
             alert('Payment not ready on this site. Ensure server /config is configured.');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
             return;
           }
 
           const { error } = await stripe.redirectToCheckout({ sessionId });
           if (error) {
             console.error(error);
-            alert('Stripe redirect failed: ' + (error.message || 'unknown error'));
+            alert('Stripe redirect failed: ' + (error.message || 'unknown'));
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
           }
         } catch (err) {
           console.error(err);
           alert('Unexpected error creating checkout session');
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = prevText;
         }
       });
     }
@@ -1776,8 +1817,6 @@
   }
 
   // ===== Cart Checkout (multi-line) =====
-  // This will POST a cart array to /create-checkout-session with { cart: [{slug, qty}, ...], email, successUrl, cancelUrl }
-  // Server must support this shape to create multi-line sessions. If server does not support, you will see an error.
   async function checkoutCart(){
     const cart = readCart();
     if (cart.length === 0) { alert('Cart is empty'); return; }
