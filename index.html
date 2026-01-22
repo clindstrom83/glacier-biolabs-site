@@ -10,122 +10,104 @@
       --accent:#d0352c;           /* primary red */
       --accent-2:#b12a24;         /* darker red */
       --accent-soft: rgba(208,53,44,.10);
-      --ink:#0e1622;
-      --muted:#0e1622;
+      --ink:#0f172a;
+      --muted:#64748b;
       --line:#e5e7eb;
-      --bg: radial-gradient(circle at top, #1b2a3a, #0e1622 45%, #070b12);
-      --card: rgba(255,255,255,0.06);
+      --bg:#ffffff;
+      --card:#ffffff;
       --shadow: 0 10px 25px rgba(2,6,23,.08);
       --radius: 14px;
       --radius-sm: 10px;
       --max: 1180px;
+
       --topbar-h: 36px;
       --header-h: 72px;
     }
-:root {
-  --accent:#d0352c;           /* primary red */
-  --accent-2:#b12a24;         /* darker red */
-  --accent-soft: rgba(208,53,44,.10);
 
-  --ink:#0e1622;              /* dark/navy text */
-  --muted:#6b7280;            /* gray text */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:var(--bg);
+      color:var(--ink);
+    }
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
 
-  --line:#e5e7eb;
-  --bg:#ffffff;               /* ← PLAIN WHITE BACKGROUND */
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 16px}
+    .muted{color:var(--muted)}
+    .sr-only{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
 
-  --card:#ffffff;
-  --shadow: 0 10px 25px rgba(2,6,23,.08);
-  --radius: 14px;
-  --radius-sm: 10px;
-  --max: 1180px;
-  --topbar-h: 36px;
-  --header-h: 72px;
-}
+    /* ===== Topbar + Header ===== */
+    .topbar{
+      height:var(--topbar-h);
+      background:var(--accent-2);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      font-size:13px;
+    }
+    .topbar .wrap{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .topbar .right{
+      display:flex; gap:14px; align-items:center;
+      opacity:.95;
+    }
+    .topbar a{color:#fff; opacity:.95}
+    .topbar a:hover{opacity:1; text-decoration:underline}
 
-* { box-sizing: border-box; }
+    header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+    }
+    .header{
+      height:var(--header-h);
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 220px;
+    }
+    .logo{
+      height:40px;width:auto; display:block;
+    }
+    .brand-text{
+      display:flex; flex-direction:column; line-height:1.05;
+    }
+    .brand-text strong{font-size:15px; letter-spacing:.2px}
+    .brand-text span{font-size:12px; color:var(--muted)}
 
-html, body { height:100%; }
-
-body {
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-    "Apple Color Emoji","Segoe UI Emoji";
-  background: var(--bg);
-  color: var(--ink);
-}
-
-a { color: inherit; text-decoration: none; }
-button, input, select, textarea { font: inherit; }
-
-.wrap {
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-.muted { color: var(--muted); }
-
-/* FIX TOPBAR WRAPPING */
-.topbar { overflow: hidden; }
-
-.topbar .wrap{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  flex-wrap:nowrap;            /* <- stop line breaks */
-}
-
-.topbar .left,
-.topbar .right{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  white-space:nowrap;          /* <- keep each side on one line */
-}
-
-.topbar .left{
-  min-width:0;                 /* <- allows ellipsis */
-  overflow:hidden;
-  text-overflow:ellipsis;      /* <- email won’t push everything */
-}
-
-.topbar .right{ margin-left:auto; }
-
-/* ===== Header ===== */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: #ffffff;
-  border-bottom: 1px solid var(--line);
-}
-
-.header {
-  height: var(--header-h);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.brand-text span {
-  color: var(--muted);
-}
-
-nav.desktop-nav a {
-  padding: 10px 8px;
-  border-radius: 10px;
-}
-
-nav.desktop-nav a:hover {
-  background: rgba(2,6,23,.04);
-}
-
-nav.desktop-nav a.active {
-  color: var(--accent-2);
-  background: var(--accent-soft);
-}
+    nav.desktop-nav{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      font-weight:600;
+      font-size:14px;
+    }
+    nav.desktop-nav a{
+      padding:10px 8px;
+      border-radius:10px;
+    }
+    nav.desktop-nav a:hover{background:rgba(2,6,23,.04)}
+    nav.desktop-nav a.active{
+      color:var(--accent-2);
+      background:var(--accent-soft);
+    }
 
     .search{
       display:flex; align-items:center; gap:0;
@@ -808,7 +790,7 @@ nav.desktop-nav a.active {
 <body>
   <div class="topbar">
     <div class="wrap">
-      <div>Glacierbiolabs@outlook.com</div>
+      <div>support@glacierbiolabs.com</div>
       <div class="right">
         <a href="#/shop">Shop</a>
         <a href="#/account">My Account</a>
@@ -842,8 +824,8 @@ nav.desktop-nav a.active {
       </form>
 
       <div class="header-actions">
-  <a class="pill" href="#/cart" title="View cart">🛒 Cart</a>
-</div>
+        <a class="pill" href="#/shop" title="Browse products">Shop</a>
+      </div>
     </div>
   </header>
 
@@ -912,7 +894,7 @@ nav.desktop-nav a.active {
       inStock: true,
       image: IMAGE_FILES.retatrutide,
       short: 'High-purity compound supplied for controlled laboratory research.',
-      long: Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. In published literature it has been examined in controlled models related to metabolic signaling pathways. This listing is for research use only (RUO).,
+      long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. In published literature it has been examined in controlled models related to metabolic signaling pathways. This listing is for research use only (RUO).`,
       sale: true
     },
     {
@@ -923,7 +905,7 @@ nav.desktop-nav a.active {
       inStock: true,
       image: IMAGE_FILES.ghk,
       short: 'Copper-binding peptide used in research models of skin and tissue biology.',
-      long: GHK-Cu is supplied as a research compound intended for laboratory use only. It is frequently referenced in studies investigating cellular signaling in skin and connective tissue models under controlled experimental conditions.,
+      long: `GHK-Cu is supplied as a research compound intended for laboratory use only. It is frequently referenced in studies investigating cellular signaling in skin and connective tissue models under controlled experimental conditions.`,
       sale: true
     },
     {
@@ -934,7 +916,7 @@ nav.desktop-nav a.active {
       inStock: true,
       image: IMAGE_FILES.mt2,
       short: 'Research analog used to study melanocortin receptor pathways.',
-      long: Melanotan II is supplied as a lyophilized research compound. It is commonly referenced in literature exploring melanocortin receptor signaling pathways in controlled study environments. Research use only.,
+      long: `Melanotan II is supplied as a lyophilized research compound. It is commonly referenced in literature exploring melanocortin receptor signaling pathways in controlled study environments. Research use only.`,
       sale: true
     },
     {
@@ -945,7 +927,7 @@ nav.desktop-nav a.active {
       inStock: true,
       image: IMAGE_FILES.bpc,
       short: 'Peptide fragment used in controlled research models.',
-      long: BPC-157 is provided strictly as a research compound. It appears in literature related to cellular response and signaling in controlled experimental models. Not for human or veterinary use.,
+      long: `BPC-157 is provided strictly as a research compound. It appears in literature related to cellular response and signaling in controlled experimental models. Not for human or veterinary use.`,
       sale: false
     },
     {
@@ -956,7 +938,7 @@ nav.desktop-nav a.active {
       inStock: true,
       image: IMAGE_FILES.water,
       short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
-      long: Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.,
+      long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
       sale: false
     }
   ];
@@ -1040,12 +1022,12 @@ nav.desktop-nav a.active {
   function productCardHTML(p){
     const img = imgPath(p.image);
     const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
-    return 
+    return `
       <article class="card">
         <a href="#/product/${encodeURIComponent(p.slug)}" aria-label="${escapeHtml(p.name)}">
           <div class="img-wrap">
             <div class="img-topbar"></div>
-            ${p.sale ? <div class="tag-sale">SALE</div> : }
+            ${p.sale ? `<div class="tag-sale">SALE</div>` : ``}
             <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}"
                  onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
           </div>
@@ -1061,11 +1043,11 @@ nav.desktop-nav a.active {
           </div>
         </a>
       </article>
-    ;
+    `;
   }
 
   function trustSectionHTML(){
-    return 
+    return `
       <section class="trust">
         <div class="wrap">
           <h2>BUY ONLINE — QUALITY SECOND TO NONE</h2>
@@ -1088,7 +1070,7 @@ nav.desktop-nav a.active {
           </div>
         </div>
       </section>
-    ;
+    `;
   }
 
   function bestSellersHTML() {
@@ -1113,7 +1095,13 @@ nav.desktop-nav a.active {
             <div class="badge">Free US shipping • Priority (1–3 business days) on orders over $199</div>
           </div>
 
-          
+          <div class="panel">
+            <strong>Research-first storefront</strong>
+            <small>
+              Mobile-optimized catalog layout, clean product detail pages, and a consistent red brand system.
+              Add your own <code style="color:#fff;opacity:.9">images/hero.jpg</code> later to match the reference even tighter.
+            </small>
+          </div>
         </div>
       </section>
 
@@ -1170,13 +1158,13 @@ nav.desktop-nav a.active {
               <div class="filter-block">
                 <h3>Category</h3>
                 <div class="filter-line"></div>
-                ${categories.map(cat => 
+                ${categories.map(cat => `
                   <label class="check">
                     <input class="cat" type="checkbox" value="${escapeHtml(cat)}" ${state.categories.has(cat) ? 'checked' : ''}>
                     ${escapeHtml(cat)}
                     <span class="chip">${PRODUCTS.filter(p=>p.category===cat).length}</span>
                   </label>
-                ).join('')}
+                `).join('')}
               </div>
             </aside>
 
@@ -1242,7 +1230,7 @@ nav.desktop-nav a.active {
   function renderProduct(app, slug) {
     const p = PRODUCTS.find(x => x.slug === slug);
     if (!p) {
-      app.innerHTML = 
+      app.innerHTML = `
         <section class="section">
           <div class="wrap">
             <div class="page">
@@ -1252,7 +1240,7 @@ nav.desktop-nav a.active {
             </div>
           </div>
         </section>
-      ;
+      `;
       return;
     }
 
@@ -1333,7 +1321,7 @@ nav.desktop-nav a.active {
   }
 
   function renderLearn(app) {
-    app.innerHTML = 
+    app.innerHTML = `
       <section class="section">
         <div class="wrap">
           <div class="page">
@@ -1353,7 +1341,7 @@ nav.desktop-nav a.active {
           </div>
         </div>
       </section>
-    ;
+    `;
   }
 
   function renderKnowledge(app) {
@@ -1466,7 +1454,7 @@ nav.desktop-nav a.active {
   }
 
   function renderAccount(app) {
-    app.innerHTML = 
+    app.innerHTML = `
       <section class="section">
         <div class="wrap">
           <div class="page">
@@ -1475,7 +1463,7 @@ nav.desktop-nav a.active {
           </div>
         </div>
       </section>
-    ;
+    `;
   }
 
   // ===== Router =====
@@ -1494,39 +1482,30 @@ nav.desktop-nav a.active {
     }
 
     switch (hash) {
-  case '#/':
-  case '#':
-    renderHome(app);
-    break;
-
-  case '#/shop':
-    renderShop(app);
-    break;
-
-  case '#/cart':
-    app.innerHTML = '<h1 style="padding:40px">Cart coming soon</h1>';
-    break;
-
-  case '#/learn':
-    renderLearn(app);
-    break;
-
-  case '#/knowledge':
-    renderKnowledge(app);
-    break;
-
-  case '#/faq':
-    renderFAQ(app);
-    break;
-
-  case '#/account':
-    renderAccount(app);
-    break;
-
-  default:
-    location.hash = '#/';
-    break;
-}
+      case '#/':
+      case '#':
+        renderHome(app);
+        break;
+      case '#/shop':
+        renderShop(app);
+        break;
+      case '#/learn':
+        renderLearn(app);
+        break;
+      case '#/knowledge':
+        renderKnowledge(app);
+        break;
+      case '#/faq':
+        renderFAQ(app);
+        break;
+      case '#/account':
+        renderAccount(app);
+        break;
+      default:
+        // fallback
+        location.hash = '#/';
+        break;
+    }
   }
 
   // ===== UX Wiring =====
