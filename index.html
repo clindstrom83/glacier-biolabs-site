@@ -890,16 +890,95 @@ nav.desktop-nav a.active {
   </footer>
 
   <script>
-  // ===== Images folder setup =====
-  const IMAGE_DIR = 'images/';
-  const IMAGE_FILES = {
-    logo: 'logo.png',
-    retatrutide: 'retatrutide-10mg.png',
-    ghk: 'ghk-cu-50mg.png',
-    mt2: 'mt2-10mg.png',
-    bpc: 'bpc-157-10mg.png',
-    water: 'bacteriostatic-water-10ml.png'
+  /*************************************************
+   * Glacier Bio Labs – Simple Cart (No Images)
+   *************************************************/
+
+  /* ===== Cart Storage ===== */
+  const CART_KEY = "gbl_cart_v1";
+
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartCount();
+  }
+
+  function addToCart(item) {
+    const cart = getCart();
+    const existing = cart.find(p => p.id === item.id);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ ...item, qty: 1 });
+    }
+    saveCart(cart);
+  }
+
+  function buyNow(item) {
+    saveCart([{ ...item, qty: 1 }]);
+    window.location.href = "/cart.html";
+  }
+
+  function cartCount() {
+    return getCart().reduce((sum, p) => sum + (p.qty || 1), 0);
+  }
+
+  function updateCartCount() {
+    const el = document.querySelector("[data-cart-count]");
+    if (el) el.textContent = cartCount();
+  }
+
+  document.addEventListener("DOMContentLoaded", updateCartCount);
+
+  /* ===== Products (REPLACE price_ IDs) ===== */
+  const PRODUCTS = {
+    retatrutide: {
+      id: "retatrutide-10mg",
+      name: "Retatrutide",
+      amount: "10 mg",
+      priceId: "price_RETATRUTIDE_HERE"
+    },
+    ghk: {
+      id: "ghk-cu-50mg",
+      name: "GHK-Cu",
+      amount: "50 mg",
+      priceId: "price_GHK_HERE"
+    },
+    mt2: {
+      id: "mt2-10mg",
+      name: "MT-2",
+      amount: "10 mg",
+      priceId: "price_MT2_HERE"
+    },
+    bpc: {
+      id: "bpc-157-10mg",
+      name: "BPC-157",
+      amount: "10 mg",
+      priceId: "price_BPC_HERE"
+    },
+    water: {
+      id: "bacteriostatic-water-10ml",
+      name: "Bacteriostatic Water",
+      amount: "10 mL",
+      priceId: "price_WATER_HERE"
+    }
   };
+
+  /* ===== Optional global access ===== */
+  window.GBL = {
+    addToCart,
+    buyNow,
+    getCart,
+    PRODUCTS
+  };
+</script>
 
   // ===== Products =====
   // Keep RUO language. Do not add human/vet claims here.
