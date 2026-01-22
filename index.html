@@ -140,7 +140,8 @@
     .header-actions{
       display:flex; align-items:center; gap:10px;
     }
-    .pill{
+
+    .cart-pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 12px;
       border:1px solid var(--line);
@@ -150,7 +151,7 @@
       background:#fff;
       cursor:pointer;
     }
-    .pill:hover{box-shadow:0 6px 16px rgba(2,6,23,.08)}
+    .cart-pill:hover{box-shadow:0 6px 16px rgba(2,6,23,.08)}
 
     /* ===== Mobile controls ===== */
     .hamburger{
@@ -486,20 +487,18 @@
       color:var(--muted);
       margin:6px 0 16px;
     }
-    /* New product layout to match requested look */
     .product-page{
       display:grid;
-      grid-template-columns: 420px 1fr;
-      gap:36px;
+      grid-template-columns: 1fr 1fr;
+      gap:26px;
       align-items:start;
       padding-bottom: 12px;
     }
     .media{
       border:1px solid var(--line);
       border-radius: var(--radius);
-      padding:18px;
+      padding:14px;
       background:#fff;
-      box-shadow:var(--shadow);
     }
     .media .img-topbar{height:6px;background:var(--accent);border-radius:999px;margin-bottom:12px}
     .media img{
@@ -510,25 +509,78 @@
       background:#fff;
       border-radius:12px;
     }
-    .thumb-row{display:flex;gap:10px;margin-top:12px}
-    .thumb{width:64px;height:64px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;overflow:hidden}
-    .thumb img{width:100%;height:100%;object-fit:contain}
-
-    .pinfo h1{margin:0; font-size:22px; letter-spacing:.3px}
-    .pinfo .rating-row{display:flex;align-items:center;gap:10px;margin:10px 0;color:var(--muted);font-weight:700}
-    .pinfo .price-row{display:flex;align-items:center;gap:12px;margin-top:8px}
-    .price-row .old{color:var(--muted);text-decoration:line-through}
-    .price-row .now{color:var(--accent-2);font-weight:900;font-size:20px}
-
-    .pinfo .desc{color:var(--muted);line-height:1.6}
-    .ruo{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--accent-soft);border:1px solid rgba(208,53,44,.12);color:var(--accent-2);font-weight:800}
-
-    .add-to-cart-btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:10px;border:none;color:#fff;background:linear-gradient(90deg,#1fb6ff,#6f6ff0);font-weight:900;cursor:pointer;width:100%;box-shadow:0 10px 30px rgba(31,182,255,.12)}
-    .buy-now-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;width:100%}
-
-    .product-sections{margin-top:22px;color:var(--muted);line-height:1.6}
-    .product-sections h3{margin:18px 0 8px;color:var(--ink);font-size:15px}
-    .product-sections p{margin:0 0 12px}
+    .pinfo h1{margin:0; font-size:34px; letter-spacing:.3px}
+    .pinfo .rating-row{
+      display:flex; align-items:center; gap:10px;
+      margin:10px 0 10px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:14px;
+      flex-wrap:wrap;
+    }
+    .pinfo .big-price{
+      font-size:34px;
+      font-weight:950;
+      color:var(--accent-2);
+      margin:10px 0 12px;
+    }
+    .pinfo .desc{color:var(--ink); line-height:1.5}
+    .ruo{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:12px;
+      background: var(--accent-soft);
+      border:1px solid rgba(208,53,44,.18);
+      color: var(--accent-2);
+      font-weight:900;
+      line-height:1.35;
+      font-size:13px;
+    }
+    .form{
+      margin-top:14px;
+      display:grid;
+      gap:12px;
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .field label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .field input, .field select, .field textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      outline:none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus{
+      border-color: rgba(208,53,44,.45);
+      box-shadow: 0 0 0 4px rgba(208,53,44,.12);
+    }
+    .confirm{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:700;
+      color:var(--ink);
+      line-height:1.35;
+    }
+    .confirm input{width:18px;height:18px;margin-top:2px}
+    .cta-bar{
+      display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .backlink{color:var(--muted); font-weight:800}
+    .backlink:hover{color:var(--ink)}
 
     /* ===== Trust icons section ===== */
     .trust{
@@ -536,6 +588,37 @@
       border-bottom:1px solid var(--line);
       background:#fff;
     }
+    .trust .wrap{padding:28px 16px}
+    .trust h2{
+      text-align:center;
+      margin:0 0 18px;
+      letter-spacing:.4px;
+    }
+    .trust-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:16px;
+      align-items:start;
+      text-align:center;
+    }
+    .trust-card{
+      padding:14px 12px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .icon{
+      width:66px;height:66px;
+      border-radius:18px;
+      border:2px solid var(--accent);
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 10px;
+      background: rgba(208,53,44,.06);
+      font-weight:950;
+      color:var(--accent-2);
+    }
+    .trust-card h3{margin:0 0 6px; font-size:15px; letter-spacing:.2px}
+    .trust-card p{margin:0; color:var(--muted); line-height:1.45; font-size:13px}
 
     /* ===== Newsletter/footer block ===== */
     .newsletter{
@@ -543,6 +626,131 @@
       background:#0b0f19;
       color:#fff;
       padding:34px 0;
+    }
+    .newsletter .wrap{
+      display:grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap:18px;
+      align-items:center;
+    }
+    .newsletter h3{margin:0 0 6px; font-size:18px; letter-spacing:.2px}
+    .newsletter p{margin:0; color:rgba(255,255,255,.75)}
+    .nl-form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .nl-form input{
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      outline:none;
+    }
+    .nl-form input::placeholder{color:rgba(255,255,255,.55)}
+    .nl-form .wide{grid-column: 1 / -1}
+    .nl-form button{
+      grid-column: 1 / -1;
+      padding:12px 14px;
+      border-radius:12px;
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .nl-form button:hover{background:var(--accent-2)}
+
+    footer{
+      border-top:1px solid rgba(255,255,255,.10);
+      color:rgba(255,255,255,.70);
+      font-size:12px;
+      padding:14px 0;
+      text-align:center;
+      background:#0b0f19;
+    }
+
+    /* ===== Floating “offer” tab ===== */
+    .float-offer{
+      position:fixed;
+      right:0;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:40;
+      writing-mode:vertical-rl;
+      text-orientation:mixed;
+      background:var(--accent);
+      color:#fff;
+      padding:12px 10px;
+      border-radius:12px 0 0 12px;
+      font-weight:950;
+      letter-spacing:.06em;
+      box-shadow:0 18px 35px rgba(208,53,44,.30);
+      cursor:pointer;
+      user-select:none;
+    }
+    .float-offer:hover{background:var(--accent-2)}
+
+    /* ===== Simple content pages ===== */
+    .page{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:18px;
+      background:#fff;
+    }
+    .page h1{margin:0 0 8px; letter-spacing:.2px}
+    .page p{margin:10px 0; color:var(--muted); line-height:1.55}
+    .faq{
+      display:grid; gap:10px;
+      margin-top:12px;
+    }
+    details{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:900;
+    }
+    details p{margin:10px 0 0; color:var(--muted)}
+
+    /* ===== Knowledge page styles ===== */
+    .kgrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (min-width: 980px){
+      .kgrid{grid-template-columns: 1fr 1fr}
+    }
+    .kcard{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background:#fff;
+      padding:16px;
+    }
+    .kcard h3{margin:0 0 8px; letter-spacing:.2px}
+    .kcard p{margin:0; color:var(--muted); line-height:1.55}
+    .klist{
+      margin:10px 0 0;
+      padding-left:18px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    .kcallout{
+      border-radius:12px;
+      border:1px solid rgba(208,53,44,.20);
+      background: var(--accent-soft);
+      padding:14px;
+      color: var(--accent-2);
+      font-weight:900;
+      line-height:1.4;
+      margin-top:12px;
+      font-size:13px;
     }
 
     /* ===== Cart drawer (simple) ===== */
@@ -557,24 +765,47 @@
     .cart-item .meta h4{margin:0;font-size:14px}
     .cart-item .meta p{margin:4px 0 0;font-size:13px;color:var(--muted)}
     .cart-total{font-weight:900;text-align:right;margin-top:8px}
+    .cart-empty{color:var(--muted);text-align:center;padding:14px 0}
+
+    /* ===== Improved product-page checkout button (new) ===== */
+    .product-page { gap: 30px; }
+    .pinfo { display:flex; flex-direction:column; gap:12px; }
+    .pinfo .big-price { font-size:36px; font-weight:950; color:var(--accent-2); margin:4px 0 8px; }
+    .order-row{ display:flex; gap:12px; align-items:center; }
+    .order-row .field{ flex:1; margin:0; }
+    .btn.primary.full { width:100%; padding:14px 16px; font-size:16px; border-radius:12px; }
+    .order-help{ color:var(--muted); font-size:13px; margin-top:8px; }
+    @media (max-width:900px){
+      .order-row{ flex-direction:column; align-items:stretch; }
+    }
 
     /* ===== Responsive ===== */
     @media (max-width: 1100px){
       .grid{grid-template-columns: repeat(3, minmax(0,1fr))}
-    }
-    @media (max-width: 980px){
-      .product-page{grid-template-columns:1fr}
-      .media img{height:320px}
     }
     @media (max-width: 900px){
       .search{display:none}
       nav.desktop-nav{display:none}
       .hamburger{display:inline-flex}
       .brand{min-width: unset}
+      .hero .wrap{grid-template-columns: 1fr; padding:42px 16px 36px}
+      .hero h1{font-size:34px}
+      .catalog{grid-template-columns: 1fr}
+      aside.filters{display:none}
       .grid{grid-template-columns: repeat(2, minmax(0,1fr))}
+      .product-page{grid-template-columns: 1fr}
+      .media img{height:320px}
+      .trust-grid{grid-template-columns:1fr}
+      .newsletter .wrap{grid-template-columns:1fr}
+      .nl-form{grid-template-columns:1fr}
+      .float-offer{display:none}
       .cart-drawer{right:10px; left:10px; top:auto; bottom:16px}
     }
     @media (max-width: 430px){
+      .header{gap:10px}
+      .brand-text strong{font-size:14px}
+      .hero h1{font-size:30px}
+      .grid{gap:14px}
       .card img{height:150px}
     }
   </style>
@@ -593,10 +824,10 @@
 
   <header>
     <div class="wrap header">
-      <button class="hamburger" id="open-drawer" aria-label="Open menu" type="button">☰</button>
+      <button type="button" class="hamburger" id="open-drawer" aria-label="Open menu" aria-expanded="false">☰</button>
 
       <a class="brand" href="#/">
-        <img id="site-logo" class="logo" src="images/logo.png" alt="Glacier BioLabs" onerror="this.style.display='none'">
+        <img id="site-logo" class="logo" src="" alt="Glacier BioLabs" onerror="this.style.display='none'">
         <div class="brand-text">
           <strong>Glacier BioLabs</strong>
           <span>Research Use Only</span>
@@ -610,17 +841,17 @@
         <a href="#/faq" data-nav="contact">CONTACT</a>
       </nav>
 
-      <div style="display:flex;align-items:center;gap:10px">
-        <form class="search" id="search-form" onsubmit="return false">
-          <label class="sr-only" for="q">Search</label>
-          <input id="q" type="search" placeholder="Search products..." autocomplete="off">
-          <button type="submit" aria-label="Search">🔎</button>
-        </form>
+      <form class="search" id="search-form">
+        <label class="sr-only" for="q">Search</label>
+        <input id="q" type="search" placeholder="Search products..." autocomplete="off">
+        <button type="submit" aria-label="Search">🔎</button>
+      </form>
 
-        <div class="header-actions">
-          <a class="pill" href="#/shop" title="Browse products">Shop</a>
-          <button class="pill" id="cart-toggle" type="button">Cart <span id="cart-count" style="background:var(--accent);color:#fff;padding:4px 8px;border-radius:999px;font-weight:900;margin-left:6px">0</span></button>
-        </div>
+      <div class="header-actions">
+        <a class="pill" href="#/shop" title="Browse products">Shop</a>
+        <button type="button" id="cart-toggle" class="cart-pill" aria-label="Open cart">
+          Cart <span id="cart-count" style="background:var(--accent);color:#fff;padding:4px 8px;border-radius:999px;font-weight:900;margin-left:6px">0</span>
+        </button>
       </div>
     </div>
   </header>
@@ -630,7 +861,7 @@
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="head">
       <strong>Menu</strong>
-      <button class="close" id="close-drawer" aria-label="Close menu" type="button">✕</button>
+      <button type="button" class="close" id="close-drawer" aria-label="Close menu">✕</button>
     </div>
     <div class="body">
       <a href="#/shop">BUY PEPTIDES</a>
@@ -641,11 +872,14 @@
     </div>
   </aside>
 
+  <!-- Floating offer -->
+  <div class="float-offer" id="offer-tab">15% OFF YOUR FIRST ORDER</div>
+
   <!-- Cart drawer -->
   <div id="cart-drawer" class="cart-drawer" aria-hidden="true">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <strong>Your Cart</strong>
-      <button id="close-cart" style="border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 8px;cursor:pointer" type="button">Close</button>
+      <button type="button" id="close-cart" style="border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 8px;cursor:pointer">Close</button>
     </div>
 
     <div id="cart-contents"></div>
@@ -653,14 +887,14 @@
     <div id="cart-footer" style="margin-top:8px">
       <div class="cart-total" id="cart-total"></div>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button id="checkout-from-cart" class="add-to-cart-btn" style="flex:1" type="button">Checkout</button>
-        <button id="clear-cart" class="buy-now-btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
+        <button id="checkout-from-cart" class="btn primary" style="flex:1" type="button">Checkout</button>
+        <button id="clear-cart" class="btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout will create a single Stripe Checkout session with all items (server must support cart payload).</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout creates a single Stripe Checkout session with all items (server must support cart line_items).</div>
     </div>
   </div>
 
-  <main id="app" class="wrap"></main>
+  <main id="app"></main>
 
   <section class="newsletter">
     <div class="wrap">
@@ -684,25 +918,32 @@
     </div>
   </footer>
 
-  <script>
-  // ===== Client-side logic (full site restored + new product view) =====
+  <!-- Stripe.js (client) -->
+  <script src="https://js.stripe.com/v3/"></script>
 
-  // Stripe: client loads publishable key from server at /config (server holds secret)
+  <script>
+  // ===== Stripe client setup (no secret key in client) =====
+  // Client expects server to expose:
+  // GET  /config  -> { publishableKey: 'pk_test_...' }
+  // POST /create-checkout-session -> { sessionId: 'cs_...' }
   let stripe = null;
   let stripeReady = false;
-  (async function loadKey(){
+  async function loadStripeKey(){
     try {
       const r = await fetch('/config');
       if (!r.ok) return;
-      const { publishableKey } = await r.json();
-      if (publishableKey) {
-        stripe = Stripe(publishableKey);
+      const data = await r.json();
+      if (data && data.publishableKey) {
+        stripe = Stripe(data.publishableKey);
         stripeReady = true;
       }
-    } catch(e){ console.warn('Could not load publishable key', e); }
-  })();
+    } catch (err) {
+      console.warn('Could not load Stripe publishable key:', err);
+    }
+  }
+  loadStripeKey();
 
-  // Images & Products (your provided list/prices)
+  // ===== Images folder setup =====
   const IMAGE_DIR = 'images/';
   const IMAGE_FILES = {
     logo: 'logo.png',
@@ -714,71 +955,287 @@
     coa: 'coa-sample.png'
   };
 
+  // ===== Products (prices in cents) =====
   const PRODUCTS = [
-    { slug: 'retatrutide', name: 'Retatrutide (10 mg)', price: 8500, oldPrice: 11249, category: 'Peptides', inStock:true, image: IMAGE_FILES.retatrutide, short: 'High-purity compound supplied for controlled laboratory research.', long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. In published literature it has been examined in controlled models related to metabolic signaling pathways. This listing is for research use only (RUO).`},
-    { slug: 'ghk-cu', name: 'GHK-Cu (Copper Peptide) – 50 mg', price: 4500, category: 'Peptides', inStock:true, image: IMAGE_FILES.ghk, short: 'Copper-binding peptide used in research models.', long: `GHK-Cu is supplied as a research compound intended for laboratory use only.`},
-    { slug: 'melanotan-ii', name: 'Melanotan II (10 mg)', price: 4000, category: 'Peptides', inStock:true, image: IMAGE_FILES.mt2, short:'Research analog used to study melanocortin receptor pathways.', long:'Melanotan II is supplied as a lyophilized research compound. Research use only.'},
-    { slug: 'bpc-157', name: 'BPC-157 (10 mg)', price: 5500, category: 'Peptides', inStock:true, image: IMAGE_FILES.bpc, short:'Peptide fragment used in controlled research models.', long:'BPC-157 is provided strictly as a research compound.'},
-    { slug: 'water', name:'Bacteriostatic Water (10 mL)', price:1000, category:'Supplies', inStock:true, image: IMAGE_FILES.water, short:'Sterile diluent typically used for laboratory reconstitution workflows.', long:'Bacteriostatic water is a sterile solution supplied for laboratory handling.'}
+    {
+      slug: 'retatrutide',
+      name: 'Retatrutide (10 mg)',
+      price: 8500,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'High-purity compound supplied for controlled laboratory research.',
+      long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. In published literature it has been examined in controlled models related to metabolic signaling pathways. This listing is for research use only (RUO).`,
+      sale: true
+    },
+    {
+      slug: 'ghk-cu',
+      name: 'GHK-Cu (Copper Peptide) – 50 mg',
+      price: 4500,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.ghk,
+      short: 'Copper-binding peptide used in research models of skin and tissue biology.',
+      long: `GHK-Cu is supplied as a research compound intended for laboratory use only. It is frequently referenced in studies investigating cellular signaling in skin and connective tissue models under controlled experimental conditions.`,
+      sale: true
+    },
+    {
+      slug: 'melanotan-ii',
+      name: 'Melanotan II (10 mg)',
+      price: 4000,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.mt2,
+      short: 'Research analog used to study melanocortin receptor pathways.',
+      long: `Melanotan II is supplied as a lyophilized research compound. It is commonly referenced in literature exploring melanocortin receptor signaling pathways in controlled study environments. Research use only.`,
+      sale: true
+    },
+    {
+      slug: 'bpc-157',
+      name: 'BPC-157 (10 mg)',
+      price: 5500,
+      category: 'Peptides',
+      inStock: true,
+      image: IMAGE_FILES.bpc,
+      short: 'Peptide fragment used in controlled research models.',
+      long: `BPC-157 is provided strictly as a research compound. It appears in literature related to cellular response and signaling in controlled experimental models. Not for human or veterinary use.`,
+      sale: false
+    },
+    {
+      slug: 'water',
+      name: 'Bacteriostatic Water (10 mL)',
+      price: 1000,
+      category: 'Supplies',
+      inStock: true,
+      image: IMAGE_FILES.water,
+      short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
+      long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
+      sale: false
+    }
   ];
 
-  const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Image not available</text></svg>');
+  // ===== Helpers =====
+  const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Image not available</text></svg>'
+  );
+  const imgPath = (f) => IMAGE_DIR + f;
+  const money = (cents) => '$' + (cents/100).toFixed(2);
+  const escapeHtml = (str) => String(str ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 
-  // Cart (localStorage)
+  // ===== State for catalog filters/search =====
+  const state = {
+    q: '',
+    inStockOnly: false,
+    categories: new Set(),
+    minPrice: '',
+    maxPrice: '',
+    sort: 'default'
+  };
+
+  function setActiveNav() {
+    const hash = location.hash || '#/';
+    document.querySelectorAll('[data-nav]').forEach(a => a.classList.remove('active'));
+
+    if (hash.startsWith('#/shop') || hash === '#/' || hash === '#') {
+      const shop = document.querySelector('[data-nav="shop"]');
+      if (shop) shop.classList.add('active');
+    }
+    if (hash.startsWith('#/learn')) {
+      const learn = document.querySelector('[data-nav="learn"]');
+      if (learn) learn.classList.add('active');
+    }
+    if (hash.startsWith('#/knowledge')) {
+      const k = document.querySelector('[data-nav="knowledge"]');
+      if (k) k.classList.add('active');
+    }
+    if (hash.startsWith('#/faq')) {
+      const contact = document.querySelector('[data-nav="contact"]');
+      if (contact) contact.classList.add('active');
+    }
+    // highlight shop when viewing product
+    if (hash.startsWith('#/product/')) {
+      const shop = document.querySelector('[data-nav="shop"]');
+      if (shop) shop.classList.add('active');
+    }
+  }
+
+  function filterAndSortProducts() {
+    let list = PRODUCTS.slice();
+
+    // search
+    const q = (state.q || '').trim().toLowerCase();
+    if (q) {
+      list = list.filter(p => (p.name + ' ' + (p.short||'') + ' ' + (p.category||'')).toLowerCase().includes(q));
+    }
+
+    // in stock
+    if (state.inStockOnly) list = list.filter(p => p.inStock);
+
+    // categories
+    if (state.categories.size > 0) {
+      list = list.filter(p => state.categories.has(p.category));
+    }
+
+    // price range
+    const min = state.minPrice !== '' ? Number(state.minPrice) : null;
+    const max = state.maxPrice !== '' ? Number(state.maxPrice) : null;
+    if (min != null && !Number.isNaN(min)) list = list.filter(p => p.price >= min*100);
+    if (max != null && !Number.isNaN(max)) list = list.filter(p => p.price <= max*100);
+
+    // sort
+    if (state.sort === 'price-asc') list.sort((a,b)=>a.price-b.price);
+    if (state.sort === 'price-desc') list.sort((a,b)=>b.price-a.price);
+    if (state.sort === 'name-asc') list.sort((a,b)=>a.name.localeCompare(b.name));
+
+    return list;
+  }
+
+  // ===== Reusable HTML blocks =====
+  function productCardHTML(p){
+    const img = imgPath(p.image);
+    const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
+    return `
+      <article class="card" data-slug="${escapeHtml(p.slug)}">
+        <a href="#/product/${encodeURIComponent(p.slug)}" aria-label="${escapeHtml(p.name)}">
+          <div class="img-wrap">
+            <div class="img-topbar"></div>
+            ${p.sale ? `<div class="tag-sale">SALE</div>` : ``}
+            <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+          </div>
+        </a>
+        <div class="body">
+          <h3>${escapeHtml(p.name)}</h3>
+          <div class="price">${money(p.price)}</div>
+          <div class="small">${escapeHtml(p.short || '')}</div>
+          <div class="small" style="text-align:center;margin-top:10px;font-weight:900;color:${p.inStock ? 'var(--accent-2)' : 'var(--muted)'}">${stockText}</div>
+          <div class="actions">
+            <button class="btn ghost small add-to-cart" data-slug="${escapeHtml(p.slug)}" type="button">ADD TO CART</button>
+            <button class="btn primary small buy-now" data-slug="${escapeHtml(p.slug)}" type="button">${p.inStock ? 'BUY NOW' : 'OUT OF STOCK'}</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function trustSectionHTML(){
+    return `
+      <section class="trust">
+        <div class="wrap">
+          <h2>BUY ONLINE — QUALITY SECOND TO NONE</h2>
+          <div class="trust-grid">
+            <div class="trust-card">
+              <div class="icon">QC</div>
+              <h3>RIGOROUS QUALITY CONTROL</h3>
+              <p>Clear labeling, consistent presentation, and research-only positioning.</p>
+            </div>
+            <div class="trust-card">
+              <div class="icon">US</div>
+              <h3>SAME DAY SHIPPING (US)</h3>
+              <p>Fast fulfillment messaging and mobile-first checkout flow.</p>
+            </div>
+            <div class="trust-card">
+              <div class="icon">24</div>
+              <h3>SUPPORT THAT RESPONDS</h3>
+              <p>Make your contact + FAQ feel real, not placeholder fluff.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function bestSellersHTML() {
+    return PRODUCTS.slice(0,4).map(p => productCardHTML(p)).join('');
+  }
+
+  // ===== Cart (localStorage) =====
   const CART_KEY = 'glacier_cart_v1';
-  function readCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch(e){ return []; } }
+  function readCart(){
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+    catch(e){ return []; }
+  }
   function writeCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
-  function addToCart(slug, qty=1){ const cart = readCart(); const i = cart.findIndex(x=>x.slug===slug); if(i===-1) cart.push({slug,qty}); else cart[i].qty += qty; writeCart(cart); }
-  function removeFromCart(slug){ writeCart(readCart().filter(i=>i.slug!==slug)); }
-  function setQty(slug, qty){ const cart = readCart(); const i = cart.findIndex(x=>x.slug===slug); if(i!==-1){ cart[i].qty = Math.max(1, qty); writeCart(cart); } }
+  function addToCart(slug, qty = 1){
+    const cart = readCart();
+    const idx = cart.findIndex(c => c.slug === slug);
+    if (idx === -1) cart.push({ slug, qty: qty });
+    else cart[idx].qty = (cart[idx].qty || 0) + qty;
+    writeCart(cart);
+  }
+  function removeFromCart(slug){
+    const cart = readCart().filter(i => i.slug !== slug);
+    writeCart(cart);
+  }
+  function setQty(slug, qty){
+    const cart = readCart();
+    const idx = cart.findIndex(c => c.slug === slug);
+    if (idx === -1) return;
+    cart[idx].qty = Math.max(1, qty);
+    writeCart(cart);
+  }
   function clearCart(){ writeCart([]); }
-  function cartCount(){ return readCart().reduce((s,i)=>s + (i.qty||0), 0); }
-  function cartTotal(){ return readCart().reduce((sum,item)=>{ const p = PRODUCTS.find(x=>x.slug===item.slug); return sum + (p ? p.price * (item.qty||0) : 0); }, 0); }
-  function updateCartUI(){ const el = document.getElementById('cart-count'); if(el) el.textContent = String(cartCount()); const contents = document.getElementById('cart-contents'); const total = document.getElementById('cart-total'); if(!contents || !total) return; const cart = readCart(); if(cart.length===0){ contents.innerHTML = '<div style="color:var(--muted);text-align:center;padding:12px">Your cart is empty.</div>'; total.textContent = ''; return; } contents.innerHTML = cart.map(item=>{ const p = PRODUCTS.find(x=>x.slug===item.slug) || {name:item.slug,price:0}; return `<div class="cart-item" data-slug="${item.slug}"><div class="meta"><h4>${p.name}</h4><p>${money(p.price)} × <input class="qty-input" type="number" min="1" value="${item.qty}" style="width:60px;padding:6px;border-radius:8px;border:1px solid var(--line)"></p></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div style="font-weight:900">${money(p.price * item.qty)}</div><button class="buy-now-btn" data-remove="${item.slug}" style="border:1px solid var(--line);background:#fff;padding:6px;border-radius:8px;cursor:pointer">Remove</button></div></div>` }).join(''); total.textContent = 'Total: ' + money(cartTotal()); // wire inputs and remove
+
+  function cartCount(){
+    return readCart().reduce((s,i)=>s+(i.qty||0),0);
+  }
+  function cartTotal(){
+    const cart = readCart();
+    return cart.reduce((sum, item) => {
+      const p = PRODUCTS.find(x => x.slug === item.slug);
+      return sum + (p ? p.price * (item.qty || 0) : 0);
+    }, 0);
+  }
+
+  function updateCartUI(){
+    const countEl = document.getElementById('cart-count');
+    if (countEl) countEl.textContent = String(cartCount());
+    const contents = document.getElementById('cart-contents');
+    const total = document.getElementById('cart-total');
+    if (!contents || !total) return;
+    const cart = readCart();
+    if (cart.length === 0){
+      contents.innerHTML = '<div class="cart-empty">Your cart is empty.</div>';
+      total.textContent = '';
+      return;
+    }
+    contents.innerHTML = cart.map(item => {
+      const p = PRODUCTS.find(x=>x.slug===item.slug) || { name: item.slug, price:0 };
+      return `<div class="cart-item" data-slug="${escapeHtml(item.slug)}">
+        <div class="meta">
+          <h4>${escapeHtml(p.name)}</h4>
+          <p>${money(p.price)} × <input class="qty-input" type="number" min="1" value="${escapeHtml(String(item.qty))}" style="width:60px;padding:6px;border-radius:8px;border:1px solid var(--line)"></p>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div style="font-weight:900">${money((p.price||0)*(item.qty||0))}</div>
+          <button class="btn ghost small remove-item" type="button">Remove</button>
+        </div>
+      </div>`;
+    }).join('');
+    total.textContent = 'Total: ' + money(cartTotal());
+    // wire quantity inputs & remove buttons
     contents.querySelectorAll('.cart-item').forEach(el => {
       const slug = el.getAttribute('data-slug');
-      const input = el.querySelector('.qty-input');
-      const removeBtn = el.querySelector('[data-remove]');
-      if(input) input.addEventListener('change', ()=> { const v = Number(input.value||1); if(isNaN(v)||v<1) input.value='1'; setQty(slug, Math.floor(v)); });
-      if(removeBtn) removeBtn.addEventListener('click', ()=> removeFromCart(slug));
+      const qtyInput = el.querySelector('.qty-input');
+      const removeBtn = el.querySelector('.remove-item');
+      if (qtyInput){
+        qtyInput.addEventListener('change', () => {
+          const val = Number(qtyInput.value || 1);
+          if (isNaN(val) || val < 1) { qtyInput.value = '1'; setQty(slug,1); }
+          else setQty(slug, Math.floor(val));
+        });
+      }
+      if (removeBtn){
+        removeBtn.addEventListener('click', () => removeFromCart(slug));
+      }
     });
   }
 
-  function money(cents){ return '$' + (cents/100).toFixed(2); }
-  function imgPath(f){ return IMAGE_DIR + f; }
-
-  // ===== Views & Router =====
-  function setActiveNav(){
-    const hash = location.hash || '#/';
-    document.querySelectorAll('[data-nav]').forEach(a=>a.classList.remove('active'));
-    if(hash.startsWith('#/shop')||hash==='#/'||hash==='#') { const s=document.querySelector('[data-nav="shop"]'); if(s) s.classList.add('active'); }
-    if(hash.startsWith('#/learn')) { const s=document.querySelector('[data-nav="learn"]'); if(s) s.classList.add('active'); }
-    if(hash.startsWith('#/knowledge')) { const s=document.querySelector('[data-nav="knowledge"]'); if(s) s.classList.add('active'); }
-    if(hash.startsWith('#/faq')) { const s=document.querySelector('[data-nav="contact"]'); if(s) s.classList.add('active'); }
-    if(hash.startsWith('#/product/')) { const s=document.querySelector('[data-nav="shop"]'); if(s) s.classList.add('active'); }
-  }
-
-  function route(){
-    const app = document.getElementById('app');
-    if(!app) return;
-    setActiveNav();
-    const hash = location.hash || '#/';
-    if(hash.startsWith('#/product/')){ const slug = decodeURIComponent(hash.split('#/product/')[1]||''); renderProduct(app, slug); return; }
-    switch(hash){
-      case '#/':
-      case '#': renderHome(app); break;
-      case '#/shop': renderShop(app); break;
-      case '#/learn': renderLearn(app); break;
-      case '#/knowledge': renderKnowledge(app); break;
-      case '#/faq': renderFAQ(app); break;
-      case '#/account': renderAccount(app); break;
-      default: location.hash = '#/'; break;
-    }
-    updateCartUI();
-  }
-
-  // Home
-  function renderHome(app){
+  // ===== Views =====
+  function renderHome(app) {
     app.innerHTML = `
       <section class="hero">
         <div class="wrap">
@@ -799,6 +1256,7 @@
             <strong>Research-first storefront</strong>
             <small>
               Mobile-optimized catalog layout, clean product detail pages, and a consistent red brand system.
+              Add your own <code style="color:#fff;opacity:.9">images/hero.jpg</code> later to match the reference even tighter.
             </small>
           </div>
         </div>
@@ -809,10 +1267,12 @@
           <h2>OUR BEST SELLERS</h2>
           <p class="subhead">Clean product cards, consistent spacing, and a layout that looks legit on iPhone.</p>
           <div class="grid">
-            ${PRODUCTS.slice(0,4).map(p=>productCardHTML(p)).join('')}
+            ${bestSellersHTML()}
           </div>
         </div>
       </section>
+
+      ${trustSectionHTML()}
 
       <section class="section">
         <div class="wrap">
@@ -824,31 +1284,10 @@
     `;
   }
 
-  function productCardHTML(p){
-    return `
-      <article class="card">
-        <a href="#/product/${encodeURIComponent(p.slug)}" aria-label="${p.name}">
-          <div class="img-wrap">
-            <div class="img-topbar"></div>
-            <img src="${imgPath(p.image)}" alt="${p.name}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
-          </div>
-        </a>
-        <div class="body">
-          <h3>${p.name}</h3>
-          <div class="stars">★★★★★</div>
-          <div class="price">${money(p.price)}</div>
-          <div class="small">${p.short}</div>
-          <div class="actions">
-            <button class="buy-now-btn" onclick="addToCart('${p.slug}',1);updateCartUI();">ADD TO CART</button>
-            <button class="add-to-cart-btn" onclick="buyNow('${p.slug}',1)">BUY NOW</button>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  function renderShop(app){
+  function renderShop(app) {
     const categories = Array.from(new Set(PRODUCTS.map(p=>p.category))).sort();
+    const filtered = filterAndSortProducts();
+
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
@@ -858,8 +1297,8 @@
                 <h3>Price</h3>
                 <div class="filter-line"></div>
                 <div class="price-range">
-                  <input id="minPrice" inputmode="numeric" placeholder="Min">
-                  <input id="maxPrice" inputmode="numeric" placeholder="Max">
+                  <input id="minPrice" inputmode="numeric" placeholder="Min" value="${escapeHtml(state.minPrice)}">
+                  <input id="maxPrice" inputmode="numeric" placeholder="Max" value="${escapeHtml(state.maxPrice)}">
                   <button id="applyPrice" type="button">Apply</button>
                 </div>
               </div>
@@ -868,33 +1307,40 @@
                 <h3>Stock</h3>
                 <div class="filter-line"></div>
                 <label class="check">
-                  <input id="inStock" type="checkbox"> In Stock
+                  <input id="inStock" type="checkbox" ${state.inStockOnly ? 'checked' : ''}>
+                  In Stock
                 </label>
               </div>
 
               <div class="filter-block">
                 <h3>Category</h3>
                 <div class="filter-line"></div>
-                ${categories.map(cat=>`<label class="check"><input class="cat" type="checkbox" value="${cat}">${cat}<span class="chip">${PRODUCTS.filter(p=>p.category===cat).length}</span></label>`).join('')}
+                ${categories.map(cat => `
+                  <label class="check">
+                    <input class="cat" type="checkbox" value="${escapeHtml(cat)}" ${state.categories.has(cat) ? 'checked' : ''}>
+                    ${escapeHtml(cat)}
+                    <span class="chip">${PRODUCTS.filter(p=>p.category===cat).length}</span>
+                  </label>
+                `).join('')}
               </div>
             </aside>
 
             <div>
               <div class="catalog-head">
-                <div class="count">Showing ${PRODUCTS.length} results</div>
+                <div class="count">Showing ${filtered.length} result${filtered.length===1?'':'s'}</div>
                 <div class="sort">
                   <label class="sr-only" for="sort">Sort</label>
                   <select id="sort">
-                    <option value="default">Default</option>
-                    <option value="price-asc">Price low→high</option>
-                    <option value="price-desc">Price high→low</option>
-                    <option value="name-asc">Name A→Z</option>
+                    <option value="default" ${state.sort==='default'?'selected':''}>Default sorting</option>
+                    <option value="price-asc" ${state.sort==='price-asc'?'selected':''}>Price: low to high</option>
+                    <option value="price-desc" ${state.sort==='price-desc'?'selected':''}>Price: high to low</option>
+                    <option value="name-asc" ${state.sort==='name-asc'?'selected':''}>Name: A to Z</option>
                   </select>
                 </div>
               </div>
 
               <div class="grid" id="shop-grid">
-                ${PRODUCTS.map(p=>productCardHTML(p)).join('')}
+                ${filtered.map(p=>productCardHTML(p)).join('')}
               </div>
             </div>
           </div>
@@ -902,182 +1348,618 @@
       </section>
     `;
 
-    // basic wiring (re-render on filter change)
-    document.getElementById('applyPrice')?.addEventListener('click', ()=>{ /* kept simple for demo */ });
+    // wire controls
+    const inStock = document.getElementById('inStock');
+    if (inStock) {
+      inStock.addEventListener('change', () => {
+        state.inStockOnly = inStock.checked;
+        renderShop(app);
+      });
+    }
+
+    document.querySelectorAll('.cat').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const val = cb.value;
+        if (cb.checked) state.categories.add(val);
+        else state.categories.delete(val);
+        renderShop(app);
+      });
+    });
+
+    const applyPrice = document.getElementById('applyPrice');
+    if (applyPrice) {
+      applyPrice.addEventListener('click', () => {
+        state.minPrice = document.getElementById('minPrice').value.trim();
+        state.maxPrice = document.getElementById('maxPrice').value.trim();
+        renderShop(app);
+      });
+    }
+
+    const sort = document.getElementById('sort');
+    if (sort) {
+      sort.addEventListener('change', () => {
+        state.sort = sort.value;
+        renderShop(app);
+      });
+    }
+
+    // wire Add to Cart and Buy Now buttons
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-slug');
+        addToCart(slug, 1);
+      });
+    });
+    document.querySelectorAll('.buy-now').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-slug');
+        buyNow(slug, 1);
+      });
+    });
   }
 
-  // ===== Product detail (new design matching screenshot 2) =====
-  function renderProduct(app, slug){
-    const p = PRODUCTS.find(x=>x.slug===slug);
-    if(!p){
-      app.innerHTML = `<section class="section"><div class="wrap"><div class="page"><h1>Product not found</h1><p class="muted">That product doesn’t exist.</p><a class="btn primary" href="#/shop">Back to shop</a></div></div></section>`;
+  // ===== Improved product page (replaces previous renderProduct) =====
+  function renderProduct(app, slug) {
+    const p = PRODUCTS.find(x => x.slug === slug);
+    if (!p) {
+      app.innerHTML = `
+        <section class="section">
+          <div class="wrap">
+            <div class="page">
+              <h1>Product not found</h1>
+              <p class="muted">That product doesn’t exist. Go back to the catalog.</p>
+              <a class="btn primary" href="#/shop">Back to shop</a>
+            </div>
+          </div>
+        </section>
+      `;
       return;
     }
 
     app.innerHTML = `
-      <div class="crumbs"><a class="backlink" href="#/shop">← Back to Shop</a></div>
-      <div class="product-page">
-        <div class="media">
-          <div class="img-topbar"></div>
-          <div style="display:flex;justify-content:center;"><img id="main-img" src="${imgPath(p.image)}" alt="${p.name}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'"></div>
-          <div class="thumb-row">
-            <div class="thumb" data-src="${imgPath(p.image)}"><img src="${imgPath(p.image)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'"></div>
-            <div class="thumb" data-src="${imgPath(IMAGE_FILES.coa)}"><img src="${imgPath(IMAGE_FILES.coa)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'"></div>
+      <section class="section">
+        <div class="wrap">
+          <div class="crumbs"><a class="backlink" href="#/shop">← Back to Shop</a></div>
+
+          <div class="product-page">
+            <div class="media">
+              <div class="img-topbar"></div>
+              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}"
+                   onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+            </div>
+
+            <div class="pinfo">
+              <h1>${escapeHtml(p.name)}</h1>
+
+              <div class="rating-row">
+                <span style="color:var(--accent-2);font-weight:950;">★★★★★</span>
+                <span class="muted">Trusted by researchers</span>
+                <span class="muted">•</span>
+                <span class="muted">${p.inStock ? 'In Stock' : 'Out of Stock'}</span>
+              </div>
+
+              <div class="big-price">${money(p.price)}</div>
+
+              <div class="desc">${escapeHtml(p.long)}</div>
+
+              <div class="ruo">
+                RESEARCH USE ONLY — Not for human or veterinary use. No medical claims are made.
+              </div>
+
+              <form class="form" id="order-form">
+                <div class="order-row">
+                  <div class="field">
+                    <label for="qty">Quantity</label>
+                    <select id="qty">
+                      <option>1</option><option>2</option><option>3</option><option>4</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" placeholder="you@email.com" required>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="notes">Research Notes (optional)</label>
+                  <textarea id="notes" rows="3" placeholder="Optional notes for your order..."></textarea>
+                </div>
+
+                <label class="confirm">
+                  <input type="checkbox" id="confirm" required>
+                  <span>I confirm these products are purchased strictly for laboratory research use only, and not for human or animal use.</span>
+                </label>
+
+                <div class="cta-bar" style="margin-top:8px">
+                  <button class="btn primary full" id="checkout-btn" type="submit" ${p.inStock ? '' : 'disabled'}>BUY NOW — ${money(p.price)}</button>
+                  <a class="btn" style="border:1px solid var(--line);background:#fff" href="#/shop">Continue Shopping</a>
+                </div>
+
+                <p class="order-help" id="order-help">Clicking BUY NOW will redirect you to Stripe Checkout to complete payment.</p>
+              </form>
+            </div>
           </div>
         </div>
-
-        <div class="pinfo">
-          <h1>${p.name}</h1>
-          <div class="rating-row"><span style="color:var(--accent-2);font-weight:900">★★★★★</span><span class="muted">Trusted by researchers</span><span class="muted">•</span><span class="muted">${p.inStock ? 'In Stock' : 'Out of Stock'}</span></div>
-
-          <div class="price-row">${p.oldPrice ? `<div class="old">${money(p.oldPrice)}</div>` : ''}<div class="now">${money(p.price)}</div></div>
-
-          <div style="margin-top:12px">
-            <button id="add-to-cart" class="add-to-cart-btn">Add to Cart</button>
-            <div style="height:10px"></div>
-            <button id="buy-now" class="buy-now-btn">Buy Now</button>
-          </div>
-
-          <div class="ruo">RESEARCH USE ONLY — Not for human or veterinary use. No medical claims are made.</div>
-
-          <div class="desc" style="margin-top:12px;color:var(--muted);line-height:1.6">${p.short}</div>
-
-          <div class="product-sections">
-            <h3>Product Summary</h3>
-            <p>${p.long}</p>
-
-            <h3>Overview</h3>
-            <p>Retatrutide is categorized as a multi-agonist synthetic peptide. Multi-agonist compounds are researched for their ability to interact with multiple receptor systems, supporting investigations into complex metabolic and endocrine signaling pathways in controlled experimental models.</p>
-
-            <h3>Proposed Mechanism of Action (Research Context)</h3>
-            <p>Scientific literature suggests Retatrutide may interact with incretin-related receptors such as GLP-1 and GIP, as well as glucagon receptors. These interactions are hypothesized to influence receptor-mediated cellular signaling pathways (including cAMP-linked signaling). All mechanisms remain under investigation and are presented strictly within a research context.</p>
-
-            <h3>Research Context & Scientific Interest</h3>
-            <p>Multi-agonist peptides such as Retatrutide are explored in lab environments to study receptor cross-talk, signaling efficiency, and comparative pathway activation in metabolic research frameworks.</p>
-
-            <h3>Chemical Profile</h3>
-            <p>This product is supplied as a lyophilized powder in a sealed sterile vial. COA documentation is available via the gallery when provided for the batch.</p>
-
-            <h3>What You Receive</h3>
-            <p>Each order includes a sealed sterile vial containing the product in lyophilized form. COA is available in the gallery when included for the batch.</p>
-          </div>
-        </div>
-      </div>
+      </section>
     `;
 
-    // thumbnails -> main image
-    document.querySelectorAll('.thumb').forEach(t => t.addEventListener('click', ()=>{ const src = t.getAttribute('data-src'); const m = document.getElementById('main-img'); if(m) m.src = src; }));
+    // wire up interactions: dynamic button label and submit handler
+    const form = document.getElementById('order-form');
+    const qtyEl = document.getElementById('qty');
+    const checkoutBtn = document.getElementById('checkout-btn');
 
-    // Add to cart handler
-    document.getElementById('add-to-cart')?.addEventListener('click', ()=>{
-      addToCart(p.slug,1);
-      updateCartUI();
-      const btn = document.getElementById('add-to-cart');
-      if(btn){ btn.textContent = 'Added'; setTimeout(()=>btn.textContent='Add to Cart',1000); }
-    });
+    function updateButtonLabel(){
+      const qty = Number(qtyEl.value || 1);
+      checkoutBtn.textContent = `${p.inStock ? 'BUY NOW' : 'OUT OF STOCK'} — ${money(p.price * qty)}`;
+    }
 
-    // Buy now handler (single-item checkout)
-    document.getElementById('buy-now')?.addEventListener('click', async ()=>{
-      if(!stripeReady){ alert('Payment not ready.'); return; }
-      const email = prompt('Enter your email for receipt:');
-      if(!email){ alert('Email required'); return; }
-      try {
-        const resp = await fetch('/create-checkout-session', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ slug: p.slug, qty:1, email, successUrl: window.location.origin + '/?checkout=success', cancelUrl: window.location.href })
-        });
-        const data = await resp.json();
-        if(!resp.ok){ console.error(data); alert(data?.message || 'Failed to create checkout session'); return; }
-        if(!data.sessionId){ alert('No sessionId returned from server'); return; }
-        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-        if(error){ alert(error.message || 'Stripe error'); }
-      } catch(err){ console.error(err); alert('Unexpected error'); }
-    });
-  }
+    if (qtyEl) {
+      qtyEl.addEventListener('change', updateButtonLabel);
+      updateButtonLabel();
+    }
 
-  function renderLearn(app){ app.innerHTML = `<section class="section"><div class="wrap"><div class="page"><h1>About Glacier BioLabs</h1><p>Glacier BioLabs is a research-first storefront for laboratory and scientific research materials. All products are offered strictly for research use only (RUO) and are not intended for human or veterinary use.</p></div></div></section>`; }
-  function renderKnowledge(app){ app.innerHTML = `<section class="section"><div class="wrap"><div class="page"><h1>Knowledge Center</h1><p>This page provides general, non-clinical information about research compounds, testing, and lab handling. Content is educational only and not medical advice.</p></div></div></section>`; }
-  function renderFAQ(app){ app.innerHTML = `<section class="section"><div class="wrap"><div class="page"><h1>Contact</h1><p>For support, reach us at <strong>support@glacierbiolabs.com</strong>.</p></div></div></section>`; }
-  function renderAccount(app){ app.innerHTML = `<section class="section"><div class="wrap"><div class="page"><h1>My Account</h1><p class="muted">Account/login is a placeholder right now.</p></div></div></section>`; }
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-  // quick buyNow for product cards (exposed)
-  async function buyNow(slug, qty=1){
-    const p = PRODUCTS.find(x=>x.slug===slug);
-    if(!p){ alert('Product not found'); return; }
-    if(!stripeReady){ alert('Payment not ready'); return; }
-    const email = prompt('Enter your email for receipt:');
-    if(!email){ alert('Email required'); return; }
-    try {
-      const resp = await fetch('/create-checkout-session', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ slug, qty, email, successUrl: window.location.origin + '/?checkout=success', cancelUrl: window.location.href })
+        const qty = Number(document.getElementById('qty').value || 1);
+        const email = document.getElementById('email').value.trim();
+        const confirm = document.getElementById('confirm').checked;
+        const notes = document.getElementById('notes').value || '';
+
+        if (!confirm) {
+          alert('Please confirm research-use-only before continuing.');
+          return;
+        }
+        if (!email) {
+          alert('Please enter an email for the receipt.');
+          return;
+        }
+
+        // disable while creating session
+        checkoutBtn.disabled = true;
+        const prevText = checkoutBtn.textContent;
+        checkoutBtn.textContent = 'Preparing checkout...';
+
+        try {
+          const resp = await fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              slug: p.slug,
+              qty,
+              email,
+              notes,
+              successUrl: window.location.origin + '/?checkout=success',
+              cancelUrl: window.location.href
+            })
+          });
+
+          const data = await resp.json();
+          if (!resp.ok) {
+            console.error(data);
+            alert(data.message || 'Failed to create checkout session');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
+            return;
+          }
+
+          const sessionId = data.sessionId;
+          if (!sessionId) {
+            alert('No session returned from server');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
+            return;
+          }
+
+          if (!stripeReady) {
+            alert('Payment not ready on this site. Ensure server /config is configured.');
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
+            return;
+          }
+
+          const { error } = await stripe.redirectToCheckout({ sessionId });
+          if (error) {
+            console.error(error);
+            alert('Stripe redirect failed: ' + (error.message || 'unknown'));
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = prevText;
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Unexpected error creating checkout session');
+          checkoutBtn.disabled = false;
+          checkoutBtn.textContent = prevText;
+        }
       });
-      const data = await resp.json();
-      if(!resp.ok){ console.error(data); alert(data?.message || 'Failed to create session'); return; }
-      if(!data.sessionId){ alert('No sessionId'); return; }
-      const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if(error){ alert(error.message || 'Stripe error'); }
-    } catch(e){ console.error(e); alert('Unexpected error'); }
+    }
   }
 
-  // ===== UX wiring =====
+  function renderLearn(app) {
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>About Glacier BioLabs</h1>
+            <p>
+              Glacier BioLabs is a research-first storefront for laboratory and scientific research materials.
+              All products are offered strictly for research use only (RUO) and are not intended for human or veterinary use.
+            </p>
+            <p>
+              Our mission is to support responsible research with consistent presentation, transparent batch handling,
+              and a clean browsing experience for customers.
+            </p>
+            <div class="divider"></div>
+            <p class="muted">
+              Looking for education content? Visit our <a href="#/knowledge" style="color:var(--accent-2);font-weight:900;">Knowledge Center</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderKnowledge(app) {
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>Knowledge Center</h1>
+            <p>
+              This page provides general, non-clinical information about research compounds, testing, and lab handling.
+              Content is educational only and not medical advice.
+            </p>
+
+            <div class="kcallout">
+              RESEARCH USE ONLY — Not for human or veterinary use. No medical claims. No dosing or application guidance is provided.
+            </div>
+
+            <div class="kgrid">
+              <div class="kcard">
+                <h3>What Are Research Compounds?</h3>
+                <p>
+                  Research compounds are substances supplied exclusively for laboratory and scientific investigation.
+                  They may be studied in controlled settings to evaluate molecular behavior, stability, and analytical properties.
+                </p>
+              </div>
+
+              <div class="kcard">
+                <h3>Purity & Testing</h3>
+                <p>
+                  Product quality is commonly verified using analytical methods such as HPLC. Certificates of Analysis (COAs)
+                  may be used to confirm identity and purity for a given batch.
+                </p>
+              </div>
+
+              <div class="kcard">
+                <h3>Storage & Handling</h3>
+                <p>
+                  Proper storage may include temperature-controlled environments, protection from moisture and light,
+                  secure containment, and adherence to standard lab safety protocols.
+                </p>
+              </div>
+
+              <div class="kcard">
+                <h3>Compound Education</h3>
+                <p>
+                  We provide high-level summaries of compounds commonly referenced in scientific literature—without instructions,
+                  protocols, or use guidance.
+                </p>
+                <ul class="klist">
+                  <li><strong>BPC-157:</strong> peptide referenced in controlled research models</li>
+                  <li><strong>GHK-Cu:</strong> copper-binding peptide studied in biochemical research</li>
+                  <li><strong>MT-2:</strong> receptor-binding research analog in controlled settings</li>
+                  <li><strong>Retatrutide:</strong> research compound referenced in receptor-focused studies</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <h2>FAQ</h2>
+            <div class="faq">
+              <details>
+                <summary>Are these products legal?</summary>
+                <p>Products are intended for legitimate research purposes. Buyers are responsible for complying with applicable local laws and regulations.</p>
+              </details>
+              <details>
+                <summary>Are COAs available?</summary>
+                <p>Yes — COAs can be provided upon request for supported batches when available.</p>
+              </details>
+              <details>
+                <summary>Do you provide usage instructions?</summary>
+                <p>No. We do not provide dosing, protocols, or application guidance. Products are research use only.</p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderFAQ(app) {
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>Contact</h1>
+            <p>For support, reach us at <strong>support@glacierbiolabs.com</strong>.</p>
+
+            <div class="divider"></div>
+
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq">
+              <details>
+                <summary>What does “Research Use Only” mean?</summary>
+                <p>Products are sold strictly for laboratory research and analytical purposes. They are not intended for human or veterinary use.</p>
+              </details>
+              <details>
+                <summary>Do you offer refunds?</summary>
+                <p>Due to the nature of research materials, all sales are final unless otherwise stated.</p>
+              </details>
+              <details>
+                <summary>How fast is shipping?</summary>
+                <p>Shipping times vary by location. Tracking is provided once an order ships.</p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderAccount(app) {
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <div class="page">
+            <h1>My Account</h1>
+            <p class="muted">Account/login is a placeholder right now. Add auth later (Shopify, Supabase, custom, etc.).</p>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  // ===== Router =====
+  function route() {
+    const app = document.getElementById('app');
+    if (!app) return;
+
+    const hash = location.hash || '#/';
+    setActiveNav();
+
+    // Product route: #/product/:slug
+    if (hash.startsWith('#/product/')) {
+      const slug = decodeURIComponent(hash.split('#/product/')[1] || '');
+      renderProduct(app, slug);
+      return;
+    }
+
+    switch (hash) {
+      case '#/':
+      case '#':
+        renderHome(app);
+        break;
+      case '#/shop':
+        renderShop(app);
+        break;
+      case '#/learn':
+        renderLearn(app);
+        break;
+      case '#/knowledge':
+        renderKnowledge(app);
+        break;
+      case '#/faq':
+        renderFAQ(app);
+        break;
+      case '#/account':
+        renderAccount(app);
+        break;
+      default:
+        // fallback
+        location.hash = '#/';
+        break;
+    }
+    updateCartUI();
+  }
+
+  // ===== Buy Now (single-item checkout) =====
+  async function buyNow(slug, qty = 1){
+    if (!stripeReady) {
+      alert('Payment system not ready. Ensure server exposes /config with your publishable key.');
+      return;
+    }
+    const email = prompt('Enter your email for receipt:');
+    if (!email) { alert('Email required to proceed'); return; }
+
+    try {
+      const res = await fetch('/create-checkout-session', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          slug, qty, email,
+          successUrl: window.location.origin + '/?checkout=success',
+          cancelUrl: window.location.href
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error('create-checkout-session failed', data);
+        alert(data?.message || 'Could not create checkout session');
+        return;
+      }
+      if (!data.sessionId) { alert('No sessionId returned from server'); return; }
+      const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+      if (error) {
+        console.error(error);
+        alert('Stripe redirect failed: ' + (error.message || 'unknown'));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Unexpected error creating checkout session');
+    }
+  }
+
+  // ===== Cart Checkout (multi-line) =====
+  async function checkoutCart(){
+    const cart = readCart();
+    if (cart.length === 0) { alert('Cart is empty'); return; }
+    if (!stripeReady) { alert('Payment system not ready.'); return; }
+    const email = prompt('Enter your email for receipt:');
+    if (!email) { alert('Email required to proceed'); return; }
+
+    try {
+      const res = await fetch('/create-checkout-session', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          cart, email,
+          successUrl: window.location.origin + '/?checkout=success',
+          cancelUrl: window.location.href
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.error('create-checkout-session failed', data);
+        alert(data?.message || 'Could not create checkout session');
+        return;
+      }
+      if (!data.sessionId) { alert('No sessionId returned from server'); return; }
+      const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+      if (error) {
+        console.error(error);
+        alert('Stripe redirect failed: ' + (error.message || 'unknown'));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Unexpected error creating checkout session');
+    }
+  }
+
+  // ===== UX Wiring =====
   function setupDrawer(){
     const drawer = document.getElementById('drawer');
     const backdrop = document.getElementById('drawer-backdrop');
     const openBtn = document.getElementById('open-drawer');
     const closeBtn = document.getElementById('close-drawer');
-    function open(){ if(!drawer||!backdrop||!openBtn) return; drawer.classList.add('open'); backdrop.style.display='block'; drawer.setAttribute('aria-hidden','false'); openBtn.setAttribute('aria-expanded','true'); if(closeBtn) closeBtn.focus(); }
-    function close(){ if(!drawer||!backdrop||!openBtn) return; drawer.classList.remove('open'); backdrop.style.display='none'; drawer.setAttribute('aria-hidden','true'); openBtn.setAttribute('aria-expanded','false'); openBtn.focus(); }
-    if(openBtn) openBtn.addEventListener('click', open);
-    if(closeBtn) closeBtn.addEventListener('click', close);
-    if(backdrop) backdrop.addEventListener('click', close);
-    if(drawer) drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click', close));
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ close(); closeCart(); } });
+
+    function open(){
+      if (!drawer || !backdrop || !openBtn) return;
+      drawer.classList.add('open');
+      backdrop.style.display = 'block';
+      drawer.setAttribute('aria-hidden','false');
+      openBtn.setAttribute('aria-expanded','true');
+      const c = document.getElementById('close-drawer');
+      if (c) c.focus();
+    }
+    function close(){
+      if (!drawer || !backdrop || !openBtn) return;
+      drawer.classList.remove('open');
+      backdrop.style.display = 'none';
+      drawer.setAttribute('aria-hidden','true');
+      openBtn.setAttribute('aria-expanded','false');
+      openBtn.focus();
+    }
+
+    if (openBtn) openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (backdrop) backdrop.addEventListener('click', close);
+
+    if (drawer) {
+      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        close();
+        closeCart();
+      }
+    });
   }
 
   function setupSearch(){
     const form = document.getElementById('search-form');
     const q = document.getElementById('q');
-    if(!form||!q) return;
-    form.addEventListener('submit', (e)=>{ e.preventDefault(); location.hash = '#/shop'; route(); });
+    if (!form || !q) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      state.q = q.value || '';
+      location.hash = '#/shop';
+      route();
+    });
   }
 
-  function setupBrandAssets(){ document.getElementById('site-logo')?.setAttribute('src', imgPath(IMAGE_FILES.logo)); document.getElementById('year') && (document.getElementById('year').textContent = String(new Date().getFullYear())); }
+  function setupOfferTab(){
+    const tab = document.getElementById('offer-tab');
+    if (!tab) return;
+    tab.addEventListener('click', () => {
+      alert('Offer tab is demo text. Replace with a real promo modal when ready.');
+    });
+  }
 
-  function openCart(){ const d=document.getElementById('cart-drawer'); if(d){ d.classList.add('open'); d.setAttribute('aria-hidden','false'); updateCartUI(); } }
-  function closeCart(){ const d=document.getElementById('cart-drawer'); if(d){ d.classList.remove('open'); d.setAttribute('aria-hidden','true'); } }
+  function setupNewsletter(){
+    const form = document.getElementById('nl-form');
+    if (!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Subscribed (demo). Hook this to your email provider later.');
+      form.reset();
+    });
+  }
 
-  // Boot
+  function setupBrandAssets(){
+    const logo = document.getElementById('site-logo');
+    if (logo) logo.src = imgPath(IMAGE_FILES.logo);
+
+    const year = document.getElementById('year');
+    if (year) year.textContent = String(new Date().getFullYear());
+  }
+
+  // Cart drawer helpers
+  function openCart(){ const cartDrawer = document.getElementById('cart-drawer'); if (cartDrawer) { cartDrawer.classList.add('open'); cartDrawer.setAttribute('aria-hidden','false'); updateCartUI(); } }
+  function closeCart(){ const cartDrawer = document.getElementById('cart-drawer'); if (cartDrawer) { cartDrawer.classList.remove('open'); cartDrawer.setAttribute('aria-hidden','true'); } }
+
+  // ===== Boot =====
   window.addEventListener('hashchange', route);
-  document.addEventListener('DOMContentLoaded', ()=>{
+
+  document.addEventListener('DOMContentLoaded', () => {
     setupDrawer();
     setupSearch();
+    setupOfferTab();
+    setupNewsletter();
     setupBrandAssets();
-    updateCartUI();
 
-    document.getElementById('cart-toggle')?.addEventListener('click', ()=> openCart());
-    document.getElementById('close-cart')?.addEventListener('click', ()=> closeCart());
-    document.getElementById('clear-cart')?.addEventListener('click', ()=> { if(confirm('Clear cart?')) clearCart(); });
+    // cart UI wiring
+    const cartToggle = document.getElementById('cart-toggle');
+    const closeCartBtn = document.getElementById('close-cart');
+    const clearBtn = document.getElementById('clear-cart');
+    const checkoutFromCart = document.getElementById('checkout-from-cart');
 
-    document.getElementById('checkout-from-cart')?.addEventListener('click', async ()=>{
-      const cart = readCart();
-      if(cart.length===0){ alert('Cart is empty'); return; }
-      if(!stripeReady){ alert('Payment not ready'); return; }
-      const email = prompt('Enter your email for receipt:');
-      if(!email){ alert('Email required'); return; }
-      try {
-        const resp = await fetch('/create-checkout-session', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ cart, email, successUrl: window.location.origin + '/?checkout=success', cancelUrl: window.location.href })});
-        const data = await resp.json();
-        if(!resp.ok){ console.error(data); alert(data?.message||'Failed'); return; }
-        if(!data.sessionId){ alert('No sessionId'); return; }
-        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-        if(error) alert(error.message || 'Stripe error');
-      } catch(e){ console.error(e); alert('Unexpected'); }
+    if (cartToggle) cartToggle.addEventListener('click', () => { updateCartUI(); openCart(); });
+    if (closeCartBtn) closeCartBtn.addEventListener('click', () => closeCart());
+    if (clearBtn) clearBtn.addEventListener('click', () => { if (confirm('Clear cart?')) clearCart(); });
+    if (checkoutFromCart) checkoutFromCart.addEventListener('click', () => checkoutCart());
+
+    // click handler for dynamically created add-to-cart / buy-now buttons (global delegation fallback)
+    document.body.addEventListener('click', (e) => {
+      const addBtn = e.target.closest && e.target.closest('.add-to-cart');
+      const buyBtn = e.target.closest && e.target.closest('.buy-now');
+      if (addBtn) {
+        const slug = addBtn.getAttribute('data-slug');
+        addToCart(slug, 1);
+      }
+      if (buyBtn) {
+        const slug = buyBtn.getAttribute('data-slug');
+        buyNow(slug, 1);
+      }
     });
 
-    if(!location.hash) location.hash = '#/';
+    // Default route
+    if (!location.hash) location.hash = '#/';
     route();
   });
   </script>
