@@ -408,6 +408,9 @@
       border-radius: var(--radius);
       overflow:hidden;
       transition:transform .14s ease, box-shadow .14s ease;
+      display:flex;
+      flex-direction:column;
+      min-height: 100%;
     }
     .card:hover{
       transform: translateY(-2px);
@@ -446,6 +449,10 @@
     }
     .card .body{
       padding:14px 14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      flex:1;
     }
     .card h3{
       margin:0;
@@ -476,9 +483,28 @@
       line-height:1.35;
       min-height: 36px;
     }
+
+    /* Make the action buttons sit cleanly inside the card (avoid clipped or floating circular buttons) */
     .card .actions{
       margin-top:12px;
-      display:flex; justify-content:space-between; gap:8px;
+      display:flex;
+      gap:8px;
+      justify-content:space-between;
+      align-items:center;
+    }
+    /* small variant: tighter padding, less rounded (prevents pill button from appearing clipped) */
+    .btn.small{
+      padding:8px 12px;
+      font-size:13px;
+      border-radius:12px; /* override 999px for compact buttons */
+    }
+    /* ensure buttons fill and align nicely */
+    .card .actions .btn{
+      flex:1;
+      min-width:0; /* prevent overflow due to long text */
+    }
+    .card .actions .btn + .btn{
+      margin-left:8px;
     }
 
     /* ===== Product detail page ===== */
@@ -1098,13 +1124,14 @@
   function productCardHTML(p){
     const img = imgPath(p.image);
     const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
+    // NOTE: added loading="lazy" to images and ensured buttons are compact (.small) so they fit inside the card.
     return `
       <article class="card" data-slug="${escapeHtml(p.slug)}">
         <a href="#/product/${encodeURIComponent(p.slug)}" aria-label="${escapeHtml(p.name)}">
           <div class="img-wrap">
             <div class="img-topbar"></div>
             ${p.sale ? `<div class="tag-sale">SALE</div>` : ``}
-            <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+            <img loading="lazy" src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
           </div>
         </a>
         <div class="body">
@@ -1424,7 +1451,7 @@
           <div class="product-page">
             <div class="media">
               <div class="img-topbar"></div>
-              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}"
+              <img loading="lazy" src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}"
                    onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
             </div>
 
