@@ -1032,7 +1032,8 @@
   const money = (cents) => '$' + (cents/100).toFixed(2);
   const escapeHtml = (str) => String(str ?? '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 
   // ===== State for catalog filters/search =====
