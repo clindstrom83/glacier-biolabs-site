@@ -863,10 +863,12 @@
   <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
-  // Full app script with focused fixes:
-  // - Grid Buy for products without hostedButtonId navigates to product page (so water uses visible flow)
-  // - Better PayPal error logging & toast with client-id diagnostics
-  // No other functional changes to your code.
+  // Full app script with hosted button for water and professional policy pages included.
+  // Focused fixes:
+  // - Water product now has hostedButtonId so it behaves exactly like other products.
+  // - Added Knowledge page content and updated About/Contact pages.
+  // - Router includes #/knowledge route.
+  // - Better PayPal error diagnostics.
 
   // Helpers
   function waitForPayPal(maxTries = 60, interval = 100) {
@@ -1764,6 +1766,7 @@
         <p>All content on this website is provided for informational purposes only and does not constitute professional, medical, or legal advice.</p>
       `
     },
+
     privacy: {
       title: 'Privacy Policy',
       body: `
@@ -1775,6 +1778,7 @@
         <p>By using this website, you consent to this Privacy Policy.</p>
       `
     },
+
     refunds: {
       title: 'Refund & Returns',
       body: `
@@ -1784,6 +1788,7 @@
         <p>Approved refunds or replacements are issued at the sole discretion of Glacier BioLabs.</p>
       `
     },
+
     shipping: {
       title: 'Shipping Policy',
       body: `
@@ -1793,6 +1798,7 @@
         <p>Shipping is currently available within the United States unless otherwise stated.</p>
       `
     },
+
     disclaimer: {
       title: 'Research Use Only Disclaimer',
       body: `
@@ -1802,22 +1808,80 @@
         <p>By purchasing from Glacier BioLabs, the buyer acknowledges and agrees to these restrictions.</p>
       `
     },
+
     contact: {
-      title: 'Contact',
+      title: 'Contact & Support',
       body: `
-        <p>For customer support or order inquiries, please contact us at:</p>
-        <p><a href="mailto:support@glacierbiolabs.com">support@glacierbiolabs.com</a></p>
-        <p>We aim to respond to all inquiries within 1–2 business days.</p>
+        <p>We’re here to help. Use the contact options below depending on your need — support requests are triaged to give fastest response to order and documentation issues.</p>
+
+        <h3 style="margin-top:12px">General support</h3>
+        <p>Email: <a href="mailto:support@glacierbiolabs.com">support@glacierbiolabs.com</a><br>
+        Typical response time: 1–2 business days.</p>
+
+        <h3 style="margin-top:12px">Order & invoicing inquiries</h3>
+        <p>Email: <a href="mailto:orders@glacierbiolabs.com">orders@glacierbiolabs.com</a><br>
+        For purchase orders, include your PO number, billing address, and the products/quantities in question.</p>
+
+        <h3 style="margin-top:12px">Documentation requests (COA / lot data)</h3>
+        <p>If you require Certificates of Analysis, MSDS, or lot-specific data for institutional records, email <a href="mailto:support@glacierbiolabs.com">support@glacierbiolabs.com</a> with the product name and lot number. We’ll provide the available documentation and any necessary guidance for record-keeping.</p>
+
+        <h3 style="margin-top:12px">Business / institutional partnerships</h3>
+        <p>Email: <a href="mailto:business@glacierbiolabs.com">business@glacierbiolabs.com</a> — for account setup, institutional pricing, or supply agreements.</p>
+
+        <h3 style="margin-top:12px">Phone (US)</h3>
+        <p>Phone support is available for verified institutional customers (provide account information when requesting a call-back). To request a callback, email support with your preferred time and contact number.</p>
+
+        <h3 style="margin-top:12px">Security & privacy</h3>
+        <p>We do not process payments on this site directly — payments are handled via PayPal. We only use customer contact information to process orders and respond to support requests, and we do not sell personal information.</p>
       `
     },
+
     about: {
       title: 'About Glacier BioLabs',
       body: `
-        <p>Glacier BioLabs is a research-focused supplier of laboratory materials intended exclusively for scientific and analytical research purposes.</p>
-        <p>Our mission is to provide clearly labeled, professionally presented research compounds while maintaining transparency, compliance, and responsible business practices.</p>
-        <p>All products are sold strictly for research use only and are not intended for human or veterinary use.</p>
+        <p><strong>Glacier BioLabs</strong> is a research-focused supplier of laboratory materials and reagents, dedicated to serving academic, industrial, and institutional researchers worldwide. We provide clearly labeled, analytically characterized products for non-clinical scientific and analytical work.</p>
+
+        <h3 style="margin-top:12px">Our mission</h3>
+        <p>To support reproducible, ethical laboratory research by supplying high-quality, well-documented research-use-only (RUO) materials and responsive scientific support.</p>
+
+        <h3 style="margin-top:12px">Quality & documentation</h3>
+        <p>We prioritize product quality and transparency. For qualifying products we provide lot-specific Certificates of Analysis (COA) and manufacturing or analytical details on request to support traceability and data integrity in research workflows.</p>
+
+        <h3 style="margin-top:12px">Compliance & responsible use</h3>
+        <p>All products are sold strictly for laboratory research and analytical use only. They are not for human or veterinary use. Buyers are responsible for ensuring that product use complies with applicable laws, institutional policies, and safety practices.</p>
+
+        <h3 style="margin-top:12px">Contact & institutional partnerships</h3>
+        <p>For institutional purchasing, account setup, or documentation requests, contact our support team (see the Contact page). We can assist with purchase orders, volume pricing, and supplying the documentation many institutions require for procurement and record-keeping.</p>
       `
     },
+
+    knowledge: {
+      title: 'Knowledge & Resources',
+      body: `
+        <p><strong>Technical resources for laboratory workflows.</strong> This section collects practical guidance and reference information intended to support safe, reproducible laboratory use of research materials.</p>
+
+        <h3 style="margin-top:12px">Product documentation</h3>
+        <p>Where available, COAs, purity data, and storage instructions are provided for each lot. Request lot-specific documentation via <a href="#/contact">Contact</a>.</p>
+
+        <h3 style="margin-top:12px">Handling & storage (general guidance)</h3>
+        <ul>
+          <li><strong>Storage:</strong> Store lyophilized peptides and small molecules as indicated on the product label (commonly -20°C) and protect from moisture and repeated freeze-thaw.</li>
+          <li><strong>Reconstitution:</strong> Use appropriate sterile solvents and aseptic technique. Record solvent, concentration, and lot information for reproducibility.</li>
+          <li><strong>Labeling & tracking:</strong> Label prepared solutions with product, lot, concentration, date, and preparer.</li>
+          <li><strong>Disposal:</strong> Dispose of chemical and biological waste in accordance with institutional policies and local regulations.</li>
+        </ul>
+
+        <h3 style="margin-top:12px">Assay & experimental planning</h3>
+        <p>We provide high-level, non-protocol guidance on reagent properties and documentation. We do not provide clinical advice, dosing, or application-specific protocols. For experimental design and safety, consult institutional biosafety officers and technical literature.</p>
+
+        <h3 style="margin-top:12px">References & further reading</h3>
+        <p>Where relevant, product pages list representative literature citations. Use peer-reviewed sources and manufacturer documentation when planning experiments.</p>
+
+        <h3 style="margin-top:12px">Support</h3>
+        <p>For technical questions about product characteristics, COA requests, or documentation to support institutional records, contact support (see Contact page). Provide your institution, project context, and product lot number when requesting detailed information.</p>
+      `
+    },
+
     safety: {
       title: 'Safety & Compliance',
       body: `
@@ -1875,6 +1939,7 @@
     if (hash.startsWith('#/disclaimer')) return renderPolicy('disclaimer');
     if (hash.startsWith('#/contact')) return renderPolicy('contact');
     if (hash.startsWith('#/about')) return renderPolicy('about');
+    if (hash.startsWith('#/knowledge')) return renderPolicy('knowledge');
     if (hash.startsWith('#/safety')) return renderPolicy('safety');
 
     app.innerHTML = `<div class="wrap"><h2>Page not found</h2></div>`;
@@ -1948,10 +2013,7 @@
         startHostedButtonCheckout(prod.hostedButtonId);
       } else {
         // no hosted button: NAVIGATE to product page (so user sees visible checkout there)
-        // <- MINIMAL CHANGE: previously you started immediate PayPal checkout from grid;
-        // for products without hosted buttons (like water) navigate to product page to avoid permission / popup issues.
         location.hash = '#/product/' + encodeURIComponent(slug);
-        // let router render product page; user will click visible Buy there
       }
     }
   });
