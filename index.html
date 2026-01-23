@@ -860,8 +860,7 @@
   </footer>
 
   <!-- PayPal SDK (client-id preserved as you provided) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
-
+  <script src="https://www.paypal.com/sdk/js?client-id=AfADIQ6W--CiDW71V8kr3X9lVuRcoC5zs8J8_toitd5k7K85pYYWhOkpYjqQiMWGOFb1MnSDBqkvSWil&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
   <script>
   // Full application script — complete site behaviour with Knowledge/About/Contact content
   // and improved PayPal diagnostics. Water product uses hostedButtonId so it behaves
@@ -2040,26 +2039,5 @@
     PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout, getPayPalClientId
   };
   </script>
-  <!-- CART MEMORY (paste right above </body>) -->
-<script>
-  const CART = "cart";
-
-  function getCart() {
-    return JSON.parse(localStorage.getItem(CART) || "[]");
-  }
-
-  function saveCart(c) {
-    localStorage.setItem(CART, JSON.stringify(c));
-  }
-
-  function addToCart(name, price) {
-    let cart = getCart();
-    let item = cart.find(i => i.name === name);
-    if (item) item.qty++;
-    else cart.push({ name, price, qty: 1 });
-    saveCart(cart);
-    alert("Added to cart ✅");
-  }
-</script>
 </body>
 </html>
