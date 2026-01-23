@@ -152,6 +152,35 @@
       cursor:pointer;
     }
     .cart-pill:hover{box-shadow:0 6px 16px rgba(2,6,23,.08)}
+    /* cart bump animation */
+    .bump {
+      transform: scale(1.06);
+      transition: transform .12s ease;
+    }
+
+    /* toast */
+    #gl-toast {
+      position:fixed;
+      right:18px;
+      bottom:88px;
+      z-index:120;
+      min-width:180px;
+      max-width:360px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      pointer-events:none;
+    }
+    .gl-toast-item {
+      pointer-events:auto;
+      background:#0f172a;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:10px;
+      box-shadow:0 10px 30px rgba(2,6,23,.18);
+      font-weight:700;
+      opacity:0.98;
+    }
 
     /* ===== Mobile controls ===== */
     .hamburger{
@@ -779,6 +808,9 @@
     </div>
   </div>
 
+  <!-- Toast container -->
+  <div id="gl-toast" aria-live="polite" aria-atomic="true"></div>
+
   <main id="app"></main>
 
   <!-- Footer with policy links -->
@@ -799,18 +831,21 @@
     </div>
   </footer>
 
-  <!-- PayPal Hosted Buttons SDK (your client id) -->
+  <!-- PayPal SDK with hosted-buttons (one script, already includes hosted-buttons) -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
   /*
-    Policy pages updated with full legal/safety text supplied by the site owner.
-
-    Added route: #/safety (Safety & Compliance) which emphasizes RUO status and responsible selling.
+    Updates:
+    - Inserted hostedButtonId for products (from your PayPal dashboard).
+    - Product pages now render PayPal Hosted Buttons (if a hostedButtonId exists) and hide the local "Buy now" button.
+    - Global "Buy" handler will use a hosted button (if present) or fallback to client-side PayPal Buttons.
+    - Replaced alert() calls with a small toast helper and subtle cart-badge bump animation to look more professional.
+    - Cart checkout code left itemized-in-client option available (still client-side; server-side order creation is recommended for production).
   */
 
-  // Minimal PayPal helpers (used by product/cart checkout flows already present)
-  function waitForPayPal(maxTries = 50, interval = 120) {
+  // Minimal PayPal helpers (used by product/cart checkout flows)
+  function waitForPayPal(maxTries = 60, interval = 100) {
     return new Promise((resolve, reject) => {
       let tries = 0;
       function step() {
@@ -823,7 +858,7 @@
     });
   }
 
-  // Render PayPal HostedButtons if requested for specific product
+  // Render PayPal HostedButtons into a container (no auto click)
   async function renderPayPalHosted(containerId, hostedButtonId) {
     try {
       await waitForPayPal();
@@ -842,12 +877,45 @@
     }
   }
 
-  // Client-side PayPal Buttons for product
+  // Render a hosted button into a temporary hidden container and auto-click it
+  // Useful for "Buy" from grid: will open PayPal-hosted flow for the product.
+  async function startHostedButtonCheckout(hostedButtonId) {
+    try {
+      await waitForPayPal();
+    } catch (err) {
+      showToast('PayPal unavailable', 'error');
+      return;
+    }
+
+    const tmpId = 'paypal-hosted-tmp-' + Math.random().toString(36).slice(2,10);
+    const tmp = document.createElement('div');
+    tmp.id = tmpId;
+    // keep it visually hidden but attached (some browsers require visible to open popup)
+    tmp.style.position = 'absolute';
+    tmp.style.left = '-9999px';
+    tmp.style.top = '0';
+    document.body.appendChild(tmp);
+
+    try {
+      await window.paypal.HostedButtons({ hostedButtonId }).render('#' + tmpId);
+      // HostedButtons uses a <button> inside; try to auto-click it
+      const btn = tmp.querySelector('button');
+      if (btn) btn.click();
+      // cleanup a bit later
+      setTimeout(() => tmp.remove(), 3000);
+    } catch (err) {
+      console.error('HostedButtons (tmp) render failed', err);
+      tmp.remove();
+      showToast('Could not initialize PayPal hosted checkout', 'error');
+    }
+  }
+
+  // Client-side PayPal Buttons for product (fallback when hosted button isn't available)
   async function startPayPalProductCheckout(product, qty = 1) {
     try {
       await waitForPayPal();
     } catch (err) {
-      alert('PayPal not available. Please try again later.');
+      showToast('PayPal not available. Try again later.', 'error');
       return;
     }
 
@@ -871,45 +939,55 @@
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
+          // recommended: call your server to record the sale
           window.location.href = window.location.origin + '/?checkout=success';
         });
       },
       onError: function(err) {
         console.error('PayPal product checkout error', err);
-        alert('PayPal checkout error: ' + (err && err.message ? err.message : 'unknown'));
+        showToast('PayPal checkout error', 'error');
       }
     }).render('#' + tmpId).then(() => {
       const btn = tmp.querySelector('button');
       if (btn) btn.click();
+      setTimeout(() => tmp.remove(), 3000);
     }).catch(err => {
       console.error('Failed to render PayPal product Buttons', err);
       tmp.remove();
-      alert('Could not initialize PayPal checkout. Please try again.');
+      showToast('Could not initialize PayPal checkout. Please try again.', 'error');
     });
   }
 
-  // Client-side PayPal Buttons for cart
+  // Client-side PayPal Buttons for cart (itemized, client-side)
   async function startPayPalCartCheckout() {
     const cart = readCart();
-    if (!cart || cart.length === 0) { alert('Cart is empty'); return; }
+    if (!cart || cart.length === 0) { showToast('Cart is empty', 'info'); return; }
 
     try {
       await waitForPayPal();
     } catch (err) {
-      alert('PayPal not available. Please try again later.');
+      showToast('PayPal not available. Try again later.', 'error');
       return;
     }
 
-    const totalCents = cart.reduce((sum, item) => {
+    // build items array from PRODUCTS
+    const items = cart.map(item => {
       const p = PRODUCTS.find(x => x.slug === item.slug);
-      return sum + (p ? p.price * (item.qty || 0) : 0);
-    }, 0);
-    const value = (totalCents / 100).toFixed(2);
+      const name = p ? p.name : item.slug;
+      const priceVal = p ? (p.price/100).toFixed(2) : '0.00';
+      return {
+        name: name,
+        unit_amount: { currency_code: 'USD', value: priceVal },
+        quantity: String(item.qty || 1)
+      };
+    });
+
+    const total = items.reduce((s, it) => s + (parseFloat(it.unit_amount.value) * Number(it.quantity)), 0).toFixed(2);
 
     const containerId = 'paypal-cart-container';
     const container = document.getElementById(containerId);
     if (!container) {
-      alert('Cart container not found');
+      showToast('Cart container not found', 'error');
       return;
     }
     container.innerHTML = '';
@@ -917,24 +995,35 @@
     window.paypal.Buttons({
       createOrder: function(data, actions) {
         return actions.order.create({
-          purchase_units: [{ amount: { value, currency_code: 'USD' }, description: 'Glacier BioLabs order' }]
+          purchase_units: [{
+            amount: {
+              currency_code: 'USD',
+              value: total,
+              breakdown: { item_total: { currency_code: 'USD', value: total } }
+            },
+            items: items
+          }]
         });
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
+          // best practice: send details to your server for record keeping
+          clearCart();
+          renderCartDrawer();
+          showToast('Payment complete — Thank you!', 'success');
           window.location.href = window.location.origin + '/?checkout=success';
         });
       },
       onError: function(err) {
         console.error('PayPal cart error', err);
-        alert('PayPal error: ' + (err && err.message ? err.message : 'unknown'));
+        showToast('PayPal error. Please try again.', 'error');
       }
     }).render('#' + containerId).then(() => {
       const btn = container.querySelector('button');
       if (btn) btn.click();
     }).catch(err => {
       console.error('Failed to render PayPal cart buttons', err);
-      alert('Unable to initialize PayPal cart checkout.');
+      showToast('Unable to initialize PayPal cart checkout.', 'error');
     });
   }
 
@@ -951,6 +1040,7 @@
   };
 
   // ===== Products (prices in cents) =====
+  // Added hostedButtonId values you provided (so Buy now goes directly to PayPal hosted checkout on product pages).
   const PRODUCTS = [
     {
       slug: 'retatrutide',
@@ -961,7 +1051,8 @@
       image: IMAGE_FILES.retatrutide,
       short: 'High-purity compound supplied for controlled laboratory research.',
       long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. In published literature it has been examined in controlled models related to metabolic signaling pathways. This listing is for research use only (RUO).`,
-      sale: true
+      sale: true,
+      hostedButtonId: 'L2GZSFWKHT7ZE' // provided
     },
     {
       slug: 'ghk-cu',
@@ -972,7 +1063,8 @@
       image: IMAGE_FILES.ghk,
       short: 'Copper-binding peptide used in research models of skin and tissue biology.',
       long: `GHK-Cu is supplied as a research compound intended for laboratory use only. It is frequently referenced in studies investigating cellular signaling in skin and connective tissue models under controlled experimental conditions.`,
-      sale: true
+      sale: true,
+      hostedButtonId: 'LGKJ7RFBT96BS' // provided
     },
     {
       slug: 'melanotan-ii',
@@ -983,7 +1075,8 @@
       image: IMAGE_FILES.mt2,
       short: 'Research analog used to study melanocortin receptor pathways.',
       long: `Melanotan II is supplied as a lyophilized research compound. It is commonly referenced in literature exploring melanocortin receptor signaling pathways in controlled study environments. Research use only.`,
-      sale: true
+      sale: true,
+      hostedButtonId: '4UKSV96CMCZG6' // provided
     },
     {
       slug: 'bpc-157',
@@ -994,7 +1087,8 @@
       image: IMAGE_FILES.bpc,
       short: 'Peptide fragment used in controlled research models.',
       long: `BPC-157 is provided strictly as a research compound. It appears in literature related to cellular response and signaling in controlled experimental models. Not for human or veterinary use.`,
-      sale: false
+      sale: false,
+      hostedButtonId: '699XYHCQE3ZV2' // provided
     },
     {
       slug: 'water',
@@ -1006,6 +1100,7 @@
       short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
       long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
       sale: false
+      // no hosted button provided for water
     }
   ];
 
@@ -1093,6 +1188,8 @@
   function productCardHTML(p){
     const img = imgPath(p.image);
     const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
+    // Keep Buy button on card as a quick path to PayPal for items without hosted buttons,
+    // and for items with hosted buttons the global handler will open the hosted checkout.
     return `
       <article class="card" data-slug="${escapeHtml(p.slug)}">
         <a href="#/product/${encodeURIComponent(p.slug)}" aria-label="${escapeHtml(p.name)}">
@@ -1136,6 +1233,12 @@
     }
     renderCartBadge();
   }
+  function animateCartBadge() {
+    const el = document.getElementById('cart-count');
+    if (!el) return;
+    el.classList.add('bump');
+    setTimeout(() => el.classList.remove('bump'), 180);
+  }
   function addToCart(slug, qty = 1){
     const cart = readCart();
     const idx = cart.findIndex(i => i.slug === slug);
@@ -1145,6 +1248,8 @@
       cart.push({ slug, qty });
     }
     saveCart(cart);
+    animateCartBadge();
+    showToast('Added to cart');
   }
   function updateCartItem(slug, qty){
     const cart = readCart();
@@ -1157,10 +1262,12 @@
   }
   function clearCart(){
     saveCart([]);
+    showToast('Cart cleared', 'info');
   }
   function removeFromCart(slug){
     const cart = readCart().filter(i => i.slug !== slug);
     saveCart(cart);
+    showToast('Removed from cart', 'info');
   }
 
   function renderCartBadge(){
@@ -1240,6 +1347,22 @@
         }
       });
     });
+  }
+
+  // ===== Toast helper (professional UX instead of alert()) =====
+  function showToast(text, type = 'info', timeout = 2600) {
+    const container = document.getElementById('gl-toast');
+    if (!container) return;
+    const item = document.createElement('div');
+    item.className = 'gl-toast-item';
+    item.textContent = text;
+    container.appendChild(item);
+    setTimeout(() => {
+      item.style.transition = 'opacity .28s ease, transform .28s ease';
+      item.style.opacity = 0;
+      item.style.transform = 'translateY(6px)';
+      setTimeout(() => item.remove(), 320);
+    }, timeout);
   }
 
   // ===== Routing / Pages =====
@@ -1420,12 +1543,13 @@
         const slug = add.getAttribute('data-add');
         addToCart(slug, 1);
         renderCartDrawer();
-        alert('Added to cart');
       } else if (buy) {
         const slug = buy.getAttribute('data-buy');
         const prod = PRODUCTS.find(p => p.slug === slug);
         if (!prod) return;
-        startPayPalProductCheckout(prod, 1);
+        // If hosted button exists, use it (hosted flow). Otherwise use client-side Buttons
+        if (prod.hostedButtonId) startHostedButtonCheckout(prod.hostedButtonId);
+        else startPayPalProductCheckout(prod, 1);
       }
     });
   }
@@ -1443,6 +1567,10 @@
       app.innerHTML = `<div class="wrap"><h2>Product not found</h2><p class="muted">We could not find the requested product.</p></div>`;
       return;
     }
+
+    // determine hosted container id
+    const hostedContainerId = p.hostedButtonId ? ('product-paypal-hosted-' + encodeURIComponent(p.slug)) : '';
+
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
@@ -1476,14 +1604,15 @@
                   </div>
                   <div style="flex:1">
                     <label class="sr-only">Add to cart</label>
-                    <div class="order-cta" style="display:flex;gap:8px">
+                    <div class="order-cta" style="display:flex;gap:8px;align-items:center">
                       <button id="add-to-cart" class="btn" type="button">Add to cart</button>
-                      <button id="buy-now" class="btn primary full" type="button">Buy now</button>
+                      <!-- If hostedButtonId exists we'll render hosted PayPal here and hide the local button -->
+                      <button id="buy-now" class="btn primary full" type="button" ${p.hostedButtonId ? 'style="display:none"' : ''}>Buy now</button>
                     </div>
                   </div>
                 </div>
                 <div class="order-help">Orders are processed via PayPal. Documentation available for research orders.</div>
-                <div id="product-paypal-hosted" style="margin-top:8px"></div>
+                <div id="${hostedContainerId}" style="margin-top:8px"></div>
               </div>
             </div>
           </div>
@@ -1491,20 +1620,34 @@
       </section>
     `;
 
+    // add handlers
     document.getElementById('add-to-cart').addEventListener('click', () => {
       const qty = Number(document.getElementById('qty').value) || 1;
       addToCart(p.slug, qty);
       renderCartDrawer();
-      alert('Added to cart');
-    });
-    document.getElementById('buy-now').addEventListener('click', () => {
-      const qty = Number(document.getElementById('qty').value) || 1;
-      startPayPalProductCheckout(p, qty);
     });
 
-    // if product has hostedButtonId property, render hosted button (example support)
-    if (p.hostedButtonId) {
-      renderPayPalHosted('product-paypal-hosted', p.hostedButtonId);
+    if (!p.hostedButtonId) {
+      // fallback: local createOrder PayPal flow
+      document.getElementById('buy-now').addEventListener('click', () => {
+        const qty = Number(document.getElementById('qty').value) || 1;
+        startPayPalProductCheckout(p, qty);
+      });
+    } else {
+      // render the hosted button in-place and keep Buy now hidden
+      renderPayPalHosted(hostedContainerId, p.hostedButtonId).then(ok => {
+        if (!ok) {
+          // if hosted button couldn't render, fallback to enabling the Buy button to use client-side checkout
+          const bn = document.getElementById('buy-now');
+          if (bn) {
+            bn.style.display = '';
+            bn.addEventListener('click', () => {
+              const qty = Number(document.getElementById('qty').value) || 1;
+              startPayPalProductCheckout(p, qty);
+            });
+          }
+        }
+      });
     }
   }
 
@@ -1692,12 +1835,12 @@
       const slug = add.getAttribute('data-add');
       addToCart(slug, 1);
       renderCartDrawer();
-      alert('Added to cart');
     } else if (buy) {
       const slug = buy.getAttribute('data-buy');
       const prod = PRODUCTS.find(p => p.slug === slug);
       if (!prod) return;
-      startPayPalProductCheckout(prod, 1);
+      if (prod.hostedButtonId) startHostedButtonCheckout(prod.hostedButtonId);
+      else startPayPalProductCheckout(prod, 1);
     }
   });
 
@@ -1736,7 +1879,7 @@
 
   // expose some helpers for debugging (optional)
   window.Glacier = {
-    PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout
+    PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout
   };
   </script>
 </body>
