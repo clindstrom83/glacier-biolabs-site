@@ -503,46 +503,27 @@
     }
     .product-page{
       display:grid;
-      grid-template-columns: 520px 1fr; /* wider left column for gallery */
-      gap:36px;
+      grid-template-columns: 520px 1fr;
+      gap:26px;
       align-items:start;
       padding-bottom: 12px;
     }
     .media{
       border:1px solid var(--line);
       border-radius: var(--radius);
-      padding:18px;
+      padding:14px;
       background:#fff;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
     }
-    .media .main-image{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:28px;
-      min-height:420px;
-      border-radius:10px;
-      background:#fff;
-      border:1px solid rgba(0,0,0,0.03);
-    }
-    .media .main-image img{
-      max-width:320px;
-      max-height:360px;
+    .media .img-topbar{height:6px;background:var(--accent);border-radius:999px;margin-bottom:12px}
+    .media img{
+      width:100%;
+      height:420px;
       object-fit:contain;
+      display:block;
+      background:#fff;
+      border-radius:12px;
     }
-    .media .thumb-row{
-      display:flex;
-      gap:10px;
-      margin-top:6px;
-    }
-    .media .thumb{
-      width:64px;height:64px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fafafa;cursor:pointer;
-    }
-    .media .thumb img{width:100%;height:100%;object-fit:cover}
-
-    .pinfo h1{margin:0; font-size:32px; letter-spacing:.3px}
+    .pinfo h1{margin:0; font-size:34px; letter-spacing:.3px}
     .pinfo .rating-row{
       display:flex; align-items:center; gap:10px;
       margin:10px 0 10px;
@@ -552,44 +533,160 @@
       flex-wrap:wrap;
     }
     .pinfo .big-price{
-      font-size:28px;
+      font-size:34px;
       font-weight:950;
       color:var(--accent-2);
-      margin:6px 0 12px;
+      margin:10px 0 12px;
     }
-    .pinfo .desc{color:var(--ink); line-height:1.6}
-    .ruo-inline{
-      display:inline-flex;
-      padding:10px 12px;
-      border-radius:10px;
-      background:var(--accent-soft);
-      border:1px solid rgba(208,53,44,.12);
-      color:var(--accent-2);
+    .pinfo .desc{color:var(--ink); line-height:1.5}
+    .ruo{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:12px;
+      background: var(--accent-soft);
+      border:1px solid rgba(208,53,44,.18);
+      color: var(--accent-2);
+      font-weight:900;
+      line-height:1.35;
+      font-size:13px;
+    }
+    .form{
+      margin-top:14px;
+      display:grid;
+      gap:12px;
+    }
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .field label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
       font-weight:800;
-      margin:8px 0 12px;
+      margin-bottom:6px;
     }
+    .field input, .field select, .field textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      outline:none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus{
+      border-color: rgba(208,53,44,.45);
+      box-shadow: 0 0 0 4px rgba(208,53,44,.12);
+    }
+    .confirm{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:700;
+      color:var(--ink);
+      line-height:1.35;
+    }
+    .confirm input{width:18px;height:18px;margin-top:2px}
+    .cta-bar{
+      display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .backlink{color:var(--muted); font-weight:800}
+    .backlink:hover{color:var(--ink)}
 
-    .actions-row{display:flex;align-items:center;gap:12px;margin-top:10px}
-    .actions-row .quantity select{padding:10px;border-radius:8px;border:1px solid var(--line)}
-    .actions-row .btn{border-radius:10px;padding:12px 18px}
+    /* ===== Trust icons section ===== */
+    .trust{
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+    .trust .wrap{padding:28px 16px}
+    .trust h2{
+      text-align:center;
+      margin:0 0 18px;
+      letter-spacing:.4px;
+    }
+    .trust-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:16px;
+      align-items:start;
+      text-align:center;
+    }
+    .trust-card{
+      padding:14px 12px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .icon{
+      width:66px;height:66px;
+      border-radius:18px;
+      border:2px solid var(--accent);
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 10px;
+      background: rgba(208,53,44,.06);
+      font-weight:950;
+      color:var(--accent-2);
+    }
+    .trust-card h3{margin:0 0 6px; font-size:15px; letter-spacing:.2px}
+    .trust-card p{margin:0; color:var(--muted); line-height:1.45; font-size:13px}
 
-    .details{margin-top:18px;display:flex;flex-direction:column;gap:12px}
-    details{border-top:1px solid var(--line);padding-top:12px}
-    summary{font-weight:900;cursor:pointer}
-    details p{color:var(--muted);line-height:1.6;margin:8px 0 0}
-
-    /* Cart drawer (unchanged) */
+    /* ===== Cart drawer (simple) ===== */
     .cart-drawer{
       position:fixed; right:18px; top:88px; width:340px; max-width:92vw;
       background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow);
       z-index:80; padding:12px; display:none; flex-direction:column; gap:8px;
     }
     .cart-drawer.open{display:flex}
+    .cart-item{display:flex; gap:10px; align-items:center; justify-content:space-between}
+    .cart-item .meta{flex:1}
+    .cart-item .meta h4{margin:0;font-size:14px}
+    .cart-item .meta p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+    .cart-total{font-weight:900;text-align:right;margin-top:8px}
+    .cart-empty{color:var(--muted);text-align:center;padding:14px 0}
 
-    /* mobile behavior */
+    /* ===== Improved product-page checkout button (new) ===== */
+    .product-page { gap: 30px; }
+    .pinfo { display:flex; flex-direction:column; gap:12px; }
+    .pinfo .big-price { font-size:36px; font-weight:950; color:var(--accent-2); margin:4px 0 8px; }
+    .order-row{ display:flex; gap:12px; align-items:center; }
+    .order-row .field{ flex:1; margin:0; }
+    .btn.primary.full { width:100%; padding:14px 16px; font-size:16px; border-radius:12px; }
+    .order-help{ color:var(--muted); font-size:13px; margin-top:8px; }
     @media (max-width:900px){
-      .product-page{grid-template-columns:1fr;gap:18px}
-      .media .main-image{min-height:280px}
+      .order-row{ flex-direction:column; align-items:stretch; }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1100px){
+      .grid{grid-template-columns: repeat(3, minmax(0,1fr))}
+    }
+    @media (max-width: 900px){
+      .search{display:none}
+      nav.desktop-nav{display:none}
+      .hamburger{display:inline-flex}
+      .brand{min-width: unset}
+      .hero .wrap{grid-template-columns: 1fr; padding:42px 16px 36px}
+      .hero h1{font-size:34px}
+      .catalog{grid-template-columns: 1fr}
+      aside.filters{display:none}
+      .grid{grid-template-columns: repeat(2, minmax(0,1fr))}
+      .product-page{grid-template-columns: 1fr}
+      .media img{height:320px}
+      .trust-grid{grid-template-columns:1fr}
+      .nl-form{grid-template-columns:1fr}
+      .float-offer{display:none}
+      .cart-drawer{right:10px; left:10px; top:auto; bottom:16px}
+    }
+    @media (max-width: 430px){
+      .header{gap:10px}
+      .brand-text strong{font-size:14px}
+      .hero h1{font-size:30px}
+      .grid{gap:14px}
+      .card img{height:150px}
     }
   </style>
 </head>
@@ -673,7 +770,8 @@
         <button id="checkout-from-cart" class="btn primary" style="flex:1" type="button">Checkout</button>
         <button id="clear-cart" class="btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout creates a single Stripe Checkout session with all items (server must support cart line_items).</div>
+      <div id="paypal-cart-container" style="margin-top:8px"></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout uses PayPal (preferred).</div>
     </div>
   </div>
 
@@ -685,64 +783,169 @@
     </div>
   </footer>
 
-  <!-- Stripe.js (client) -->
-  <script src="https://js.stripe.com/v3/"></script>
-
-  <!-- PayPal Hosted Buttons SDK (provided by you) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
+  <!-- PayPal Buttons SDK (use the client id you provided) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
-  // ===== Stripe client setup (no secret key in client) =====
-  let stripe = null;
-  let stripeReady = false;
-  async function loadStripeKey(){
-    try {
-      const r = await fetch('/config');
-      if (!r.ok) return;
-      const data = await r.json();
-      if (data && data.publishableKey) {
-        stripe = Stripe(data.publishableKey);
-        stripeReady = true;
-      }
-    } catch (err) {
-      console.warn('Could not load Stripe publishable key:', err);
-    }
-  }
-  loadStripeKey();
+  // PAYPAL-ONLY checkout integration
+  // Supports two modes:
+  //  - Hosted button render when you provide a hostedButtonId for a product (e.g. water)
+  //  - Client-side PayPal Buttons createOrder flow for product and cart (default)
 
-  // PayPal hosted button mapping
-  // Map product slug -> hosted button id + container id
+  // Map slugs to hosted buttons if you want to use PayPal HostedButtons for specific SKUs.
+  // You gave '7URDJP2ZKGVQN' earlier for water — keep it here.
   const PAYPAL_HOSTED = {
-    // You said PayPal is naming the water item (10$). Use the hostedButtonId you provided.
-    // Add other product mappings here when you have hostedButtonIds for them.
-    'water': { hostedButtonId: '7URDJP2ZKGVQN', containerId: 'paypal-container-7URDJP2ZKGVQN' }
+    'water': { hostedButtonId: '7URDJP2ZKGVQN', containerId: 'paypal-hosted-water' }
   };
 
-  // helper to render PayPal hosted button when paypal SDK available (polls until available)
-  function renderPayPalHostedButton(containerId, hostedButtonId, maxRetries = 50, interval = 150) {
-    let tries = 0;
-    const attempt = () => {
-      tries++;
-      if (window.paypal && window.paypal.HostedButtons) {
-        try {
-          // clear container in case it exists
-          const container = document.getElementById(containerId);
-          if (!container) return;
-          // render hosted button into container
-          window.paypal.HostedButtons({ hostedButtonId }).render('#' + containerId);
-        } catch (err) {
-          console.error('PayPal render error', err);
-        }
-      } else if (tries < maxRetries) {
-        setTimeout(attempt, interval);
-      } else {
-        console.warn('PayPal SDK not available after retries');
+  // Helper: wait for PayPal Buttons/HostedButtons to be available
+  function waitForPayPal(maxTries = 50, interval = 120) {
+    return new Promise((resolve, reject) => {
+      let tries = 0;
+      function step() {
+        tries++;
+        if (window.paypal && (window.paypal.Buttons || window.paypal.HostedButtons)) return resolve(true);
+        if (tries > maxTries) return reject(new Error('PayPal SDK did not load'));
+        setTimeout(step, interval);
       }
-    };
-    attempt();
+      step();
+    });
   }
 
-  // ===== Images folder setup =====
+  // Render hosted button (if using PayPal-hosted hostedButtonId)
+  async function renderPayPalHosted(containerId, hostedButtonId) {
+    try {
+      await waitForPayPal();
+    } catch (err) {
+      console.warn('PayPal not available for hosted button', err);
+      return false;
+    }
+    const container = document.getElementById(containerId);
+    if (!container) return false;
+    try {
+      window.paypal.HostedButtons({ hostedButtonId }).render('#' + containerId);
+      return true;
+    } catch (err) {
+      console.error('HostedButtons render failed', err);
+      return false;
+    }
+  }
+
+  // Render PayPal Buttons for a single product and auto-click to begin flow
+  async function startPayPalProductCheckout(product, qty = 1) {
+    try {
+      await waitForPayPal();
+    } catch (err) {
+      alert('PayPal not available. Please try again later.');
+      return;
+    }
+
+    // Create a temporary container (keeps UI tidy)
+    const tmpId = 'paypal-temp-' + Math.random().toString(36).slice(2,9);
+    const tmp = document.createElement('div');
+    tmp.id = tmpId;
+    tmp.style.position = 'absolute';
+    tmp.style.left = '-9999px';
+    tmp.style.top = '0';
+    document.body.appendChild(tmp);
+
+    window.paypal.Buttons({
+      createOrder: function(data, actions) {
+        const value = ((product.price * qty) / 100).toFixed(2);
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: value, currency_code: 'USD' },
+            description: product.name
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          // success - redirect to success page or show message
+          window.location.href = window.location.origin + '/?checkout=success';
+        });
+      },
+      onError: function(err) {
+        console.error('PayPal product checkout error', err);
+        alert('PayPal checkout error: ' + (err && err.message ? err.message : 'unknown'));
+      }
+    }).render('#' + tmpId).then(() => {
+      // attempt to auto-click the rendered button
+      const btn = tmp.querySelector('button');
+      if (btn) {
+        btn.click();
+      } else {
+        // if auto-click fails, inform user where the button is (not visible)
+        console.warn('Could not auto-click PayPal product button; it has been rendered offscreen.');
+      }
+    }).catch(err => {
+      console.error('Failed to render PayPal Buttons for product', err);
+      tmp.remove();
+      alert('Could not initialize PayPal checkout. Please try again.');
+    });
+  }
+
+  // Render PayPal buttons for cart checkout (sums cart) and auto-click
+  async function startPayPalCartCheckout() {
+    const cart = readCart();
+    if (!cart || cart.length === 0) { alert('Cart is empty'); return; }
+
+    try {
+      await waitForPayPal();
+    } catch (err) {
+      alert('PayPal not available. Please try again later.');
+      return;
+    }
+
+    // Sum totals
+    const totalCents = cart.reduce((sum, item) => {
+      const p = PRODUCTS.find(x => x.slug === item.slug);
+      return sum + (p ? p.price * (item.qty || 0) : 0);
+    }, 0);
+    const value = (totalCents / 100).toFixed(2);
+
+    // Render into cart container (visible) and auto-click
+    const containerId = 'paypal-cart-container';
+    const container = document.getElementById(containerId);
+    if (!container) {
+      alert('Cart container not found');
+      return;
+    }
+    container.innerHTML = ''; // clear previous
+
+    window.paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value, currency_code: 'USD' },
+            description: 'Glacier BioLabs order'
+          }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          window.location.href = window.location.origin + '/?checkout=success';
+        });
+      },
+      onError: function(err) {
+        console.error('PayPal cart error', err);
+        alert('PayPal error: ' + (err && err.message ? err.message : 'unknown'));
+      }
+    }).render('#' + containerId).then(() => {
+      // auto-click the button if possible
+      const btn = container.querySelector('button');
+      if (btn) {
+        btn.click();
+      } else {
+        console.warn('PayPal cart button rendered but not auto-clicked; user may need to click it.');
+      }
+    }).catch(err => {
+      console.error('Failed to render PayPal cart buttons', err);
+      alert('Unable to initialize PayPal cart checkout.');
+    });
+  }
+
+  // ===== Images folder setup (unchanged) =====
   const IMAGE_DIR = 'images/';
   const IMAGE_FILES = {
     logo: 'logo.png',
@@ -813,7 +1016,7 @@
     }
   ];
 
-  // ===== Helpers =====
+  // ===== Helpers (unchanged) =====
   const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Image not available</text></svg>'
   );
@@ -825,7 +1028,7 @@
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 
-  // ===== State for catalog filters/search =====
+  // ===== State for catalog filters/search (unchanged) =====
   const state = {
     q: '',
     inStockOnly: false,
@@ -893,7 +1096,7 @@
     return list;
   }
 
-  // ===== Reusable HTML blocks =====
+  // ===== Reusable HTML blocks (unchanged) =====
   function productCardHTML(p){
     const img = imgPath(p.image);
     const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
@@ -1193,7 +1396,7 @@
     // "VIEW" is an anchor to the product page so no JS needed here.
   }
 
-  // ===== Improved product page (clean, left gallery + right info) =====
+  // ===== Product page (buy now -> PayPal only) =====
   function renderProduct(app, slug) {
     const p = PRODUCTS.find(x => x.slug === slug);
     if (!p) {
@@ -1211,33 +1414,16 @@
       return;
     }
 
-    // Build a small gallery: main image + COA thumbnail if available
-    const mainImg = escapeHtml(imgPath(p.image));
-    const coaImg = escapeHtml(imgPath(IMAGE_FILES.coa));
-    const ppCfg = PAYPAL_HOSTED[p.slug]; // may be undefined
-
-    // If PayPal hosted mapping exists, include its container in the markup
-    const paypalContainerHtml = ppCfg ? `<div id="${ppCfg.containerId}" style="margin-top:12px"></div>` : '';
-
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
           <div class="crumbs"><a class="backlink" href="#/shop">← Back to Shop</a></div>
 
           <div class="product-page">
-            <div class="media" id="media">
-              <div class="main-image" id="main-image">
-                <img src="${mainImg}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
-              </div>
-
-              <div class="thumb-row" id="thumb-row">
-                <div class="thumb" data-src="${mainImg}" aria-label="View image">
-                  <img src="${mainImg}" alt="thumb" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
-                </div>
-                <div class="thumb" data-src="${coaImg}" aria-label="View COA">
-                  <img src="${coaImg}" alt="coa thumb" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
-                </div>
-              </div>
+            <div class="media">
+              <div class="img-topbar"></div>
+              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}"
+                   onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
             </div>
 
             <div class="pinfo">
@@ -1252,39 +1438,34 @@
 
               <div class="big-price">${money(p.price)}</div>
 
-              <div class="desc">${escapeHtml(p.short)}</div>
+              <div class="desc">${escapeHtml(p.long)}</div>
 
-              <div class="ruo-inline">RESEARCH USE ONLY — Not for human or veterinary use. No medical claims are made.</div>
-
-              <div class="actions-row">
-                <div class="quantity">
-                  <label for="qty" class="muted" style="margin-right:8px">Quantity</label>
-                  <select id="qty">
-                    <option>1</option><option>2</option><option>3</option><option>4</option>
-                  </select>
-                </div>
-
-                <div style="display:flex;gap:10px;margin-left:12px">
-                  <button id="add-to-cart-btn" class="btn btn-outline">Add to Cart</button>
-                  <button id="buy-now-btn" class="btn primary" ${p.inStock ? '' : 'disabled'}>Buy Now</button>
-                </div>
+              <div class="ruo">
+                RESEARCH USE ONLY — Not for human or veterinary use. No medical claims are made.
               </div>
 
-              ${paypalContainerHtml}
+              <div class="form" id="product-actions">
+                <div class="order-row">
+                  <div class="field">
+                    <label for="qty">Quantity</label>
+                    <select id="qty">
+                      <option>1</option><option>2</option><option>3</option><option>4</option>
+                    </select>
+                  </div>
 
-              <div class="details">
-                <details open>
-                  <summary>Product Summary</summary>
-                  <p>${escapeHtml(p.long)}</p>
-                </details>
-                <details>
-                  <summary>Handling & Storage</summary>
-                  <p>Store in a cool, dry place. Protect from moisture and light. Follow your lab's SOPs for handling chemicals.</p>
-                </details>
-                <details>
-                  <summary>Certificates & Media</summary>
-                  <p>COA available upon request for supported batches. Click the COA thumbnail to view it.</p>
-                </details>
+                  <div class="field" style="align-self:end">
+                    <button id="add-to-cart" class="btn ghost" type="button">Add to Cart</button>
+                  </div>
+                </div>
+
+                <div style="margin-top:12px">
+                  <button id="buy-now" class="btn primary" ${p.inStock ? '' : 'disabled'}>Buy Now</button>
+                </div>
+
+                <!-- If a hosted PayPal button mapping exists for this product, we render it here -->
+                <div id="paypal-hosted-container" style="margin-top:12px"></div>
+
+                <p class="order-help">You can add to cart and then Checkout to pay with PayPal.</p>
               </div>
             </div>
           </div>
@@ -1292,20 +1473,8 @@
       </section>
     `;
 
-    // thumbnail swap
-    const thumbRow = document.getElementById('thumb-row');
-    if (thumbRow) {
-      thumbRow.querySelectorAll('.thumb').forEach(t => {
-        t.addEventListener('click', (e) => {
-          const src = t.getAttribute('data-src');
-          const main = document.getElementById('main-image').querySelector('img');
-          if (main && src) main.src = src;
-        });
-      });
-    }
-
-    // add-to-cart wiring
-    const addBtn = document.getElementById('add-to-cart-btn');
+    // Wire actions
+    const addBtn = document.getElementById('add-to-cart');
     if (addBtn) {
       addBtn.addEventListener('click', () => {
         const qty = Number(document.getElementById('qty').value || 1);
@@ -1313,55 +1482,45 @@
         addBtn.textContent = 'Added';
         setTimeout(() => addBtn.textContent = 'Add to Cart', 900);
       });
-      addBtn.textContent = 'Add to Cart';
     }
 
-    // buy-now wiring: keep existing server contract; prompt for email (unchanged behavior)
-    const buyBtn = document.getElementById('buy-now-btn');
-    if (buyBtn) {
-      buyBtn.addEventListener('click', async () => {
-        if (!stripeReady) {
-          alert('Payment system not ready. Ensure server exposes /config with your publishable key.');
+    const buyNowBtn = document.getElementById('buy-now');
+    if (buyNowBtn) {
+      buyNowBtn.addEventListener('click', () => {
+        const qty = Number(document.getElementById('qty').value || 1);
+
+        // If there's a hosted mapping for this product, render hosted button and auto-click it.
+        const hosted = PAYPAL_HOSTED[p.slug];
+        if (hosted) {
+          // ensure container exists
+          const hostedContainerId = hosted.containerId;
+          let hc = document.getElementById(hostedContainerId);
+          if (!hc) {
+            hc = document.createElement('div');
+            hc.id = hostedContainerId;
+            document.getElementById('paypal-hosted-container').appendChild(hc);
+          }
+          // render hosted button and return
+          renderPayPalHosted(hostedContainerId, hosted.hostedButtonId).then(rendered => {
+            if (!rendered) {
+              // fallback to client-side Buttons createOrder
+              startPayPalProductCheckout(p, qty);
+            } else {
+              // try to auto-click the PayPal hosted button if possible after a short delay
+              setTimeout(()=>{
+                const btn = document.querySelector('#' + hostedContainerId + ' button');
+                if (btn) btn.click();
+              }, 700);
+            }
+          }).catch(() => {
+            startPayPalProductCheckout(p, qty);
+          });
           return;
         }
-        const qty = Number(document.getElementById('qty').value || 1);
-        const email = prompt('Enter your email for receipt:');
-        if (!email) { alert('Email required to proceed'); return; }
-        try {
-          const res = await fetch('/create-checkout-session', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({
-              slug: p.slug,
-              qty,
-              email,
-              successUrl: window.location.origin + '/?checkout=success',
-              cancelUrl: window.location.href
-            })
-          });
-          const data = await res.json();
-          if (!res.ok) {
-            console.error('create-checkout-session failed', data);
-            alert(data?.message || 'Could not create checkout session');
-            return;
-          }
-          if (!data.sessionId) { alert('No sessionId returned from server'); return; }
-          const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-          if (error) {
-            console.error(error);
-            alert('Stripe redirect failed: ' + (error.message || 'unknown'));
-          }
-        } catch (err) {
-          console.error(err);
-          alert('Unexpected error creating checkout session');
-        }
-      });
-    }
 
-    // If PayPal mapping exists for this product, render the hosted button into the container
-    if (ppCfg) {
-      // ensure container exists and then render
-      renderPayPalHostedButton(ppCfg.containerId, ppCfg.hostedButtonId);
+        // Default: start PayPal checkout for the product (client-side createOrder)
+        startPayPalProductCheckout(p, qty);
+      });
     }
 
     updateCartUI();
@@ -1556,76 +1715,14 @@
     updateCartUI();
   }
 
-  // ===== Buy Now (single-item checkout) =====
-  async function buyNow(slug, qty = 1){
-    if (!stripeReady) {
-      alert('Payment system not ready. Ensure server exposes /config with your publishable key.');
-      return;
-    }
-    const email = prompt('Enter your email for receipt:');
-    if (!email) { alert('Email required to proceed'); return; }
-
-    try {
-      const res = await fetch('/create-checkout-session', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          slug, qty, email,
-          successUrl: window.location.origin + '/?checkout=success',
-          cancelUrl: window.location.href
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        console.error('create-checkout-session failed', data);
-        alert(data?.message || 'Could not create checkout session');
-        return;
-      }
-      if (!data.sessionId) { alert('No sessionId returned from server'); return; }
-      const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if (error) {
-        console.error(error);
-        alert('Stripe redirect failed: ' + (error.message || 'unknown'));
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Unexpected error creating checkout session');
-    }
-  }
-
-  // ===== Cart Checkout (multi-line) =====
+  // ===== Cart Checkout (PayPal primary) =====
   async function checkoutCart(){
-    const cart = readCart();
-    if (cart.length === 0) { alert('Cart is empty'); return; }
-    if (!stripeReady) { alert('Payment system not ready.'); return; }
-    const email = prompt('Enter your email for receipt:');
-    if (!email) { alert('Email required to proceed'); return; }
-
+    // If PayPal is present, start PayPal cart checkout
     try {
-      const res = await fetch('/create-checkout-session', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          cart, email,
-          successUrl: window.location.origin + '/?checkout=success',
-          cancelUrl: window.location.href
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        console.error('create-checkout-session failed', data);
-        alert(data?.message || 'Could not create checkout session');
-        return;
-      }
-      if (!data.sessionId) { alert('No sessionId returned from server'); return; }
-      const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if (error) {
-        console.error(error);
-        alert('Stripe redirect failed: ' + (error.message || 'unknown'));
-      }
+      await waitForPayPal();
+      startPayPalCartCheckout();
     } catch (err) {
-      console.error(err);
-      alert('Unexpected error creating checkout session');
+      alert('PayPal not available. Please try again later.');
     }
   }
 
