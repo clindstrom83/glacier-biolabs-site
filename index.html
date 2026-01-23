@@ -673,8 +673,7 @@
         <button id="checkout-from-cart" class="btn primary" style="flex:1" type="button">Checkout</button>
         <button id="clear-cart" class="btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
       </div>
-      <div id="paypal-cart-container" style="margin-top:8px"></div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout creates a single Stripe Checkout session with all items (server must support cart line_items). If PayPal is available it will be used instead.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout creates a single Stripe Checkout session with all items (server must support cart line_items).</div>
     </div>
   </div>
 
@@ -689,78 +688,10 @@
   <!-- Stripe.js (client) -->
   <script src="https://js.stripe.com/v3/"></script>
 
-  <!-- PayPal Hosted Buttons SDK (your client id was provided earlier) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
+  <!-- PayPal Hosted Buttons SDK (provided by you) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
-  // ====== PayPal helper: render buttons for product or cart ======
-  // Waits for window.paypal, then renders buttons into the container.
-  function waitForPayPal(maxTries = 40, interval = 150) {
-    return new Promise((resolve, reject) => {
-      let tries = 0;
-      function attempt() {
-        tries++;
-        if (window.paypal && window.paypal.Buttons) return resolve(true);
-        if (tries * interval >= maxTries * interval) return reject(new Error('PayPal SDK not available'));
-        setTimeout(attempt, interval);
-      }
-      attempt();
-    });
-  }
-
-  // Render PayPal Buttons for a single product purchase.
-  // containerId: DOM id to render into
-  // getOrderDetails: function that returns { value: '12.34', currency: 'USD', description: '...' }
-  async function renderPayPalButtons(containerId, getOrderDetails) {
-    try {
-      await waitForPayPal();
-    } catch (err) {
-      console.warn('PayPal SDK not available:', err);
-      return;
-    }
-
-    // Remove any previous instance
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = '';
-
-    window.paypal.Buttons({
-      style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' },
-      createOrder: function(data, actions) {
-        const details = getOrderDetails();
-        // details.value should be a string like "10.00"
-        return actions.order.create({
-          purchase_units: [{
-            amount: { value: details.value, currency_code: details.currency || 'USD' },
-            description: details.description || ''
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          // Payment succeeded — redirect to success page (or show a message)
-          window.location.href = window.location.origin + '/?checkout=success';
-        });
-      },
-      onError: function(err) {
-        console.error('PayPal Buttons error', err);
-        alert('PayPal error: ' + (err && err.message ? err.message : 'unknown'));
-      }
-    }).render('#' + containerId);
-  }
-
-  // Render PayPal Buttons for a cart checkout (sums items)
-  function renderPayPalButtonsForCart(containerId) {
-    return renderPayPalButtons(containerId, () => {
-      const cart = readCart();
-      const totalCents = cart.reduce((sum, item) => {
-        const p = PRODUCTS.find(x=>x.slug===item.slug);
-        return sum + (p ? p.price * (item.qty || 0) : 0);
-      }, 0);
-      return { value: (totalCents/100).toFixed(2), currency: 'USD', description: 'Glacier BioLabs order' };
-    });
-  }
-
   // ===== Stripe client setup (no secret key in client) =====
   let stripe = null;
   let stripeReady = false;
@@ -778,6 +709,38 @@
     }
   }
   loadStripeKey();
+
+  // PayPal hosted button mapping
+  // Map product slug -> hosted button id + container id
+  const PAYPAL_HOSTED = {
+    // You said PayPal is naming the water item (10$). Use the hostedButtonId you provided.
+    // Add other product mappings here when you have hostedButtonIds for them.
+    'water': { hostedButtonId: '7URDJP2ZKGVQN', containerId: 'paypal-container-7URDJP2ZKGVQN' }
+  };
+
+  // helper to render PayPal hosted button when paypal SDK available (polls until available)
+  function renderPayPalHostedButton(containerId, hostedButtonId, maxRetries = 50, interval = 150) {
+    let tries = 0;
+    const attempt = () => {
+      tries++;
+      if (window.paypal && window.paypal.HostedButtons) {
+        try {
+          // clear container in case it exists
+          const container = document.getElementById(containerId);
+          if (!container) return;
+          // render hosted button into container
+          window.paypal.HostedButtons({ hostedButtonId }).render('#' + containerId);
+        } catch (err) {
+          console.error('PayPal render error', err);
+        }
+      } else if (tries < maxRetries) {
+        setTimeout(attempt, interval);
+      } else {
+        console.warn('PayPal SDK not available after retries');
+      }
+    };
+    attempt();
+  }
 
   // ===== Images folder setup =====
   const IMAGE_DIR = 'images/';
@@ -1251,6 +1214,10 @@
     // Build a small gallery: main image + COA thumbnail if available
     const mainImg = escapeHtml(imgPath(p.image));
     const coaImg = escapeHtml(imgPath(IMAGE_FILES.coa));
+    const ppCfg = PAYPAL_HOSTED[p.slug]; // may be undefined
+
+    // If PayPal hosted mapping exists, include its container in the markup
+    const paypalContainerHtml = ppCfg ? `<div id="${ppCfg.containerId}" style="margin-top:12px"></div>` : '';
 
     app.innerHTML = `
       <section class="section">
@@ -1303,7 +1270,7 @@
                 </div>
               </div>
 
-              <div id="paypal-product-container-${escapeHtml(p.slug)}" style="margin-top:10px"></div>
+              ${paypalContainerHtml}
 
               <div class="details">
                 <details open>
@@ -1349,38 +1316,10 @@
       addBtn.textContent = 'Add to Cart';
     }
 
-    // buy-now wiring:
-    // If PayPal is available, render a PayPal button in the paypal-product-container and hide the Stripe buy button visually.
-    const paypalContainerId = `paypal-product-container-${p.slug}`;
-    // Render PayPal button (reads current qty when creating order)
-    renderPayPalButtons(paypalContainerId, () => {
-      const qty = Number(document.getElementById('qty').value || 1);
-      return { value: ((p.price * qty)/100).toFixed(2), currency: 'USD', description: p.name };
-    }).then(()=> {
-      // If PayPal rendered, hide the original buy-now button to avoid duplicate flows.
-      const pb = document.getElementById(paypalContainerId);
-      if (pb && pb.children.length > 0) {
-        const buyNow = document.getElementById('buy-now-btn');
-        if (buyNow) buyNow.style.display = 'none';
-      }
-    }).catch(()=>{ /* no-op */ });
-
-    // Keep Stripe Buy Now fallback if PayPal not available
+    // buy-now wiring: keep existing server contract; prompt for email (unchanged behavior)
     const buyBtn = document.getElementById('buy-now-btn');
     if (buyBtn) {
       buyBtn.addEventListener('click', async () => {
-        // If PayPal exists and is rendered, prefer PayPal (we hid the buyBtn in that case)
-        // Otherwise use Stripe flow (original behavior)
-        if (typeof window.paypal !== 'undefined') {
-          // If PayPal present but not rendered (edge), attempt to render then do nothing — user can click PayPal.
-          const container = document.getElementById(paypalContainerId);
-          if (container && container.children.length > 0) {
-            // There is a PayPal button — do nothing here (it will be visible)
-            return;
-          }
-        }
-
-        // Fallback to Stripe checkout
         if (!stripeReady) {
           alert('Payment system not ready. Ensure server exposes /config with your publishable key.');
           return;
@@ -1417,6 +1356,12 @@
           alert('Unexpected error creating checkout session');
         }
       });
+    }
+
+    // If PayPal mapping exists for this product, render the hosted button into the container
+    if (ppCfg) {
+      // ensure container exists and then render
+      renderPayPalHostedButton(ppCfg.containerId, ppCfg.hostedButtonId);
     }
 
     updateCartUI();
@@ -1652,17 +1597,6 @@
   async function checkoutCart(){
     const cart = readCart();
     if (cart.length === 0) { alert('Cart is empty'); return; }
-
-    // If PayPal SDK present, render cart PayPal button and trigger user to click it.
-    if (window.paypal && window.paypal.Buttons) {
-      // open cart drawer
-      openCart();
-      // render buttons into cart container
-      renderPayPalButtonsForCart('paypal-cart-container');
-      // don't proceed with Stripe fallback here — user can complete via PayPal button
-      return;
-    }
-
     if (!stripeReady) { alert('Payment system not ready.'); return; }
     const email = prompt('Enter your email for receipt:');
     if (!email) { alert('Email required to proceed'); return; }
