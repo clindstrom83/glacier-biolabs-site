@@ -688,11 +688,11 @@
   <!-- Stripe.js (client) -->
   <script src="https://js.stripe.com/v3/"></script>
 
+  <!-- PayPal Hosted Buttons SDK (provided by you) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
+
   <script>
   // ===== Stripe client setup (no secret key in client) =====
-  // Client expects server to expose:
-  // GET  /config  -> { publishableKey: 'pk_test_...' }
-  // POST /create-checkout-session -> { sessionId: 'cs_...' }
   let stripe = null;
   let stripeReady = false;
   async function loadStripeKey(){
@@ -709,6 +709,38 @@
     }
   }
   loadStripeKey();
+
+  // PayPal hosted button mapping
+  // Map product slug -> hosted button id + container id
+  const PAYPAL_HOSTED = {
+    // You said PayPal is naming the water item (10$). Use the hostedButtonId you provided.
+    // Add other product mappings here when you have hostedButtonIds for them.
+    'water': { hostedButtonId: '7URDJP2ZKGVQN', containerId: 'paypal-container-7URDJP2ZKGVQN' }
+  };
+
+  // helper to render PayPal hosted button when paypal SDK available (polls until available)
+  function renderPayPalHostedButton(containerId, hostedButtonId, maxRetries = 50, interval = 150) {
+    let tries = 0;
+    const attempt = () => {
+      tries++;
+      if (window.paypal && window.paypal.HostedButtons) {
+        try {
+          // clear container in case it exists
+          const container = document.getElementById(containerId);
+          if (!container) return;
+          // render hosted button into container
+          window.paypal.HostedButtons({ hostedButtonId }).render('#' + containerId);
+        } catch (err) {
+          console.error('PayPal render error', err);
+        }
+      } else if (tries < maxRetries) {
+        setTimeout(attempt, interval);
+      } else {
+        console.warn('PayPal SDK not available after retries');
+      }
+    };
+    attempt();
+  }
 
   // ===== Images folder setup =====
   const IMAGE_DIR = 'images/';
@@ -1182,6 +1214,10 @@
     // Build a small gallery: main image + COA thumbnail if available
     const mainImg = escapeHtml(imgPath(p.image));
     const coaImg = escapeHtml(imgPath(IMAGE_FILES.coa));
+    const ppCfg = PAYPAL_HOSTED[p.slug]; // may be undefined
+
+    // If PayPal hosted mapping exists, include its container in the markup
+    const paypalContainerHtml = ppCfg ? `<div id="${ppCfg.containerId}" style="margin-top:12px"></div>` : '';
 
     app.innerHTML = `
       <section class="section">
@@ -1233,6 +1269,8 @@
                   <button id="buy-now-btn" class="btn primary" ${p.inStock ? '' : 'disabled'}>Buy Now</button>
                 </div>
               </div>
+
+              ${paypalContainerHtml}
 
               <div class="details">
                 <details open>
@@ -1289,7 +1327,6 @@
         const qty = Number(document.getElementById('qty').value || 1);
         const email = prompt('Enter your email for receipt:');
         if (!email) { alert('Email required to proceed'); return; }
-        // call existing buyNow helper that posts to /create-checkout-session and redirects
         try {
           const res = await fetch('/create-checkout-session', {
             method: 'POST',
@@ -1319,6 +1356,12 @@
           alert('Unexpected error creating checkout session');
         }
       });
+    }
+
+    // If PayPal mapping exists for this product, render the hosted button into the container
+    if (ppCfg) {
+      // ensure container exists and then render
+      renderPayPalHostedButton(ppCfg.containerId, ppCfg.hostedButtonId);
     }
 
     updateCartUI();
