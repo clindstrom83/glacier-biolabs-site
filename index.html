@@ -648,6 +648,10 @@
     .cart-total{font-weight:900;text-align:right;margin-top:8px}
     .cart-empty{color:var(--muted);text-align:center;padding:14px 0}
 
+    /* ===== Footer policies links ===== */
+    .policies{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:14px 0 8px;background:#0b0f19;color:rgba(255,255,255,.8)}
+    .policies a{color:rgba(255,255,255,.9);font-weight:700}
+
     /* ===== Improved product-page checkout button (new) ===== */
     .product-page { gap: 30px; }
     .pinfo { display:flex; flex-direction:column; gap:12px; }
@@ -777,28 +781,35 @@
 
   <main id="app"></main>
 
+  <!-- Footer with policy links -->
+  <div class="policies">
+    <a href="#/terms">Terms & Conditions</a>
+    <a href="#/privacy">Privacy Policy</a>
+    <a href="#/refunds">Refund & Returns</a>
+    <a href="#/shipping">Shipping Policy</a>
+    <a href="#/disclaimer">Research Use Disclaimer</a>
+    <a href="#/safety">Safety & Compliance</a>
+    <a href="#/contact">Contact</a>
+    <a href="#/about">About</a>
+  </div>
+
   <footer>
     <div class="wrap">
       © <span id="year"></span> Glacier BioLabs — Research Use Only — Not for human or veterinary use.
     </div>
   </footer>
 
-  <!-- PayPal Buttons SDK (use the client id you provided) -->
+  <!-- PayPal Hosted Buttons SDK (your client id) -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
-  // PAYPAL-ONLY checkout integration
-  // Supports two modes:
-  //  - Hosted button render when you provide a hostedButtonId for a product (e.g. water)
-  //  - Client-side PayPal Buttons createOrder flow for product and cart (default)
+  /*
+    Policy pages updated with full legal/safety text supplied by the site owner.
 
-  // Map slugs to hosted buttons if you want to use PayPal HostedButtons for specific SKUs.
-  // You gave '7URDJP2ZKGVQN' earlier for water — keep it here.
-  const PAYPAL_HOSTED = {
-    'water': { hostedButtonId: '7URDJP2ZKGVQN', containerId: 'paypal-hosted-water' }
-  };
+    Added route: #/safety (Safety & Compliance) which emphasizes RUO status and responsible selling.
+  */
 
-  // Helper: wait for PayPal Buttons/HostedButtons to be available
+  // Minimal PayPal helpers (used by product/cart checkout flows already present)
   function waitForPayPal(maxTries = 50, interval = 120) {
     return new Promise((resolve, reject) => {
       let tries = 0;
@@ -812,7 +823,7 @@
     });
   }
 
-  // Render hosted button (if using PayPal-hosted hostedButtonId)
+  // Render PayPal HostedButtons if requested for specific product
   async function renderPayPalHosted(containerId, hostedButtonId) {
     try {
       await waitForPayPal();
@@ -831,7 +842,7 @@
     }
   }
 
-  // Render PayPal Buttons for a single product and auto-click to begin flow
+  // Client-side PayPal Buttons for product
   async function startPayPalProductCheckout(product, qty = 1) {
     try {
       await waitForPayPal();
@@ -840,7 +851,6 @@
       return;
     }
 
-    // Create a temporary container (keeps UI tidy)
     const tmpId = 'paypal-temp-' + Math.random().toString(36).slice(2,9);
     const tmp = document.createElement('div');
     tmp.id = tmpId;
@@ -861,7 +871,6 @@
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
-          // success - redirect to success page or show message
           window.location.href = window.location.origin + '/?checkout=success';
         });
       },
@@ -870,22 +879,16 @@
         alert('PayPal checkout error: ' + (err && err.message ? err.message : 'unknown'));
       }
     }).render('#' + tmpId).then(() => {
-      // attempt to auto-click the rendered button
       const btn = tmp.querySelector('button');
-      if (btn) {
-        btn.click();
-      } else {
-        // if auto-click fails, inform user where the button is (not visible)
-        console.warn('Could not auto-click PayPal product button; it has been rendered offscreen.');
-      }
+      if (btn) btn.click();
     }).catch(err => {
-      console.error('Failed to render PayPal Buttons for product', err);
+      console.error('Failed to render PayPal product Buttons', err);
       tmp.remove();
       alert('Could not initialize PayPal checkout. Please try again.');
     });
   }
 
-  // Render PayPal buttons for cart checkout (sums cart) and auto-click
+  // Client-side PayPal Buttons for cart
   async function startPayPalCartCheckout() {
     const cart = readCart();
     if (!cart || cart.length === 0) { alert('Cart is empty'); return; }
@@ -897,29 +900,24 @@
       return;
     }
 
-    // Sum totals
     const totalCents = cart.reduce((sum, item) => {
       const p = PRODUCTS.find(x => x.slug === item.slug);
       return sum + (p ? p.price * (item.qty || 0) : 0);
     }, 0);
     const value = (totalCents / 100).toFixed(2);
 
-    // Render into cart container (visible) and auto-click
     const containerId = 'paypal-cart-container';
     const container = document.getElementById(containerId);
     if (!container) {
       alert('Cart container not found');
       return;
     }
-    container.innerHTML = ''; // clear previous
+    container.innerHTML = '';
 
     window.paypal.Buttons({
       createOrder: function(data, actions) {
         return actions.order.create({
-          purchase_units: [{
-            amount: { value, currency_code: 'USD' },
-            description: 'Glacier BioLabs order'
-          }]
+          purchase_units: [{ amount: { value, currency_code: 'USD' }, description: 'Glacier BioLabs order' }]
         });
       },
       onApprove: function(data, actions) {
@@ -932,20 +930,15 @@
         alert('PayPal error: ' + (err && err.message ? err.message : 'unknown'));
       }
     }).render('#' + containerId).then(() => {
-      // auto-click the button if possible
       const btn = container.querySelector('button');
-      if (btn) {
-        btn.click();
-      } else {
-        console.warn('PayPal cart button rendered but not auto-clicked; user may need to click it.');
-      }
+      if (btn) btn.click();
     }).catch(err => {
       console.error('Failed to render PayPal cart buttons', err);
       alert('Unable to initialize PayPal cart checkout.');
     });
   }
 
-  // ===== Images folder setup (unchanged) =====
+  // ===== Images folder setup =====
   const IMAGE_DIR = 'images/';
   const IMAGE_FILES = {
     logo: 'logo.png',
@@ -1016,7 +1009,7 @@
     }
   ];
 
-  // ===== Helpers (unchanged) =====
+  // ===== Helpers =====
   const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Image not available</text></svg>'
   );
@@ -1028,7 +1021,7 @@
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 
-  // ===== State for catalog filters/search (unchanged) =====
+  // ===== State for catalog filters/search =====
   const state = {
     q: '',
     inStockOnly: false,
@@ -1096,7 +1089,7 @@
     return list;
   }
 
-  // ===== Reusable HTML blocks (unchanged) =====
+  // ===== Reusable HTML blocks =====
   function productCardHTML(p){
     const img = imgPath(p.image);
     const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
@@ -1113,359 +1106,384 @@
           <h3>${escapeHtml(p.name)}</h3>
           <div class="price">${money(p.price)}</div>
           <div class="small">${escapeHtml(p.short || '')}</div>
-          <div class="small" style="text-align:center;margin-top:10px;font-weight:900;color:${p.inStock ? 'var(--accent-2)' : 'var(--muted)'}">${stockText}</div>
+          <div class="small" style="text-align:center;margin-top:10px;font-weight:900;color:${p.inStock ? 'var(--accent-2)' : 'var(--muted)'}">${escapeHtml(stockText)}</div>
           <div class="actions">
-            <!-- "ADD" adds to cart -->
-            <button class="btn ghost small add-to-cart" data-slug="${escapeHtml(p.slug)}" type="button">ADD</button>
-            <!-- "VIEW" goes to the product page where user can add or buy -->
-            <a class="btn primary small" href="#/product/${encodeURIComponent(p.slug)}" aria-label="View ${escapeHtml(p.name)}">VIEW</a>
+            <button class="btn small" data-add="${escapeHtml(p.slug)}">Add</button>
+            <button class="btn small primary" data-buy="${escapeHtml(p.slug)}">Buy</button>
           </div>
         </div>
       </article>
     `;
   }
 
-  function trustSectionHTML(){
-    return `
-      <section class="trust">
-        <div class="wrap">
-          <h2>BUY ONLINE — QUALITY SECOND TO NONE</h2>
-          <div class="trust-grid">
-            <div class="trust-card">
-              <div class="icon">QC</div>
-              <h3>RIGOROUS QUALITY CONTROL</h3>
-              <p>Clear labeling, consistent presentation, and research-only positioning.</p>
-            </div>
-            <div class="trust-card">
-              <div class="icon">US</div>
-              <h3>SAME DAY SHIPPING (US)</h3>
-              <p>Fast fulfillment messaging and mobile-first checkout flow.</p>
-            </div>
-            <div class="trust-card">
-              <div class="icon">24</div>
-              <h3>SUPPORT THAT RESPONDS</h3>
-              <p>Make your contact + FAQ feel real, not placeholder fluff.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  function bestSellersHTML() {
-    return PRODUCTS.slice(0,4).map(p => productCardHTML(p)).join('');
-  }
-
   // ===== Cart (localStorage) =====
   const CART_KEY = 'glacier_cart_v1';
   function readCart(){
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
-    catch(e){ return []; }
+    try {
+      const raw = localStorage.getItem(CART_KEY);
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch (err) {
+      console.warn('Failed to read cart', err);
+      return [];
+    }
   }
-  function writeCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
+  function saveCart(cart){
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    } catch (err) {
+      console.warn('Failed to save cart', err);
+    }
+    renderCartBadge();
+  }
   function addToCart(slug, qty = 1){
     const cart = readCart();
-    const idx = cart.findIndex(c => c.slug === slug);
-    if (idx === -1) cart.push({ slug, qty: qty });
-    else cart[idx].qty = (cart[idx].qty || 0) + qty;
-    writeCart(cart);
+    const idx = cart.findIndex(i => i.slug === slug);
+    if (idx >= 0) {
+      cart[idx].qty = (cart[idx].qty || 0) + qty;
+    } else {
+      cart.push({ slug, qty });
+    }
+    saveCart(cart);
+  }
+  function updateCartItem(slug, qty){
+    const cart = readCart();
+    const idx = cart.findIndex(i => i.slug === slug);
+    if (idx >= 0) {
+      if (qty <= 0) cart.splice(idx,1);
+      else cart[idx].qty = qty;
+      saveCart(cart);
+    }
+  }
+  function clearCart(){
+    saveCart([]);
   }
   function removeFromCart(slug){
     const cart = readCart().filter(i => i.slug !== slug);
-    writeCart(cart);
+    saveCart(cart);
   }
-  function setQty(slug, qty){
-    const cart = readCart();
-    const idx = cart.findIndex(c => c.slug === slug);
-    if (idx === -1) return;
-    cart[idx].qty = Math.max(1, qty);
-    writeCart(cart);
-  }
-  function clearCart(){ writeCart([]); }
 
-  function cartCount(){
-    return readCart().reduce((s,i)=>s+(i.qty||0),0);
-  }
-  function cartTotal(){
+  function renderCartBadge(){
     const cart = readCart();
-    return cart.reduce((sum, item) => {
+    const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
+    const el = document.getElementById('cart-count');
+    if (el) el.textContent = totalItems;
+  }
+
+  function renderCartDrawer(){
+    const el = document.getElementById('cart-contents');
+    const totalEl = document.getElementById('cart-total');
+    if (!el || !totalEl) return;
+    const cart = readCart();
+    if (!cart || cart.length === 0) {
+      el.innerHTML = `<div class="cart-empty">Your cart is empty</div>`;
+      totalEl.textContent = '';
+      return;
+    }
+    const parts = cart.map(item => {
+      const p = PRODUCTS.find(x => x.slug === item.slug);
+      if (!p) return '';
+      const lineTotal = money(p.price * (item.qty || 0));
+      return `
+        <div class="cart-item" data-slug="${escapeHtml(item.slug)}">
+          <div style="display:flex;gap:10px;align-items:center">
+            <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}" style="width:56px;height:56px;object-fit:contain;border:1px solid var(--line);border-radius:8px" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+            <div class="meta">
+              <h4>${escapeHtml(p.name)}</h4>
+              <p style="font-weight:800">${lineTotal} &nbsp; <span style="font-weight:600;color:var(--muted)">(${item.qty}x)</span></p>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+            <button data-remove="${escapeHtml(item.slug)}" style="border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px;cursor:pointer">Remove</button>
+            <div style="display:flex;gap:6px;align-items:center">
+              <button data-decr="${escapeHtml(item.slug)}" style="border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px;cursor:pointer">−</button>
+              <span style="min-width:24px;text-align:center">${item.qty}</span>
+              <button data-incr="${escapeHtml(item.slug)}" style="border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px;cursor:pointer">＋</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    el.innerHTML = parts;
+    const totalCents = cart.reduce((sum, item) => {
       const p = PRODUCTS.find(x => x.slug === item.slug);
       return sum + (p ? p.price * (item.qty || 0) : 0);
     }, 0);
-  }
+    totalEl.textContent = `Total: ${money(totalCents)}`;
 
-  function updateCartUI(){
-    const countEl = document.getElementById('cart-count');
-    if (countEl) countEl.textContent = String(cartCount());
-    const contents = document.getElementById('cart-contents');
-    const total = document.getElementById('cart-total');
-    if (!contents || !total) return;
-    const cart = readCart();
-    if (cart.length === 0){
-      contents.innerHTML = '<div class="cart-empty">Your cart is empty.</div>';
-      total.textContent = '';
-      return;
-    }
-    contents.innerHTML = cart.map(item => {
-      const p = PRODUCTS.find(x=>x.slug===item.slug) || { name: item.slug, price:0 };
-      return `<div class="cart-item" data-slug="${escapeHtml(item.slug)}">
-        <div class="meta">
-          <h4>${escapeHtml(p.name)}</h4>
-          <p>${money(p.price)} × <input class="qty-input" type="number" min="1" value="${escapeHtml(String(item.qty))}" style="width:60px;padding:6px;border-radius:8px;border:1px solid var(--line)"></p>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <div style="font-weight:900">${money((p.price||0)*(item.qty||0))}</div>
-          <button class="btn ghost small remove-item" type="button">Remove</button>
-        </div>
-      </div>`;
-    }).join('');
-    total.textContent = 'Total: ' + money(cartTotal());
-    // wire quantity inputs & remove buttons
-    contents.querySelectorAll('.cart-item').forEach(el => {
-      const slug = el.getAttribute('data-slug');
-      const qtyInput = el.querySelector('.qty-input');
-      const removeBtn = el.querySelector('.remove-item');
-      if (qtyInput){
-        qtyInput.addEventListener('change', () => {
-          const val = Number(qtyInput.value || 1);
-          if (isNaN(val) || val < 1) { qtyInput.value = '1'; setQty(slug,1); }
-          else setQty(slug, Math.floor(val));
-        });
-      }
-      if (removeBtn){
-        removeBtn.addEventListener('click', () => removeFromCart(slug));
-      }
+    // wire up buttons inside cart
+    el.querySelectorAll('[data-remove]').forEach(btn => {
+      btn.addEventListener('click', (ev) => {
+        const slug = btn.getAttribute('data-remove');
+        removeFromCart(slug);
+        renderCartDrawer();
+      });
+    });
+    el.querySelectorAll('[data-incr]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-incr');
+        const cart = readCart();
+        const item = cart.find(i => i.slug === slug);
+        if (item) { item.qty = (item.qty || 0) + 1; saveCart(cart); renderCartDrawer(); }
+      });
+    });
+    el.querySelectorAll('[data-decr]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.getAttribute('data-decr');
+        const cart = readCart();
+        const item = cart.find(i => i.slug === slug);
+        if (item) {
+          item.qty = (item.qty || 1) - 1;
+          if (item.qty <= 0) removeFromCart(slug);
+          else saveCart(cart);
+          renderCartDrawer();
+        }
+      });
     });
   }
 
-  // ===== Views =====
-  function renderHome(app) {
+  // ===== Routing / Pages =====
+  const app = document.getElementById('app');
+
+  function renderHome(){
     app.innerHTML = `
       <section class="hero">
         <div class="wrap">
           <div>
-            <div class="kicker">FREE SAME DAY PRIORITY SHIPPING</div>
-            <h1>RESEARCH COMPOUNDS</h1>
-            <p>Research Use Only — Not for human or veterinary use. Built for clean catalog browsing and fast mobile checkout.</p>
-
+            <div class="kicker">RESEARCH USE ONLY</div>
+            <h1>High-purity compounds for laboratory research</h1>
+            <p>Glacier BioLabs supplies analytical-grade peptides and laboratory supplies for controlled, non-clinical research. All products are intended for research purposes only — not for human or veterinary use.</p>
             <div class="cta-row">
-              <a class="btn primary" href="#/shop">BUY PEPTIDES ONLINE</a>
-              <a class="btn ghost" href="#/knowledge">KNOWLEDGE CENTER</a>
+              <a class="btn primary" href="#/shop">Browse Peptides</a>
+              <a class="btn ghost" href="#/learn">Learn More</a>
             </div>
-
-            <div class="badge">Free US shipping • Priority (1–3 business days) on orders over $199</div>
+            <div class="badge" style="margin-top:18px">Free standard shipping over $150</div>
           </div>
-
-          <div class="panel">
-            <strong>Research-first storefront</strong>
-            <small>
-              Clear compound labeling, batch-level quality testing, and strict handling standards designed for research environments.
-            </small>
+          <div>
+            <div class="panel">
+              <strong>Fast, discreet shipping</strong>
+              <small>Orders are packaged for laboratory shipments and include required documentation where applicable.</small>
+            </div>
+            <div style="height:14px"></div>
+            <div class="panel">
+              <strong>Verified quality</strong>
+              <small>Analytical certificates and lot information available on request for research use.</small>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="section">
         <div class="wrap">
-          <h2>OUR BEST SELLERS</h2>
-          <p class="subhead">Proudly U.S.-based and shipped, lab-tested for purity, quality, and consistency.</p>
-          <div class="grid">
-            ${bestSellersHTML()}
+          <h2>Featured products</h2>
+          <div class="subhead">Top picks for lab workflows and analytical studies.</div>
+
+          <div class="grid" id="featured-grid" style="margin-top:18px">
+            ${PRODUCTS.slice(0,4).map(p => productCardHTML(p)).join('')}
           </div>
         </div>
       </section>
 
-      ${trustSectionHTML()}
-
-      <section class="section">
+      <section class="trust">
         <div class="wrap">
-          <h2>Shop All Products</h2>
-          <p class="subhead">Browse the full catalog with filters and sorting.</p>
-          <a class="btn primary" href="#/shop">Open Catalog</a>
+          <h2>What researchers appreciate</h2>
+          <div class="trust-grid" style="margin-top:18px">
+            <div class="trust-card">
+              <div class="icon">QC</div>
+              <h3>Certificate-ready</h3>
+              <p>Lot and QC documentation available to support reproducible research.</p>
+            </div>
+            <div class="trust-card">
+              <div class="icon">SHIP</div>
+              <h3>Discreet shipping</h3>
+              <p>Packaging designed for laboratory logistics and regulatory compliance.</p>
+            </div>
+            <div class="trust-card">
+              <div class="icon">SUP</div>
+              <h3>Research support</h3>
+              <p>We provide product data and handling guidance for non-clinical studies.</p>
+            </div>
+          </div>
         </div>
       </section>
     `;
   }
 
-  function renderShop(app) {
-    const categories = Array.from(new Set(PRODUCTS.map(p=>p.category))).sort();
-    const filtered = filterAndSortProducts();
+  function renderShop(){
+    const categories = Array.from(new Set(PRODUCTS.map(p => p.category))).sort();
+    const list = filterAndSortProducts();
 
     app.innerHTML = `
       <section class="section">
-        <div class="wrap">
-          <div class="catalog">
-            <aside class="filters" aria-label="Filters">
-              <div class="filter-block">
-                <h3>Price</h3>
-                <div class="filter-line"></div>
-                <div class="price-range">
-                  <input id="minPrice" inputmode="numeric" placeholder="Min" value="${escapeHtml(state.minPrice)}">
-                  <input id="maxPrice" inputmode="numeric" placeholder="Max" value="${escapeHtml(state.maxPrice)}">
-                  <button id="applyPrice" type="button">Apply</button>
-                </div>
+        <div class="wrap catalog">
+          <aside class="filters" id="filters">
+            <div class="filter-block">
+              <h3>Search</h3>
+              <div style="display:flex;gap:8px">
+                <input id="filter-q" type="search" placeholder="Search products..." value="${escapeHtml(state.q || '')}" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px">
               </div>
+            </div>
 
-              <div class="filter-block">
-                <h3>Stock</h3>
-                <div class="filter-line"></div>
-                <label class="check">
-                  <input id="inStock" type="checkbox" ${state.inStockOnly ? 'checked' : ''}>
-                  In Stock
-                </label>
-              </div>
+            <div class="filter-block">
+              <h3>Availability</h3>
+              <label class="check"><input id="filter-instock" type="checkbox" ${state.inStockOnly ? 'checked' : ''}> In stock only</label>
+            </div>
 
-              <div class="filter-block">
-                <h3>Category</h3>
-                <div class="filter-line"></div>
-                ${categories.map(cat => `
-                  <label class="check">
-                    <input class="cat" type="checkbox" value="${escapeHtml(cat)}" ${state.categories.has(cat) ? 'checked' : ''}>
-                    ${escapeHtml(cat)}
-                    <span class="chip">${PRODUCTS.filter(p=>p.category===cat).length}</span>
-                  </label>
-                `).join('')}
-              </div>
-            </aside>
+            <div class="filter-block">
+              <h3>Category</h3>
+              ${categories.map(cat => `
+                <label class="check"><input type="checkbox" data-cat="${escapeHtml(cat)}" ${state.categories.has(cat) ? 'checked' : ''}> ${escapeHtml(cat)}</label>
+              `).join('')}
+            </div>
 
-            <div>
-              <div class="catalog-head">
-                <div class="count">Showing ${filtered.length} result${filtered.length===1?'':'s'}</div>
-                <div class="sort">
-                  <label class="sr-only" for="sort">Sort</label>
-                  <select id="sort">
-                    <option value="default" ${state.sort==='default'?'selected':''}>Default sorting</option>
-                    <option value="price-asc" ${state.sort==='price-asc'?'selected':''}>Price: low to high</option>
-                    <option value="price-desc" ${state.sort==='price-desc'?'selected':''}>Price: high to low</option>
-                    <option value="name-asc" ${state.sort==='name-asc'?'selected':''}>Name: A to Z</option>
-                  </select>
-                </div>
+            <div class="filter-block">
+              <h3>Price</h3>
+              <div class="price-range">
+                <input id="filter-min" type="number" min="0" placeholder="Min $" value="${escapeHtml(state.minPrice || '')}">
+                <input id="filter-max" type="number" min="0" placeholder="Max $" value="${escapeHtml(state.maxPrice || '')}">
+                <button id="filter-apply" class="btn small">Apply</button>
+                <button id="filter-clear" class="btn small">Clear</button>
               </div>
+            </div>
 
-              <div class="grid" id="shop-grid">
-                ${filtered.map(p=>productCardHTML(p)).join('')}
+          </aside>
+
+          <div>
+            <div class="catalog-head">
+              <div>
+                <div style="font-weight:900;font-size:22px">Catalog</div>
+                <div class="count">${list.length} products</div>
               </div>
+              <div class="sort">
+                <label style="font-weight:800;color:var(--muted);margin-right:6px">Sort</label>
+                <select id="sort-select">
+                  <option value="default" ${state.sort === 'default' ? 'selected' : ''}>Featured</option>
+                  <option value="price-asc" ${state.sort === 'price-asc' ? 'selected' : ''}>Price: Low to High</option>
+                  <option value="price-desc" ${state.sort === 'price-desc' ? 'selected' : ''}>Price: High to Low</option>
+                  <option value="name-asc" ${state.sort === 'name-asc' ? 'selected' : ''}>Name</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid" id="catalog-grid">
+              ${list.map(p => productCardHTML(p)).join('')}
             </div>
           </div>
         </div>
       </section>
     `;
 
-    // wire controls
-    const inStock = document.getElementById('inStock');
-    if (inStock) {
-      inStock.addEventListener('change', () => {
-        state.inStockOnly = inStock.checked;
-        renderShop(app);
-      });
-    }
-
-    document.querySelectorAll('.cat').forEach(cb => {
-      cb.addEventListener('change', () => {
-        const val = cb.value;
-        if (cb.checked) state.categories.add(val);
-        else state.categories.delete(val);
-        renderShop(app);
+    // wire up filter controls
+    document.getElementById('filter-q').addEventListener('input', (e) => {
+      state.q = e.target.value;
+    });
+    document.getElementById('filter-instock').addEventListener('change', (e) => {
+      state.inStockOnly = e.target.checked;
+      rerenderShopGrid();
+    });
+    document.querySelectorAll('[data-cat]').forEach(ch => {
+      ch.addEventListener('change', (e) => {
+        const cat = ch.getAttribute('data-cat');
+        if (ch.checked) state.categories.add(cat);
+        else state.categories.delete(cat);
+        rerenderShopGrid();
       });
     });
+    document.getElementById('filter-apply').addEventListener('click', () => {
+      state.minPrice = document.getElementById('filter-min').value;
+      state.maxPrice = document.getElementById('filter-max').value;
+      rerenderShopGrid();
+    });
+    document.getElementById('filter-clear').addEventListener('click', () => {
+      state.minPrice = '';
+      state.maxPrice = '';
+      state.q = '';
+      state.inStockOnly = false;
+      state.categories = new Set();
+      document.getElementById('filter-min').value = '';
+      document.getElementById('filter-max').value = '';
+      document.getElementById('filter-q').value = '';
+      document.querySelectorAll('[data-cat]').forEach(ch => ch.checked = false);
+      document.getElementById('filter-instock').checked = false;
+      rerenderShopGrid();
+    });
+    document.getElementById('sort-select').addEventListener('change', (e) => {
+      state.sort = e.target.value;
+      rerenderShopGrid();
+    });
 
-    const applyPrice = document.getElementById('applyPrice');
-    if (applyPrice) {
-      applyPrice.addEventListener('click', () => {
-        state.minPrice = document.getElementById('minPrice').value.trim();
-        state.maxPrice = document.getElementById('maxPrice').value.trim();
-        renderShop(app);
-      });
-    }
-
-    const sort = document.getElementById('sort');
-    if (sort) {
-      sort.addEventListener('change', () => {
-        state.sort = sort.value;
-        renderShop(app);
-      });
-    }
-
-    // wire Add to Cart buttons
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const slug = btn.getAttribute('data-slug');
+    // delegate buttons (Add / Buy) in grid
+    document.getElementById('catalog-grid').addEventListener('click', (ev) => {
+      const add = ev.target.closest('[data-add]');
+      const buy = ev.target.closest('[data-buy]');
+      if (add) {
+        const slug = add.getAttribute('data-add');
         addToCart(slug, 1);
-      });
+        renderCartDrawer();
+        alert('Added to cart');
+      } else if (buy) {
+        const slug = buy.getAttribute('data-buy');
+        const prod = PRODUCTS.find(p => p.slug === slug);
+        if (!prod) return;
+        startPayPalProductCheckout(prod, 1);
+      }
     });
-    // "VIEW" is an anchor to the product page so no JS needed here.
   }
 
-  // ===== Product page (buy now -> PayPal only) =====
-  function renderProduct(app, slug) {
+  function rerenderShopGrid(){
+    const grid = document.getElementById('catalog-grid');
+    if (!grid) return;
+    const list = filterAndSortProducts();
+    grid.innerHTML = list.map(p => productCardHTML(p)).join('');
+  }
+
+  function renderProduct(slug){
     const p = PRODUCTS.find(x => x.slug === slug);
     if (!p) {
-      app.innerHTML = `
-        <section class="section">
-          <div class="wrap">
-            <div class="page">
-              <h1>Product not found</h1>
-              <p class="muted">That product doesn’t exist. Go back to the catalog.</p>
-              <a class="btn primary" href="#/shop">Back to shop</a>
-            </div>
-          </div>
-        </section>
-      `;
+      app.innerHTML = `<div class="wrap"><h2>Product not found</h2><p class="muted">We could not find the requested product.</p></div>`;
       return;
     }
-
     app.innerHTML = `
       <section class="section">
         <div class="wrap">
-          <div class="crumbs"><a class="backlink" href="#/shop">← Back to Shop</a></div>
+          <div class="crumbs"><a class="backlink" href="#/shop">Catalog</a> › <span style="font-weight:900">${escapeHtml(p.name)}</span></div>
 
           <div class="product-page">
             <div class="media">
               <div class="img-topbar"></div>
-              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}"
-                   onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
             </div>
-
             <div class="pinfo">
               <h1>${escapeHtml(p.name)}</h1>
-
               <div class="rating-row">
-                <span style="color:var(--accent-2);font-weight:950;">★★★★★</span>
-                <span class="muted">Trusted by researchers</span>
-                <span class="muted">•</span>
-                <span class="muted">${p.inStock ? 'In Stock' : 'Out of Stock'}</span>
+                <div style="font-weight:900;color:var(--accent-2)">${money(p.price)}</div>
+                <div class="muted" style="font-weight:700">${p.category}</div>
+                <div class="muted" style="font-weight:700">${p.inStock ? 'In stock' : 'Out of stock'}</div>
               </div>
-
-              <div class="big-price">${money(p.price)}</div>
-
               <div class="desc">${escapeHtml(p.long)}</div>
 
-              <div class="ruo">
-                RESEARCH USE ONLY — Not for human or veterinary use. No medical claims are made.
-              </div>
+              <div class="ruo">Research Use Only — Not for human or veterinary use.</div>
 
-              <div class="form" id="product-actions">
+              <div class="form">
                 <div class="order-row">
-                  <div class="field">
-                    <label for="qty">Quantity</label>
+                  <div class="field" style="max-width:120px">
+                    <label for="qty">Qty</label>
                     <select id="qty">
-                      <option>1</option><option>2</option><option>3</option><option>4</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="5">5</option>
                     </select>
                   </div>
-
-                  <div class="field" style="align-self:end">
-                    <button id="add-to-cart" class="btn ghost" type="button">Add to Cart</button>
+                  <div style="flex:1">
+                    <label class="sr-only">Add to cart</label>
+                    <div class="order-cta" style="display:flex;gap:8px">
+                      <button id="add-to-cart" class="btn" type="button">Add to cart</button>
+                      <button id="buy-now" class="btn primary full" type="button">Buy now</button>
+                    </div>
                   </div>
                 </div>
-
-                <div style="margin-top:12px">
-                  <button id="buy-now" class="btn primary" ${p.inStock ? '' : 'disabled'}>Buy Now</button>
-                </div>
-
-                <!-- If a hosted PayPal button mapping exists for this product, we render it here -->
-                <div id="paypal-hosted-container" style="margin-top:12px"></div>
-
-                <p class="order-help">You can add to cart and then Checkout to pay with PayPal.</p>
+                <div class="order-help">Orders are processed via PayPal. Documentation available for research orders.</div>
+                <div id="product-paypal-hosted" style="margin-top:8px"></div>
               </div>
             </div>
           </div>
@@ -1473,366 +1491,253 @@
       </section>
     `;
 
-    // Wire actions
-    const addBtn = document.getElementById('add-to-cart');
-    if (addBtn) {
-      addBtn.addEventListener('click', () => {
-        const qty = Number(document.getElementById('qty').value || 1);
-        addToCart(p.slug, qty);
-        addBtn.textContent = 'Added';
-        setTimeout(() => addBtn.textContent = 'Add to Cart', 900);
-      });
+    document.getElementById('add-to-cart').addEventListener('click', () => {
+      const qty = Number(document.getElementById('qty').value) || 1;
+      addToCart(p.slug, qty);
+      renderCartDrawer();
+      alert('Added to cart');
+    });
+    document.getElementById('buy-now').addEventListener('click', () => {
+      const qty = Number(document.getElementById('qty').value) || 1;
+      startPayPalProductCheckout(p, qty);
+    });
+
+    // if product has hostedButtonId property, render hosted button (example support)
+    if (p.hostedButtonId) {
+      renderPayPalHosted('product-paypal-hosted', p.hostedButtonId);
     }
+  }
 
-    const buyNowBtn = document.getElementById('buy-now');
-    if (buyNowBtn) {
-      buyNowBtn.addEventListener('click', () => {
-        const qty = Number(document.getElementById('qty').value || 1);
-
-        // If there's a hosted mapping for this product, render hosted button and auto-click it.
-        const hosted = PAYPAL_HOSTED[p.slug];
-        if (hosted) {
-          // ensure container exists
-          const hostedContainerId = hosted.containerId;
-          let hc = document.getElementById(hostedContainerId);
-          if (!hc) {
-            hc = document.createElement('div');
-            hc.id = hostedContainerId;
-            document.getElementById('paypal-hosted-container').appendChild(hc);
-          }
-          // render hosted button and return
-          renderPayPalHosted(hostedContainerId, hosted.hostedButtonId).then(rendered => {
-            if (!rendered) {
-              // fallback to client-side Buttons createOrder
-              startPayPalProductCheckout(p, qty);
-            } else {
-              // try to auto-click the PayPal hosted button if possible after a short delay
-              setTimeout(()=>{
-                const btn = document.querySelector('#' + hostedContainerId + ' button');
-                if (btn) btn.click();
-              }, 700);
-            }
-          }).catch(() => {
-            startPayPalProductCheckout(p, qty);
-          });
-          return;
-        }
-
-        // Default: start PayPal checkout for the product (client-side createOrder)
-        startPayPalProductCheckout(p, qty);
-      });
+  // Policy pages (detailed content supplied by owner)
+  const POLICY_PAGES = {
+    terms: {
+      title: 'Terms & Conditions',
+      body: `
+        <p>By accessing or purchasing from Glacier BioLabs, you agree to the following terms and conditions.</p>
+        <p>All products sold by Glacier BioLabs are intended strictly for laboratory research and analytical purposes only. Products are not intended for human or veterinary use, consumption, injection, diagnosis, treatment, or prevention of any disease.</p>
+        <p>Glacier BioLabs does not provide medical advice, dosing instructions, or usage guidance of any kind. No medical or health claims are made regarding any product sold.</p>
+        <p>Buyers are solely responsible for ensuring compliance with all applicable local, state, federal, and international laws and regulations related to the purchase, possession, and use of research materials.</p>
+        <p>Glacier BioLabs reserves the right to refuse service, cancel orders, or limit quantities at our discretion.</p>
+        <p>All content on this website is provided for informational purposes only and does not constitute professional, medical, or legal advice.</p>
+      `
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      body: `
+        <p>Glacier BioLabs respects your privacy.</p>
+        <p>We collect limited personal information necessary to process orders and provide customer support, including name, email address, shipping address, and order details.</p>
+        <p>Payments are securely processed by third-party payment providers such as PayPal. Glacier BioLabs does not store or have access to your full payment information.</p>
+        <p>We do not sell, rent, or share personal data with third parties except as required to complete transactions, comply with legal obligations, or operate our services.</p>
+        <p>We may use cookies or basic analytics to improve website performance and user experience.</p>
+        <p>By using this website, you consent to this Privacy Policy.</p>
+      `
+    },
+    refunds: {
+      title: 'Refund & Returns',
+      body: `
+        <p>Due to the nature of laboratory research materials, all sales are final.</p>
+        <p>We do not accept returns or offer refunds once an order has been processed or shipped.</p>
+        <p>Refunds or replacements may be considered only in cases where an item arrives damaged or incorrect. Any issues must be reported within 48 hours of delivery by contacting <a href="mailto:support@glacierbiolabs.com">support@glacierbiolabs.com</a>.</p>
+        <p>Approved refunds or replacements are issued at the sole discretion of Glacier BioLabs.</p>
+      `
+    },
+    shipping: {
+      title: 'Shipping Policy',
+      body: `
+        <p>Orders are typically processed within 1–2 business days.</p>
+        <p>All shipments include tracking information once dispatched.</p>
+        <p>Shipping times vary depending on destination and carrier. Glacier BioLabs is not responsible for delays caused by carriers, weather conditions, or incorrect address information provided by the customer.</p>
+        <p>Shipping is currently available within the United States unless otherwise stated.</p>
+      `
+    },
+    disclaimer: {
+      title: 'Research Use Only Disclaimer',
+      body: `
+        <p>All products sold by Glacier BioLabs are intended strictly for laboratory research and analytical purposes.</p>
+        <p>Products are not intended for human or veterinary use, consumption, injection, diagnosis, treatment, or prevention of any condition or disease.</p>
+        <p>No dosing information, usage instructions, or application guidance is provided or implied.</p>
+        <p>By purchasing from Glacier BioLabs, the buyer acknowledges and agrees to these restrictions.</p>
+      `
+    },
+    contact: {
+      title: 'Contact',
+      body: `
+        <p>For customer support or order inquiries, please contact us at:</p>
+        <p><a href="mailto:support@glacierbiolabs.com">support@glacierbiolabs.com</a></p>
+        <p>We aim to respond to all inquiries within 1–2 business days.</p>
+      `
+    },
+    about: {
+      title: 'About Glacier BioLabs',
+      body: `
+        <p>Glacier BioLabs is a research-focused supplier of laboratory materials intended exclusively for scientific and analytical research purposes.</p>
+        <p>Our mission is to provide clearly labeled, professionally presented research compounds while maintaining transparency, compliance, and responsible business practices.</p>
+        <p>All products are sold strictly for research use only and are not intended for human or veterinary use.</p>
+      `
+    },
+    safety: {
+      title: 'Safety & Compliance',
+      body: `
+        <p>Glacier BioLabs sells products exclusively for laboratory research and analytical use. We take safety and compliance seriously.</p>
+        <p>Key safety and compliance points:</p>
+        <ul>
+          <li>All products are labeled and sold as Research Use Only (RUO). They are not intended for human or veterinary use.</li>
+          <li>We do not provide dosing, administration, or medical use instructions.</li>
+          <li>Buyers must ensure products are used only in controlled laboratory or institutional settings and in accordance with applicable laws and institutional policies.</li>
+          <li>We ship to verified laboratory or institutional addresses and may require additional documentation for certain shipments.</li>
+          <li>Payments are processed by third-party providers (e.g., PayPal); Glacier BioLabs is not involved in payment processing beyond order fulfillment.</li>
+        </ul>
+        <p>If you require certificates, lot documentation, or compliance information for your institutional records, contact <a href="mailto:support@glacierbiolabs.com">support@glacierbiolabs.com</a>.</p>
+      `
     }
+  };
 
-    updateCartUI();
-  }
-
-  function renderLearn(app) {
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <div class="page">
-            <h1>About Glacier BioLabs</h1>
-            <p>
-              Glacier BioLabs is a research-first storefront for laboratory and scientific research materials.
-              All products are offered strictly for research use only (RUO) and are not intended for human or veterinary use.
-            </p>
-            <p>
-              Our mission is to support responsible research with consistent presentation, transparent batch handling,
-              and a clean browsing experience for customers.
-            </p>
-            <div class="divider"></div>
-            <p class="muted">
-              Looking for education content? Visit our <a href="#/knowledge" style="color:var(--accent-2);font-weight:900;">Knowledge Center</a>.
-            </p>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  function renderKnowledge(app) {
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <div class="page">
-            <h1>Knowledge Center</h1>
-            <p>
-              This page provides general, non-clinical information about research compounds, testing, and lab handling.
-              Content is educational only and not medical advice.
-            </p>
-
-            <div class="kcallout">
-              RESEARCH USE ONLY — Not for human or veterinary use. No medical claims. No dosing or application guidance is provided.
-            </div>
-
-            <div class="kgrid">
-              <div class="kcard">
-                <h3>What Are Research Compounds?</h3>
-                <p>
-                  Research compounds are substances supplied exclusively for laboratory and scientific investigation.
-                  They may be studied in controlled settings to evaluate molecular behavior, stability, and analytical properties.
-                </p>
-              </div>
-
-              <div class="kcard">
-                <h3>Purity & Testing</h3>
-                <p>
-                  Product quality is commonly verified using analytical methods such as HPLC. Certificates of Analysis (COAs)
-                  may be used to confirm identity and purity for a given batch.
-                </p>
-              </div>
-
-              <div class="kcard">
-                <h3>Storage & Handling</h3>
-                <p>
-                  Proper storage may include temperature-controlled environments, protection from moisture and light,
-                  secure containment, and adherence to standard lab safety protocols.
-                </p>
-              </div>
-
-              <div class="kcard">
-                <h3>Compound Education</h3>
-                <p>
-                  We provide high-level summaries of compounds commonly referenced in scientific literature—without instructions,
-                  protocols, or use guidance.
-                </p>
-                <ul class="klist">
-                  <li><strong>BPC-157:</strong> peptide referenced in controlled research models</li>
-                  <li><strong>GHK-Cu:</strong> copper-binding peptide studied in biochemical research</li>
-                  <li><strong>MT-2:</strong> receptor-binding research analog in controlled settings</li>
-                  <li><strong>Retatrutide:</strong> research compound referenced in receptor-focused studies</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <h2>FAQ</h2>
-            <div class="faq">
-              <details>
-                <summary>Are these products legal?</summary>
-                <p>Products are intended for legitimate research purposes. Buyers are responsible for complying with applicable local laws and regulations.</p>
-              </details>
-              <details>
-                <summary>Are COAs available?</summary>
-                <p>Yes — COAs can be provided upon request for supported batches when available.</p>
-              </details>
-              <details>
-                <summary>Do you provide usage instructions?</summary>
-                <p>No. We do not provide dosing, protocols, or application guidance. Products are research use only.</p>
-              </details>
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  function renderFAQ(app) {
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <div class="page">
-            <h1>Contact</h1>
-            <p>For support, reach us at <strong>support@glacierbiolabs.com</strong>.</p>
-
-            <div class="divider"></div>
-
-            <h2>Frequently Asked Questions</h2>
-            <div class="faq">
-              <details>
-                <summary>What does “Research Use Only” mean?</summary>
-                <p>Products are sold strictly for laboratory research and analytical purposes. They are not intended for human or veterinary use.</p>
-              </details>
-              <details>
-                <summary>Do you offer refunds?</summary>
-                <p>Due to the nature of research materials, all sales are final unless otherwise stated.</p>
-              </details>
-              <details>
-                <summary>How fast is shipping?</summary>
-                <p>Shipping times vary by location. Tracking is provided once an order ships.</p>
-              </details>
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  function renderAccount(app) {
-    app.innerHTML = `
-      <section class="section">
-        <div class="wrap">
-          <div class="page">
-            <h1>My Account</h1>
-            <p class="muted">Account/login is a placeholder right now. Add auth later (Shopify, Supabase, custom, etc.).</p>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  // ===== Router =====
-  function route() {
-    const app = document.getElementById('app');
-    if (!app) return;
-
-    const hash = location.hash || '#/';
-    setActiveNav();
-
-    // Product route: #/product/:slug
-    if (hash.startsWith('#/product/')) {
-      const slug = decodeURIComponent(hash.split('#/product/')[1] || '');
-      renderProduct(app, slug);
+  function renderPolicy(slug){
+    const page = POLICY_PAGES[slug];
+    if (!page) {
+      app.innerHTML = `<div class="wrap"><h2>Page not found</h2></div>`;
       return;
     }
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <h2>${escapeHtml(page.title)}</h2>
+          <div class="subhead muted">${escapeHtml(page.title)} for Glacier BioLabs</div>
+          <div style="margin-top:12px;color:var(--ink)">${page.body}</div>
+        </div>
+      </section>
+    `;
+  }
 
-    switch (hash) {
-      case '#/':
-      case '#':
-        renderHome(app);
-        break;
-      case '#/shop':
-        renderShop(app);
-        break;
-      case '#/learn':
-        renderLearn(app);
-        break;
-      case '#/knowledge':
-        renderKnowledge(app);
-        break;
-      case '#/faq':
-        renderFAQ(app);
-        break;
-      case '#/account':
-        renderAccount(app);
-        break;
-      default:
-        // fallback
-        location.hash = '#/';
-        break;
+  // Router
+  function router(){
+    setActiveNav();
+    const hash = location.hash || '#/';
+    if (hash === '#' || hash === '#/' || hash === '') {
+      renderHome();
+      return;
     }
-    updateCartUI();
-  }
-
-  // ===== Cart Checkout (PayPal primary) =====
-  async function checkoutCart(){
-    // If PayPal is present, start PayPal cart checkout
-    try {
-      await waitForPayPal();
-      startPayPalCartCheckout();
-    } catch (err) {
-      alert('PayPal not available. Please try again later.');
+    if (hash.startsWith('#/shop')) {
+      renderShop();
+      return;
     }
-  }
-
-  // ===== UX Wiring =====
-  function setupDrawer(){
-    const drawer = document.getElementById('drawer');
-    const backdrop = document.getElementById('drawer-backdrop');
-    const openBtn = document.getElementById('open-drawer');
-    const closeBtn = document.getElementById('close-drawer');
-
-    function open(){
-      if (!drawer || !backdrop || !openBtn) return;
-      drawer.classList.add('open');
-      backdrop.style.display = 'block';
-      drawer.setAttribute('aria-hidden','false');
-      openBtn.setAttribute('aria-expanded','true');
-      const c = document.getElementById('close-drawer');
-      if (c) c.focus();
+    if (hash.startsWith('#/product/')) {
+      const slug = decodeURIComponent(hash.replace('#/product/', '').split('?')[0]);
+      renderProduct(slug);
+      return;
     }
-    function close(){
-      if (!drawer || !backdrop || !openBtn) return;
-      drawer.classList.remove('open');
-      backdrop.style.display = 'none';
-      drawer.setAttribute('aria-hidden','true');
-      openBtn.setAttribute('aria-expanded','false');
-      openBtn.focus();
-    }
+    // policy pages
+    if (hash.startsWith('#/terms')) return renderPolicy('terms');
+    if (hash.startsWith('#/privacy')) return renderPolicy('privacy');
+    if (hash.startsWith('#/refunds')) return renderPolicy('refunds');
+    if (hash.startsWith('#/shipping')) return renderPolicy('shipping');
+    if (hash.startsWith('#/disclaimer')) return renderPolicy('disclaimer');
+    if (hash.startsWith('#/contact')) return renderPolicy('contact');
+    if (hash.startsWith('#/about')) return renderPolicy('about');
+    if (hash.startsWith('#/safety')) return renderPolicy('safety');
 
-    if (openBtn) openBtn.addEventListener('click', open);
-    if (closeBtn) closeBtn.addEventListener('click', close);
-    if (backdrop) backdrop.addEventListener('click', close);
-
-    if (drawer) {
-      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        close();
-        closeCart();
-      }
-    });
+    // fallback
+    app.innerHTML = `<div class="wrap"><h2>Page not found</h2></div>`;
   }
 
-  function setupSearch(){
-    const form = document.getElementById('search-form');
-    const q = document.getElementById('q');
-    if (!form || !q) return;
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      state.q = q.value || '';
-      location.hash = '#/shop';
-      route();
-    });
-  }
-
-  function setupOfferTab(){
-    const tab = document.getElementById('offer-tab');
-    if (!tab) return;
-    tab.addEventListener('click', () => {
-      alert('Offer tab is demo text. Replace with a real promo modal when ready.');
-    });
-  }
-
-  function setupBrandAssets(){
-    const logo = document.getElementById('site-logo');
-    if (logo) logo.src = imgPath(IMAGE_FILES.logo);
-
-    const year = document.getElementById('year');
-    if (year) year.textContent = String(new Date().getFullYear());
-  }
-
-  // Cart drawer helpers
-  function openCart(){ const cartDrawer = document.getElementById('cart-drawer'); if (cartDrawer) { cartDrawer.classList.add('open'); cartDrawer.setAttribute('aria-hidden','false'); updateCartUI(); } }
-  function closeCart(){ const cartDrawer = document.getElementById('cart-drawer'); if (cartDrawer) { cartDrawer.classList.remove('open'); cartDrawer.setAttribute('aria-hidden','true'); } }
-
-  // ===== Boot =====
-  window.addEventListener('hashchange', route);
-
-  document.addEventListener('DOMContentLoaded', () => {
-    setupDrawer();
-    setupSearch();
-    setupOfferTab();
-    setupBrandAssets();
-
-    // cart UI wiring
-    const cartToggle = document.getElementById('cart-toggle');
-    const closeCartBtn = document.getElementById('close-cart');
-    const clearBtn = document.getElementById('clear-cart');
-    const checkoutFromCart = document.getElementById('checkout-from-cart');
-
-    if (cartToggle) cartToggle.addEventListener('click', () => { updateCartUI(); openCart(); });
-    if (closeCartBtn) closeCartBtn.addEventListener('click', () => closeCart());
-    if (clearBtn) clearBtn.addEventListener('click', () => { if (confirm('Clear cart?')) clearCart(); });
-    if (checkoutFromCart) checkoutFromCart.addEventListener('click', () => checkoutCart());
-
-    // click handler for dynamically created add-to-cart buttons (global delegation fallback)
-    document.body.addEventListener('click', (e) => {
-      const addBtn = e.target.closest && e.target.closest('.add-to-cart');
-      if (addBtn) {
-        const slug = addBtn.getAttribute('data-slug');
-        addToCart(slug, 1);
-      }
-    });
-
-    // Default route
-    if (!location.hash) location.hash = '#/';
-    route();
+  // ===== UI: drawer, cart toggle, search handling =====
+  document.getElementById('open-drawer').addEventListener('click', () => {
+    const d = document.getElementById('drawer');
+    const b = document.getElementById('drawer-backdrop');
+    d.classList.add('open');
+    b.style.display = 'block';
+    d.setAttribute('aria-hidden', 'false');
+    document.getElementById('open-drawer').setAttribute('aria-expanded', 'true');
   });
+  document.getElementById('close-drawer').addEventListener('click', closeDrawer);
+  document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
+  function closeDrawer(){
+    const d = document.getElementById('drawer');
+    const b = document.getElementById('drawer-backdrop');
+    d.classList.remove('open');
+    b.style.display = 'none';
+    d.setAttribute('aria-hidden', 'true');
+    document.getElementById('open-drawer').setAttribute('aria-expanded', 'false');
+  }
+
+  // Cart toggle
+  document.getElementById('cart-toggle').addEventListener('click', () => {
+    const cd = document.getElementById('cart-drawer');
+    const open = cd.classList.toggle('open');
+    cd.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (open) renderCartDrawer();
+  });
+  document.getElementById('close-cart').addEventListener('click', () => {
+    const cd = document.getElementById('cart-drawer');
+    cd.classList.remove('open');
+    cd.setAttribute('aria-hidden', 'true');
+  });
+
+  // checkout from cart
+  document.getElementById('checkout-from-cart').addEventListener('click', () => {
+    startPayPalCartCheckout();
+  });
+  document.getElementById('clear-cart').addEventListener('click', () => {
+    if (confirm('Clear entire cart?')) {
+      clearCart();
+      renderCartDrawer();
+    }
+  });
+
+  // delegate add/buy globally (for featured grid and others)
+  document.body.addEventListener('click', (ev) => {
+    const add = ev.target.closest('[data-add]');
+    const buy = ev.target.closest('[data-buy]');
+    if (add) {
+      const slug = add.getAttribute('data-add');
+      addToCart(slug, 1);
+      renderCartDrawer();
+      alert('Added to cart');
+    } else if (buy) {
+      const slug = buy.getAttribute('data-buy');
+      const prod = PRODUCTS.find(p => p.slug === slug);
+      if (!prod) return;
+      startPayPalProductCheckout(prod, 1);
+    }
+  });
+
+  // search form behavior
+  document.getElementById('search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = document.getElementById('q').value || '';
+    state.q = q;
+    // navigate to shop and keep filters
+    location.hash = '#/shop';
+    // small delay to ensure router ran
+    setTimeout(() => {
+      const qinput = document.getElementById('filter-q');
+      if (qinput) qinput.value = q;
+      rerenderShopGrid();
+    }, 60);
+  });
+
+  // initialize site logo and year
+  (function initBranding(){
+    const logoEl = document.getElementById('site-logo');
+    if (logoEl) {
+      logoEl.src = imgPath(IMAGE_FILES.logo);
+      logoEl.onerror = function(){ this.style.display = 'none'; };
+    }
+    const y = new Date().getFullYear();
+    document.getElementById('year').textContent = y;
+  })();
+
+  // initial render
+  window.addEventListener('hashchange', router);
+  window.addEventListener('load', () => {
+    router();
+    renderCartBadge();
+  });
+
+  // expose some helpers for debugging (optional)
+  window.Glacier = {
+    PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout
+  };
   </script>
 </body>
 </html>
