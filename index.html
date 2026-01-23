@@ -2040,5 +2040,26 @@
     PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout, getPayPalClientId
   };
   </script>
+  <!-- CART MEMORY (paste right above </body>) -->
+<script>
+  const CART = "cart";
+
+  function getCart() {
+    return JSON.parse(localStorage.getItem(CART) || "[]");
+  }
+
+  function saveCart(c) {
+    localStorage.setItem(CART, JSON.stringify(c));
+  }
+
+  function addToCart(name, price) {
+    let cart = getCart();
+    let item = cart.find(i => i.name === name);
+    if (item) item.qty++;
+    else cart.push({ name, price, qty: 1 });
+    saveCart(cart);
+    alert("Added to cart ✅");
+  }
+</script>
 </body>
 </html>
