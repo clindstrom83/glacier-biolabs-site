@@ -859,18 +859,15 @@
     </div>
   </footer>
 
-  <!-- PayPal SDK -->
+  <!-- PayPal SDK (client-id preserved as you provided) -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
-  // Full app script with hosted button for water and professional policy pages included.
-  // Focused fixes:
-  // - Water product now has hostedButtonId so it behaves exactly like other products.
-  // - Added Knowledge page content and updated About/Contact pages.
-  // - Router includes #/knowledge route.
-  // - Better PayPal error diagnostics.
+  // Full application script — complete site behaviour with Knowledge/About/Contact content
+  // and improved PayPal diagnostics. Water product uses hostedButtonId so it behaves
+  // exactly like the other items.
 
-  // Helpers
+  // Small helpers
   function waitForPayPal(maxTries = 60, interval = 100) {
     return new Promise((resolve, reject) => {
       let tries = 0;
@@ -895,6 +892,9 @@
       return null;
     }
   }
+
+  // Expose helper to console for quick check
+  window.getPayPalClientId = getPayPalClientId;
 
   function debugLogPayPalError(err) {
     console.error('PayPal error (detailed):', err);
@@ -931,7 +931,6 @@
     }
   }
 
-  // Render hosted button into a temp hidden container then auto-click (used for card-level Buy)
   async function startHostedButtonCheckout(hostedButtonId) {
     try {
       await waitForPayPal();
@@ -959,13 +958,11 @@
     } catch (err) {
       console.error('HostedButtons (tmp) render failed', err);
       tmp.remove();
-      // Show helpful message and log diagnostics
       debugLogPayPalError(err);
       showToast('Could not initialize PayPal hosted checkout — check console for details', 'error');
     }
   }
 
-  // Quick-buy: show visible PayPal Buttons inside modal (avoid hidden auto-click)
   async function startPayPalProductCheckout(product, qty = 1) {
     try {
       await waitForPayPal();
@@ -982,15 +979,12 @@
       return;
     }
 
-    // Clear any previous buttons
     buttonsContainer.innerHTML = '';
     info.textContent = `${product.name} — ${money(product.price)} × ${qty}`;
 
-    // Show modal
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
 
-    // Render PayPal Buttons visible for user click
     try {
       window.paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
@@ -1006,7 +1000,6 @@
         onApprove: function(data, actions) {
           return actions.order.capture().then(function(details) {
             closePaypalModal();
-            // ideally record server-side
             clearCart();
             renderCartDrawer();
             showToast('Payment complete — Thank you!', 'success');
@@ -1015,7 +1008,6 @@
         },
         onError: function(err) {
           console.error('PayPal product checkout error', err);
-          // Enhanced debug: if NOT_AUTHORIZED or HTTP 403, show targeted guidance
           if (err && (err.name === 'NOT_AUTHORIZED' || (err.status && Number(err.status) === 403) || (err.message && err.message.indexOf('NOT_AUTHORIZED') !== -1))) {
             debugLogPayPalError(err);
             showToast('PayPal NOT_AUTHORIZED — check client-id / app permissions (see console)', 'error');
@@ -1046,7 +1038,7 @@
     }
   }
 
-  // Images and products (hostedButtonId values inserted exactly as you provided)
+  // Images + products config
   const IMAGE_DIR = 'images/';
   const IMAGE_FILES = {
     logo: 'logo.png',
@@ -1067,7 +1059,7 @@
       inStock: true,
       image: IMAGE_FILES.retatrutide,
       short: 'High-purity compound supplied for controlled laboratory research.',
-      long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. In published literature it has been examined in controlled models related to metabolic signaling pathways. This listing is for research use only (RUO).`,
+      long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. This listing is for research use only (RUO).`,
       sale: true,
       hostedButtonId: 'L2GZSFWKHT7ZE'
     },
@@ -1117,12 +1109,11 @@
       short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
       long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
       sale: false,
-      hostedButtonId: '7URDJP2ZKGVQN'
-      // added hostedButtonId for water so it behaves exactly like other hosted products
+      hostedButtonId: '7URDJP2ZKGVQN' // your provided hosted button id
     }
   ];
 
-  // Small helpers
+  // Helpers
   const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Image not available</text></svg>'
   );
@@ -1130,11 +1121,10 @@
   const money = (cents) => '$' + (cents/100).toFixed(2);
   const escapeHtml = (str) => String(str ?? '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 
-  // State and filters
+  // State + filters
   const state = {
     q: '',
     inStockOnly: false,
@@ -1152,7 +1142,7 @@
       const shop = document.querySelector('[data-nav="shop"]');
       if (shop) shop.classList.add('active');
     }
-    if (hash.startsWith('#/learn')) {
+    if (hash.startsWith('#/learn') || hash.startsWith('#/about')) {
       const learn = document.querySelector('[data-nav="learn"]');
       if (learn) learn.classList.add('active');
     }
@@ -1160,7 +1150,7 @@
       const k = document.querySelector('[data-nav="knowledge"]');
       if (k) k.classList.add('active');
     }
-    if (hash.startsWith('#/faq')) {
+    if (hash.startsWith('#/faq') || hash.startsWith('#/contact')) {
       const contact = document.querySelector('[data-nav="contact"]');
       if (contact) contact.classList.add('active');
     }
@@ -1223,7 +1213,7 @@
     `;
   }
 
-  // Cart localStorage helpers
+  // Cart helpers (localStorage)
   const CART_KEY = 'glacier_cart_v1';
   function readCart(){
     try {
@@ -1381,7 +1371,7 @@
     }, timeout);
   }
 
-  // Cart checkout — visible, itemized PayPal Buttons (same as before, but improved error messaging)
+  // Cart checkout — visible, itemized PayPal Buttons
   async function startPayPalCartCheckout() {
     const cart = readCart();
     if (!cart || cart.length === 0) { showToast('Cart is empty', 'info'); return; }
@@ -1394,7 +1384,6 @@
       return;
     }
 
-    // Build PayPal items and compute totals
     const items = [];
     let itemTotal = 0.00;
 
@@ -1432,7 +1421,6 @@
       return;
     }
 
-    // Render visible PayPal buttons in a subcontainer
     container.innerHTML = `
       <div style="margin-bottom:8px;color:var(--muted);font-weight:700">Pay securely with PayPal</div>
       <div id="paypal-cart-buttons"></div>
@@ -1461,7 +1449,6 @@
         },
         onApprove: function(data, actions) {
           return actions.order.capture().then(function(details) {
-            // Recommended: POST details to your server for record keeping.
             clearCart();
             renderCartDrawer();
             showToast('Payment complete — Thank you!', 'success');
@@ -1470,7 +1457,6 @@
         },
         onError: function(err) {
           console.error('PayPal cart error', err);
-          // show clearer message
           if (err && (err.name === 'NOT_AUTHORIZED' || (err.status && Number(err.status) === 403) || (err.message && err.message.indexOf('NOT_AUTHORIZED') !== -1))) {
             debugLogPayPalError(err);
             showToast('PayPal NOT_AUTHORIZED — check client-id / app permissions (see console)', 'error');
@@ -1753,7 +1739,7 @@
     }
   }
 
-  // Policy pages content
+  // Policy pages
   const POLICY_PAGES = {
     terms: {
       title: 'Terms & Conditions',
@@ -1937,8 +1923,8 @@
     if (hash.startsWith('#/refunds')) return renderPolicy('refunds');
     if (hash.startsWith('#/shipping')) return renderPolicy('shipping');
     if (hash.startsWith('#/disclaimer')) return renderPolicy('disclaimer');
-    if (hash.startsWith('#/contact')) return renderPolicy('contact');
-    if (hash.startsWith('#/about')) return renderPolicy('about');
+    if (hash.startsWith('#/contact') || hash.startsWith('#/faq')) return renderPolicy('contact');
+    if (hash.startsWith('#/about') || hash.startsWith('#/learn')) return renderPolicy('about');
     if (hash.startsWith('#/knowledge')) return renderPolicy('knowledge');
     if (hash.startsWith('#/safety')) return renderPolicy('safety');
 
@@ -2012,7 +1998,7 @@
         // hosted button available: use hosted flow (attempt auto-click)
         startHostedButtonCheckout(prod.hostedButtonId);
       } else {
-        // no hosted button: NAVIGATE to product page (so user sees visible checkout there)
+        // no hosted button: navigate to product page so user can see visible checkout
         location.hash = '#/product/' + encodeURIComponent(slug);
       }
     }
@@ -2051,7 +2037,7 @@
 
   // expose helpers for debugging
   window.Glacier = {
-    PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout
+    PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout, getPayPalClientId
   };
   </script>
 </body>
