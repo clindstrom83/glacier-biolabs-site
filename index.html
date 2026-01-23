@@ -1832,9 +1832,8 @@
         // hosted button available: use hosted flow (attempt auto-click)
         startHostedButtonCheckout(prod.hostedButtonId);
       } else {
-        // no hosted button: navigate to product page so user can use visible checkout
-        location.hash = '#/product/' + encodeURIComponent(slug);
-        // let router render product page; user will click visible Buy there
+        // no hosted button: start a client-side PayPal product checkout immediately (quick buy)
+        startPayPalProductCheckout(prod, 1);
       }
     }
   });
