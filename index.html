@@ -714,6 +714,27 @@
       .grid{gap:14px}
       .card img{height:150px}
     }
+
+    /* PayPal modal styles */
+    #paypal-modal {
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(2,6,23,0.5);
+      z-index:220;
+    }
+    #paypal-modal .modal {
+      width: min(520px, 94vw);
+      background: #fff;
+      border-radius:12px;
+      padding:14px;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.45);
+      color: #0f172a;
+    }
+    #paypal-modal .modal .modal-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    #paypal-modal .modal .close { background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:8px;cursor:pointer }
   </style>
 </head>
 
@@ -801,6 +822,20 @@
     </div>
   </div>
 
+  <!-- PayPal modal (used for quick-buy product checkout) -->
+  <div id="paypal-modal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="paypal-modal-title">
+      <div class="modal-head">
+        <div id="paypal-modal-title" style="font-weight:900">Secure PayPal Checkout</div>
+        <button id="paypal-modal-close" class="close" aria-label="Close checkout">Close</button>
+      </div>
+      <div id="paypal-modal-body" style="margin-top:12px">
+        <div id="paypal-modal-info" class="muted"></div>
+        <div id="paypal-modal-buttons" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast container -->
   <div id="gl-toast" aria-live="polite" aria-atomic="true"></div>
 
@@ -828,10 +863,7 @@
   <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
-  // Full app script — no parts removed. Fixes:
-  // - Single global add/buy handler (prevents double-add).
-  // - Grid buy navigates to product page when no hosted button (water).
-  // - Itemized cart checkout renders visible PayPal button inside #paypal-cart-container.
+  // Full app script with PayPal modal quick-fix and better error logging.
 
   // Helpers
   function waitForPayPal(maxTries = 60, interval = 100) {
@@ -857,8 +889,13 @@
     const container = document.getElementById(containerId);
     if (!container) return false;
     try {
-      window.paypal.HostedButtons({ hostedButtonId }).render('#' + containerId);
-      return true;
+      if (window.paypal && window.paypal.HostedButtons) {
+        window.paypal.HostedButtons({ hostedButtonId }).render('#' + containerId);
+        return true;
+      } else {
+        console.warn('HostedButtons not available on PayPal SDK');
+        return false;
+      }
     } catch (err) {
       console.error('HostedButtons render failed', err);
       return false;
@@ -874,6 +911,7 @@
       return;
     }
 
+    // Try hosted buttons auto-flow. If it fails, show toast.
     const tmpId = 'paypal-hosted-tmp-' + Math.random().toString(36).slice(2,10);
     const tmp = document.createElement('div');
     tmp.id = tmpId;
@@ -883,6 +921,9 @@
     document.body.appendChild(tmp);
 
     try {
+      if (!window.paypal || !window.paypal.HostedButtons) {
+        throw new Error('PayPal HostedButtons not provided by SDK');
+      }
       await window.paypal.HostedButtons({ hostedButtonId }).render('#' + tmpId);
       const btn = tmp.querySelector('button');
       if (btn) btn.click();
@@ -890,11 +931,11 @@
     } catch (err) {
       console.error('HostedButtons (tmp) render failed', err);
       tmp.remove();
-      showToast('Could not initialize PayPal hosted checkout', 'error');
+      showToast('Could not initialize PayPal hosted checkout: ' + (err.message || 'unknown'), 'error');
     }
   }
 
-  // Fallback product checkout using client-side Buttons (visible hidden auto-click approach)
+  // Quick-buy: show visible PayPal Buttons inside modal (avoid hidden auto-click)
   async function startPayPalProductCheckout(product, qty = 1) {
     try {
       await waitForPayPal();
@@ -903,43 +944,69 @@
       return;
     }
 
-    const tmpId = 'paypal-temp-' + Math.random().toString(36).slice(2,9);
-    const tmp = document.createElement('div');
-    tmp.id = tmpId;
-    tmp.style.position = 'absolute';
-    tmp.style.left = '-9999px';
-    tmp.style.top = '0';
-    document.body.appendChild(tmp);
+    const modal = document.getElementById('paypal-modal');
+    const info = document.getElementById('paypal-modal-info');
+    const buttonsContainer = document.getElementById('paypal-modal-buttons');
+    if (!modal || !buttonsContainer) {
+      showToast('Checkout UI not available', 'error');
+      return;
+    }
 
-    window.paypal.Buttons({
-      createOrder: function(data, actions) {
-        const value = ((product.price * qty) / 100).toFixed(2);
-        return actions.order.create({
-          purchase_units: [{
-            amount: { value: value, currency_code: 'USD' },
-            description: product.name
-          }]
-        });
-      },
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          // ideally record server-side
-          window.location.href = window.location.origin + '/?checkout=success';
-        });
-      },
-      onError: function(err) {
-        console.error('PayPal product checkout error', err);
-        showToast('PayPal checkout error', 'error');
-      }
-    }).render('#' + tmpId).then(() => {
-      const btn = tmp.querySelector('button');
-      if (btn) btn.click();
-      setTimeout(() => tmp.remove(), 3000);
-    }).catch(err => {
-      console.error('Failed to render PayPal product Buttons', err);
-      tmp.remove();
+    // Clear any previous buttons
+    buttonsContainer.innerHTML = '';
+    info.textContent = `${product.name} — ${money(product.price)} × ${qty}`;
+
+    // Show modal
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+
+    // Render PayPal Buttons visible for user click
+    try {
+      window.paypal.Buttons({
+        style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
+        createOrder: function(data, actions) {
+          const value = ((product.price * qty) / 100).toFixed(2);
+          return actions.order.create({
+            purchase_units: [{
+              amount: { value: value, currency_code: 'USD' },
+              description: product.name
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            closePaypalModal();
+            // ideally record server-side
+            clearCart();
+            renderCartDrawer();
+            showToast('Payment complete — Thank you!', 'success');
+            window.location.href = window.location.origin + '/?checkout=success';
+          });
+        },
+        onError: function(err) {
+          console.error('PayPal product checkout error', err);
+          showToast('PayPal checkout error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
+        },
+        onCancel: function(data) {
+          showToast('Payment cancelled', 'info');
+          closePaypalModal();
+        }
+      }).render('#paypal-modal-buttons');
+    } catch (err) {
+      console.error('Failed to render PayPal Buttons in modal', err);
       showToast('Could not initialize PayPal checkout. Please try again.', 'error');
-    });
+      closePaypalModal();
+    }
+  }
+
+  function closePaypalModal() {
+    const modal = document.getElementById('paypal-modal');
+    const buttonsContainer = document.getElementById('paypal-modal-buttons');
+    if (buttonsContainer) buttonsContainer.innerHTML = '';
+    if (modal) {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
   }
 
   // Images and products (hostedButtonId values inserted exactly as you provided)
@@ -1013,7 +1080,7 @@
       short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
       long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
       sale: false
-      // no hosted button for water (so grid Buy will navigate to product page)
+      // no hosted button for water (so grid Buy will now start client-side modal checkout)
     }
   ];
 
@@ -1276,7 +1343,7 @@
     }, timeout);
   }
 
-  // Cart checkout — visible, itemized PayPal Buttons
+  // Cart checkout — visible, itemized PayPal Buttons (same as before, but improved error messaging)
   async function startPayPalCartCheckout() {
     const cart = readCart();
     if (!cart || cart.length === 0) { showToast('Cart is empty', 'info'); return; }
@@ -1365,7 +1432,8 @@
         },
         onError: function(err) {
           console.error('PayPal cart error', err);
-          showToast('PayPal error. Please try again.', 'error');
+          // show clearer message
+          showToast('PayPal error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
         },
         onCancel: function(data) {
           showToast('Payment cancelled', 'info');
@@ -1373,7 +1441,7 @@
       }).render('#paypal-cart-buttons');
     } catch (err) {
       console.error('Failed to render PayPal cart buttons', err);
-      showToast('Unable to initialize PayPal cart checkout.', 'error');
+      showToast('Unable to initialize PayPal cart checkout: ' + (err.message || 'unknown'), 'error');
     }
   }
 
@@ -1812,6 +1880,11 @@
       clearCart();
       renderCartDrawer();
     }
+  });
+
+  // modal close hook
+  document.getElementById('paypal-modal-close').addEventListener('click', () => {
+    closePaypalModal();
   });
 
   // Global single handler for Add / Buy on cards (prevents double-add)
