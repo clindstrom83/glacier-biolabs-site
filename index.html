@@ -863,7 +863,10 @@
   <script src="https://www.paypal.com/sdk/js?client-id=BAAB9yjG89wJhA520TRN7WjU5k9LHn3BlKfuDruX8-oES9ZMXw1Ac-uT7Y4Ibz7qUJWsqmm7ZEEu1f_G0Y&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
 
   <script>
-  // Full app script with PayPal modal quick-fix and better error logging.
+  // Full app script with focused fixes:
+  // - Grid Buy for products without hostedButtonId navigates to product page (so water uses visible flow)
+  // - Better PayPal error logging & toast with client-id diagnostics
+  // No other functional changes to your code.
 
   // Helpers
   function waitForPayPal(maxTries = 60, interval = 100) {
@@ -877,6 +880,30 @@
       }
       step();
     });
+  }
+
+  function getPayPalClientId() {
+    try {
+      const scripts = Array.from(document.getElementsByTagName('script'));
+      const sdkScript = scripts.find(s => s.src && s.src.indexOf('paypal.com/sdk/js') !== -1);
+      if (!sdkScript) return null;
+      const u = new URL(sdkScript.src, location.href);
+      return u.searchParams.get('client-id') || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function debugLogPayPalError(err) {
+    console.error('PayPal error (detailed):', err);
+    try {
+      const clientId = getPayPalClientId();
+      console.warn('PayPal SDK client-id:', clientId);
+      console.warn('If client-id is a LIVE id but you are testing or your hosted button was created in a different account, you may see NOT_AUTHORIZED (403).');
+      console.warn('To fix: verify the client-id in the paypal script (sandbox vs live) and that the PayPal app has Checkout/Orders API enabled at developer.paypal.com -> My Apps & Credentials.');
+    } catch (e) {
+      // ignore
+    }
   }
 
   async function renderPayPalHosted(containerId, hostedButtonId) {
@@ -911,7 +938,6 @@
       return;
     }
 
-    // Try hosted buttons auto-flow. If it fails, show toast.
     const tmpId = 'paypal-hosted-tmp-' + Math.random().toString(36).slice(2,10);
     const tmp = document.createElement('div');
     tmp.id = tmpId;
@@ -931,7 +957,9 @@
     } catch (err) {
       console.error('HostedButtons (tmp) render failed', err);
       tmp.remove();
-      showToast('Could not initialize PayPal hosted checkout: ' + (err.message || 'unknown'), 'error');
+      // Show helpful message and log diagnostics
+      debugLogPayPalError(err);
+      showToast('Could not initialize PayPal hosted checkout — check console for details', 'error');
     }
   }
 
@@ -985,7 +1013,13 @@
         },
         onError: function(err) {
           console.error('PayPal product checkout error', err);
-          showToast('PayPal checkout error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
+          // Enhanced debug: if NOT_AUTHORIZED or HTTP 403, show targeted guidance
+          if (err && (err.name === 'NOT_AUTHORIZED' || (err.status && Number(err.status) === 403) || (err.message && err.message.indexOf('NOT_AUTHORIZED') !== -1))) {
+            debugLogPayPalError(err);
+            showToast('PayPal NOT_AUTHORIZED — check client-id / app permissions (see console)', 'error');
+          } else {
+            showToast('PayPal checkout error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
+          }
         },
         onCancel: function(data) {
           showToast('Payment cancelled', 'info');
@@ -994,6 +1028,7 @@
       }).render('#paypal-modal-buttons');
     } catch (err) {
       console.error('Failed to render PayPal Buttons in modal', err);
+      debugLogPayPalError(err);
       showToast('Could not initialize PayPal checkout. Please try again.', 'error');
       closePaypalModal();
     }
@@ -1433,7 +1468,12 @@
         onError: function(err) {
           console.error('PayPal cart error', err);
           // show clearer message
-          showToast('PayPal error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
+          if (err && (err.name === 'NOT_AUTHORIZED' || (err.status && Number(err.status) === 403) || (err.message && err.message.indexOf('NOT_AUTHORIZED') !== -1))) {
+            debugLogPayPalError(err);
+            showToast('PayPal NOT_AUTHORIZED — check client-id / app permissions (see console)', 'error');
+          } else {
+            showToast('PayPal error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
+          }
         },
         onCancel: function(data) {
           showToast('Payment cancelled', 'info');
@@ -1441,6 +1481,7 @@
       }).render('#paypal-cart-buttons');
     } catch (err) {
       console.error('Failed to render PayPal cart buttons', err);
+      debugLogPayPalError(err);
       showToast('Unable to initialize PayPal cart checkout: ' + (err.message || 'unknown'), 'error');
     }
   }
@@ -1905,8 +1946,11 @@
         // hosted button available: use hosted flow (attempt auto-click)
         startHostedButtonCheckout(prod.hostedButtonId);
       } else {
-        // no hosted button: start a client-side PayPal product checkout immediately (quick buy)
-        startPayPalProductCheckout(prod, 1);
+        // no hosted button: NAVIGATE to product page (so user sees visible checkout there)
+        // <- MINIMAL CHANGE: previously you started immediate PayPal checkout from grid;
+        // for products without hosted buttons (like water) navigate to product page to avoid permission / popup issues.
+        location.hash = '#/product/' + encodeURIComponent(slug);
+        // let router render product page; user will click visible Buy there
       }
     }
   });
