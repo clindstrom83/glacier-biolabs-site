@@ -770,6 +770,7 @@
 
       <nav class="desktop-nav" aria-label="Main navigation" id="desktop-nav">
         <a href="#/shop" data-nav="shop">BUY PEPTIDES</a>
+        <a href="#/testing">COA / TESTING</a>
         <a href="#/learn" data-nav="learn">ABOUT</a>
         <a href="#/knowledge" data-nav="knowledge">KNOWLEDGE</a>
         <a href="#/faq" data-nav="contact">CONTACT</a>
@@ -802,7 +803,6 @@
       <a href="#/learn">ABOUT</a>
       <a href="#/knowledge">KNOWLEDGE</a>
       <a href="#/faq">CONTACT</a>
-      <a href="#/coa">COA / TESTING</a>
       <a href="#/account">MY ACCOUNT</a>
     </div>
   </aside>
@@ -851,8 +851,7 @@
 
   <!-- Footer with policy links -->
   <div class="policies">
-    
-    <a href="#/coa">COA / Testing</a><a href="#/terms">Terms & Conditions</a>
+    <a href="#/terms">Terms & Conditions</a>
     <a href="#/privacy">Privacy Policy</a>
     <a href="#/refunds">Refund & Returns</a>
     <a href="#/shipping">Shipping Policy</a>
@@ -1653,6 +1652,68 @@
       rerenderShopGrid();
     });
   }
+  function renderTesting(){
+  app.innerHTML = `
+    <section class="section">
+      <div class="wrap">
+        <h2>COA & Testing</h2>
+
+        <p class="subhead">
+          Certificates of Analysis (COAs) and analytical testing documentation
+          for Glacier BioLabs research materials.
+        </p>
+
+        <div class="divider"></div>
+
+        <h3>What is a COA?</h3>
+        <p>
+          A Certificate of Analysis (COA) verifies compound identity, purity,
+          and lot information for laboratory research materials.
+        </p>
+
+        <h3>Testing & Verification</h3>
+        <ul>
+          <li>Compound identity confirmation</li>
+          <li>Purity percentage</li>
+          <li>Lot or batch number</li>
+          <li>Analytical methods used</li>
+        </ul>
+
+        <h3>Sample COAs</h3>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:12px">
+          <div>
+            <strong>Retatrutide</strong>
+            <img src="images/retatrutide-coa.png"
+                 style="width:100%;border:1px solid #e5e7eb;border-radius:12px;margin-top:6px">
+          </div>
+
+          <div>
+            <strong>GHK-Cu</strong>
+            <img src="images/ghk-cu-coa.png"
+                 style="width:100%;border:1px solid #e5e7eb;border-radius:12px;margin-top:6px">
+          </div>
+
+          <div>
+            <strong>BPC-157</strong>
+            <img src="images/bpc-157-coa.png"
+                 style="width:100%;border:1px solid #e5e7eb;border-radius:12px;margin-top:6px">
+          </div>
+
+          <div>
+            <strong>Melanotan II</strong>
+            <img src="images/melanotan-ii-coa.png"
+                 style="width:100%;border:1px solid #e5e7eb;border-radius:12px;margin-top:6px">
+          </div>
+        </div>
+
+        <div class="ruo" style="margin-top:24px">
+          Research Use Only — Not for human or veterinary use.
+        </div>
+      </div>
+    </section>
+  `;
+}
 
   function rerenderShopGrid(){
     const grid = document.getElementById('catalog-grid');
@@ -1931,6 +1992,10 @@
     if (hash.startsWith('#/shop')) {
       renderShop();
       return;
+    }
+      if (hash.startsWith('#/testing')) {
+    renderTesting();
+    return;
     }
     if (hash.startsWith('#/product/')) {
       const slug = decodeURIComponent(hash.replace('#/product/', '').split('?')[0]);
