@@ -26,11 +26,9 @@
       --radius: 14px;
       --radius-sm: 10px;
       --max: 1180px;
-
       --topbar-h: 36px;
       --header-h: 72px;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -41,11 +39,9 @@
     }
     a{color:inherit;text-decoration:none}
     button,input,select,textarea{font:inherit}
-
     .wrap{max-width:var(--max); margin:0 auto; padding:0 16px}
     .muted{color:var(--muted)}
     .sr-only{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
-
     /* ===== Topbar + Header ===== */
     .topbar{
       height:var(--topbar-h);
@@ -68,7 +64,6 @@
     }
     .topbar a{color:#fff; opacity:.95}
     .topbar a:hover{opacity:1; text-decoration:underline}
-
     header{
       position:sticky;
       top:0;
@@ -96,7 +91,6 @@
     }
     .brand-text strong{font-size:15px; letter-spacing:.2px}
     .brand-text span{font-size:12px; color:var(--muted)}
-
     nav.desktop-nav{
       flex:1;
       display:flex;
@@ -115,7 +109,6 @@
       color:var(--accent-2);
       background:var(--accent-soft);
     }
-
     .search{
       display:flex; align-items:center; gap:0;
       width: 360px;
@@ -143,11 +136,9 @@
       font-weight:700;
     }
     .search button:hover{background:var(--accent-2)}
-
     .header-actions{
       display:flex; align-items:center; gap:10px;
     }
-
     .cart-pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 12px;
@@ -160,7 +151,6 @@
     }
     .cart-pill:hover{box-shadow:0 6px 16px rgba(2,6,23,.08)}
     .bump { transform: scale(1.06); transition: transform .12s ease; }
-
     /* toast */
     #gl-toast {
       position:fixed;
@@ -184,7 +174,6 @@
       font-weight:700;
       opacity:0.98;
     }
-
     /* ===== Mobile controls ===== */
     .hamburger{
       display:none;
@@ -194,7 +183,6 @@
       padding:10px 12px;
       cursor:pointer;
     }
-
     .drawer-backdrop{
       position:fixed; inset:0;
       background:rgba(2,6,23,.55);
@@ -234,7 +222,6 @@
       cursor:pointer;
       font-weight:800;
     }
-
     /* ===== Hero ===== */
     .hero{
       position:relative;
@@ -332,7 +319,6 @@
     }
     .hero .panel strong{display:block; font-size:14px; letter-spacing:.2px}
     .hero .panel small{display:block; opacity:.88; margin-top:6px; line-height:1.35}
-
     /* ===== Page sections ===== */
     main{padding:24px 0 0}
     .section{padding:26px 0}
@@ -348,7 +334,6 @@
       max-width: 70ch;
     }
     .divider{height:1px; background:var(--line); margin:20px 0}
-
     /* ===== Catalog layout ===== */
     .catalog{
       display:grid;
@@ -405,7 +390,6 @@
       cursor:pointer;
     }
     .price-range button:hover{box-shadow:0 10px 22px rgba(2,6,23,.08)}
-
     .catalog-head{
       display:flex;
       align-items:center;
@@ -427,7 +411,6 @@
       background:#fff;
       font-weight:700;
     }
-
     /* ===== Product cards ===== */
     .grid{
       display:grid;
@@ -512,7 +495,6 @@
       margin-top:12px;
       display:flex; justify-content:space-between; gap:8px;
     }
-
     .btn.small{
       padding:8px 12px;
       font-size:13px;
@@ -523,7 +505,6 @@
       min-width:0;
     }
     .card .actions .btn + .btn{ margin-left:8px; }
-
     /* ===== Product detail page ===== */
     .crumbs{
       font-size:13px;
@@ -624,7 +605,6 @@
     }
     .backlink{color:var(--muted); font-weight:800}
     .backlink:hover{color:var(--ink)}
-
     /* ===== Trust icons section ===== */
     .trust{
       border-top:1px solid var(--line);
@@ -662,7 +642,6 @@
     }
     .trust-card h3{margin:0 0 6px; font-size:15px; letter-spacing:.2px}
     .trust-card p{margin:0; color:var(--muted); line-height:1.45; font-size:13px}
-
     /* ===== Cart drawer (simple) ===== */
     .cart-drawer{
       position:fixed; right:18px; top:88px; width:340px; max-width:92vw;
@@ -676,11 +655,9 @@
     .cart-item .meta p{margin:4px 0 0;font-size:13px;color:var(--muted)}
     .cart-total{font-weight:900;text-align:right;margin-top:8px}
     .cart-empty{color:var(--muted);text-align:center;padding:14px 0}
-
     /* ===== Footer policies links ===== */
     .policies{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:14px 0 8px;background:#0b0f19;color:rgba(255,255,255,.8)}
     .policies a{color:rgba(255,255,255,.9);font-weight:700}
-
     /* ===== Improved product-page checkout button (new) ===== */
     .product-page { gap: 30px; }
     .pinfo { display:flex; flex-direction:column; gap:12px; }
@@ -692,7 +669,6 @@
     @media (max-width: 900px){
       .order-row{ flex-direction:column; align-items:stretch; }
     }
-
     /* ===== Responsive ===== */
     @media (max-width: 1100px){
       .grid{grid-template-columns: repeat(3, minmax(0,1fr))}
@@ -721,7 +697,6 @@
       .grid{gap:14px}
       .card img{height:150px}
     }
-
     /* PayPal modal styles */
     #paypal-modal {
       position:fixed;
@@ -742,24 +717,174 @@
     }
     #paypal-modal .modal .modal-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
     #paypal-modal .modal .close { background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:8px;cursor:pointer }
-  </style>
-</head>
+  
+    /* ===== Knowledge Center ===== */
+    .knowledge-hero{
+      position:relative;
+      overflow:hidden;
+      border-bottom:1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(2,6,23,.55), rgba(2,6,23,.35)),
+        radial-gradient(1200px 600px at 30% 20%, rgba(208,53,44,.22), transparent 55%),
+        url("images/hero.jpg") center/cover no-repeat;
+      color:#fff;
+    }
+    .knowledge-hero .wrap{
+      padding:60px 16px 90px;
+      text-align:center;
+    }
+    .knowledge-hero h1{
+      margin:0;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:44px;
+      font-weight:950;
+    }
+    .knowledge-hero .subtitle{
+      margin-top:10px;
+      color:rgba(255,255,255,.9);
+      font-weight:700;
+    }
+    .knowledge-hero::after{
+      content:"";
+      position:absolute;
+      left:-10%;
+      right:-10%;
+      bottom:-45px;
+      height:90px;
+      background:#fff;
+      border-radius: 50%;
+    }
+    .knowledge-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:22px;
+      margin-top:-40px;
+      padding-bottom:26px;
+    }
+    .kcard{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: 0 10px 25px rgba(2,6,23,.06);
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .kcard:hover{ transform: translateY(-2px); box-shadow: var(--shadow); }
+    .kcard .img{
+      height:190px;
+      background:#f8fafc;
+      border-bottom:1px solid var(--line);
+      overflow:hidden;
+    }
+    .kcard .img img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+    }
+    .kcard .body{ padding:18px 18px 16px; }
+    .kcard h3{ margin:0 0 10px; font-size:20px; letter-spacing:.2px; }
+    .kcard p{ margin:0; color:var(--muted); line-height:1.55; }
+    .kcard .more{
+      display:inline-flex;
+      margin-top:14px;
+      font-weight:900;
+      color:var(--accent-2);
+    }
+    .kcard .more:hover{ text-decoration:underline; }
 
+    @media (max-width: 900px){
+      .knowledge-hero h1{ font-size:34px; }
+      .knowledge-grid{ grid-template-columns: 1fr; margin-top:-26px; }
+    }
+
+</style>
+
+<style>
+.knowledge-hero{
+  background:
+    linear-gradient(135deg, rgba(15,23,42,.92), rgba(15,23,42,.85)),
+    url("images/knowledge-hero.jpg") center/cover no-repeat;
+  color:#fff;
+  padding:70px 0 60px;
+  text-align:center;
+}
+.knowledge-hero h1{
+  margin:0;
+  font-size:42px;
+  letter-spacing:.4px;
+}
+.knowledge-hero p{
+  max-width:70ch;
+  margin:14px auto 0;
+  opacity:.9;
+  font-size:16px;
+}
+.knowledge-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:22px;
+  margin-top:40px;
+}
+.kcard{
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.kcard:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 30px rgba(2,6,23,.12);
+}
+.kcard img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+.kcard .body{
+  padding:16px;
+}
+.kcard h3{
+  margin:0 0 8px;
+  font-size:18px;
+}
+.kcard p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.45;
+}
+.k-disclaimer{
+  margin-top:50px;
+  padding:16px;
+  border:1px solid rgba(208,53,44,.25);
+  background:var(--accent-soft);
+  border-radius:12px;
+  color:var(--accent-2);
+  font-weight:900;
+  text-align:center;
+}
+@media(max-width:900px){
+  .knowledge-grid{grid-template-columns:1fr}
+  .knowledge-hero h1{font-size:32px}
+}
+</style>
+
+</head>
 <body>
   <div class="topbar">
     <div class="wrap">
       <div>glacierbiolabs@outlook.com</div>
       <div class="right">
         <a href="#/shop">Shop</a>
-        <a href="#/account">My Account</a>
       </div>
     </div>
   </div>
-
   <header>
     <div class="wrap header">
       <button type="button" class="hamburger" id="open-drawer" aria-label="Open menu" aria-expanded="false">☰</button>
-
       <a class="brand" href="#/">
         <img id="site-logo" class="logo" src="" alt="Glacier BioLabs logo" onerror="this.style.display='none'">
         <div class="brand-text">
@@ -767,20 +892,17 @@
           <span>Research Use Only</span>
         </div>
       </a>
-
       <nav class="desktop-nav" aria-label="Main navigation" id="desktop-nav">
         <a href="#/shop" data-nav="shop">BUY PEPTIDES</a>
         <a href="#/learn" data-nav="learn">ABOUT</a>
         <a href="#/knowledge" data-nav="knowledge">KNOWLEDGE</a>
         <a href="#/faq" data-nav="contact">CONTACT</a>
       </nav>
-
       <form class="search" id="search-form">
         <label class="sr-only" for="q">Search</label>
         <input id="q" type="search" placeholder="Search products..." autocomplete="off">
         <button type="submit" aria-label="Search">🔎</button>
       </form>
-
       <div class="header-actions">
         <a class="pill" href="#/shop" title="Browse products">Shop</a>
         <button type="button" id="cart-toggle" class="cart-pill" aria-label="Open cart">
@@ -789,7 +911,6 @@
       </div>
     </div>
   </header>
-
   <!-- Mobile drawer -->
   <div class="drawer-backdrop" id="drawer-backdrop"></div>
   <aside class="drawer" id="drawer" aria-hidden="true">
@@ -802,22 +923,17 @@
       <a href="#/learn">ABOUT</a>
       <a href="#/knowledge">KNOWLEDGE</a>
       <a href="#/faq">CONTACT</a>
-      <a href="#/account">MY ACCOUNT</a>
     </div>
   </aside>
-
   <!-- Floating offer -->
   <div class="float-offer" id="offer-tab">15% OFF YOUR FIRST ORDER</div>
-
   <!-- Cart drawer -->
   <div id="cart-drawer" class="cart-drawer" aria-hidden="true">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <strong>Your Cart</strong>
       <button type="button" id="close-cart" style="border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 8px;cursor:pointer">Close</button>
     </div>
-
     <div id="cart-contents"></div>
-
     <div id="cart-footer" style="margin-top:8px">
       <div class="cart-total" id="cart-total"></div>
       <div style="display:flex;gap:8px;margin-top:8px">
@@ -828,7 +944,6 @@
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout uses PayPal (preferred).</div>
     </div>
   </div>
-
   <!-- PayPal modal (used for quick-buy product checkout) -->
   <div id="paypal-modal" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="paypal-modal-title">
@@ -842,12 +957,9 @@
       </div>
     </div>
   </div>
-
   <!-- Toast container -->
   <div id="gl-toast" aria-live="polite" aria-atomic="true"></div>
-
   <main id="app"></main>
-
   <!-- Footer with policy links -->
   <div class="policies">
     <a href="#/terms">Terms & Conditions</a>
@@ -859,20 +971,17 @@
     <a href="#/contact">Contact</a>
     <a href="#/about">About</a>
   </div>
-
   <footer>
     <div class="wrap">
       © <span id="year"></span> Glacier BioLabs — Research Use Only — Not for human or veterinary use.
     </div>
   </footer>
-
   <!-- PayPal SDK (client-id preserved as you provided) -->
   <script src="https://www.paypal.com/sdk/js?client-id=AfADIQ6W--CiDW71V8kr3X9lVuRcoC5zs8J8_toitd5k7K85pYYWhOkpYjqQiMWGOFb1MnSDBqkvSWil&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
   <script>
   // Full application script — complete site behaviour with Knowledge/About/Contact content
   // and improved PayPal diagnostics. Water product uses hostedButtonId so it behaves
   // exactly like the other items.
-
   // Small helpers
   function waitForPayPal(maxTries = 60, interval = 100) {
     return new Promise((resolve, reject) => {
@@ -886,7 +995,6 @@
       step();
     });
   }
-
   function getPayPalClientId() {
     try {
       const scripts = Array.from(document.getElementsByTagName('script'));
@@ -898,10 +1006,8 @@
       return null;
     }
   }
-
   // Expose helper to console for quick check
   window.getPayPalClientId = getPayPalClientId;
-
   function debugLogPayPalError(err) {
     console.error('PayPal error (detailed):', err);
     try {
@@ -913,7 +1019,6 @@
       // ignore
     }
   }
-
   async function renderPayPalHosted(containerId, hostedButtonId) {
     try {
       await waitForPayPal();
@@ -936,7 +1041,6 @@
       return false;
     }
   }
-
   async function startHostedButtonCheckout(hostedButtonId) {
     try {
       await waitForPayPal();
@@ -944,7 +1048,6 @@
       showToast('PayPal unavailable', 'error');
       return;
     }
-
     const tmpId = 'paypal-hosted-tmp-' + Math.random().toString(36).slice(2,10);
     const tmp = document.createElement('div');
     tmp.id = tmpId;
@@ -952,7 +1055,6 @@
     tmp.style.left = '-9999px';
     tmp.style.top = '0';
     document.body.appendChild(tmp);
-
     try {
       if (!window.paypal || !window.paypal.HostedButtons) {
         throw new Error('PayPal HostedButtons not provided by SDK');
@@ -968,7 +1070,6 @@
       showToast('Could not initialize PayPal hosted checkout — check console for details', 'error');
     }
   }
-
   async function startPayPalProductCheckout(product, qty = 1) {
     try {
       await waitForPayPal();
@@ -976,7 +1077,6 @@
       showToast('PayPal not available. Try again later.', 'error');
       return;
     }
-
     const modal = document.getElementById('paypal-modal');
     const info = document.getElementById('paypal-modal-info');
     const buttonsContainer = document.getElementById('paypal-modal-buttons');
@@ -984,13 +1084,10 @@
       showToast('Checkout UI not available', 'error');
       return;
     }
-
     buttonsContainer.innerHTML = '';
     info.textContent = `${product.name} — ${money(product.price)} × ${qty}`;
-
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
-
     try {
       window.paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
@@ -1033,7 +1130,6 @@
       closePaypalModal();
     }
   }
-
   function closePaypalModal() {
     const modal = document.getElementById('paypal-modal');
     const buttonsContainer = document.getElementById('paypal-modal-buttons');
@@ -1043,7 +1139,6 @@
       modal.setAttribute('aria-hidden', 'true');
     }
   }
-
   // Images + products config
   const IMAGE_DIR = 'images/';
   const IMAGE_FILES = {
@@ -1055,7 +1150,6 @@
     water: 'bacteriostatic-water-10ml.png',
     coa: 'coa-sample.png'
   };
-
   const PRODUCTS = [
     {
       slug: 'retatrutide',
@@ -1118,7 +1212,6 @@
       hostedButtonId: '7URDJP2ZKGVQN' // your provided hosted button id
     }
   ];
-
   // Helpers
   const PLACEHOLDER = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650"><rect width="100%" height="100%" fill="#ffffff"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="Arial" font-size="18">Image not available</text></svg>'
@@ -1129,7 +1222,6 @@
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
-
   // State + filters
   const state = {
     q: '',
@@ -1139,11 +1231,9 @@
     maxPrice: '',
     sort: 'default'
   };
-
   function setActiveNav() {
     const hash = location.hash || '#/';
     document.querySelectorAll('[data-nav]').forEach(a => a.classList.remove('active'));
-
     if (hash.startsWith('#/shop') || hash === '#/' || hash === '#') {
       const shop = document.querySelector('[data-nav="shop"]');
       if (shop) shop.classList.add('active');
@@ -1165,33 +1255,25 @@
       if (shop) shop.classList.add('active');
     }
   }
-
   function filterAndSortProducts() {
     let list = PRODUCTS.slice();
-
     const q = (state.q || '').trim().toLowerCase();
     if (q) {
       list = list.filter(p => (p.name + ' ' + (p.short||'') + ' ' + (p.category||'')).toLowerCase().includes(q));
     }
-
     if (state.inStockOnly) list = list.filter(p => p.inStock);
-
     if (state.categories.size > 0) {
       list = list.filter(p => state.categories.has(p.category));
     }
-
     const min = state.minPrice !== '' ? Number(state.minPrice) : null;
     const max = state.maxPrice !== '' ? Number(state.maxPrice) : null;
     if (min != null && !Number.isNaN(min)) list = list.filter(p => p.price >= min*100);
     if (max != null && !Number.isNaN(max)) list = list.filter(p => p.price <= max*100);
-
     if (state.sort === 'price-asc') list.sort((a,b)=>a.price-b.price);
     if (state.sort === 'price-desc') list.sort((a,b)=>b.price-a.price);
     if (state.sort === 'name-asc') list.sort((a,b)=>a.name.localeCompare(b.name));
-
     return list;
   }
-
   // Product card markup
   function productCardHTML(p){
     const img = imgPath(p.image);
@@ -1218,7 +1300,6 @@
       </article>
     `;
   }
-
   // Cart helpers (localStorage)
   const CART_KEY = 'glacier_cart_v1';
   function readCart(){
@@ -1275,14 +1356,12 @@
     saveCart(cart);
     showToast('Removed from cart', 'info');
   }
-
   function renderCartBadge(){
     const cart = readCart();
     const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
     const el = document.getElementById('cart-count');
     if (el) el.textContent = totalItems;
   }
-
   function renderCartDrawer(){
     const el = document.getElementById('cart-contents');
     const totalEl = document.getElementById('cart-total');
@@ -1325,7 +1404,6 @@
       return sum + (p ? p.price * (item.qty || 0) : 0);
     }, 0);
     totalEl.textContent = `Total: ${money(totalCents)}`;
-
     // wire up buttons inside cart
     el.querySelectorAll('[data-remove]').forEach(btn => {
       btn.addEventListener('click', (ev) => {
@@ -1355,12 +1433,10 @@
         }
       });
     });
-
     // Clear paypal-cart-container so a fresh button will be rendered when checkout clicked
     const container = document.getElementById('paypal-cart-container');
     if (container) container.innerHTML = '';
   }
-
   // Toast helper
   function showToast(text, type = 'info', timeout = 2600) {
     const container = document.getElementById('gl-toast');
@@ -1376,12 +1452,10 @@
       setTimeout(() => item.remove(), 320);
     }, timeout);
   }
-
   // Cart checkout — visible, itemized PayPal Buttons
   async function startPayPalCartCheckout() {
     const cart = readCart();
     if (!cart || cart.length === 0) { showToast('Cart is empty', 'info'); return; }
-
     try {
       await waitForPayPal();
     } catch (err) {
@@ -1389,10 +1463,8 @@
       showToast('PayPal not available. Try again later.', 'error');
       return;
     }
-
     const items = [];
     let itemTotal = 0.00;
-
     for (const cartItem of cart) {
       const p = PRODUCTS.find(x => x.slug === cartItem.slug);
       if (!p) {
@@ -1402,37 +1474,30 @@
       const qty = Number(cartItem.qty || 1);
       const unit = Number(p.price) / 100; // dollars
       const unitStr = unit.toFixed(2);
-
       items.push({
         name: String(p.name).slice(0, 127),
         sku: String(p.slug),
         unit_amount: { currency_code: 'USD', value: unitStr },
         quantity: String(qty)
       });
-
       itemTotal += unit * qty;
     }
-
     if (items.length === 0) {
       showToast('No valid items in cart', 'error');
       return;
     }
-
     const totalStr = itemTotal.toFixed(2);
-
     const containerId = 'paypal-cart-container';
     const container = document.getElementById(containerId);
     if (!container) {
       showToast('Cart payment area not found', 'error');
       return;
     }
-
     container.innerHTML = `
       <div style="margin-bottom:8px;color:var(--muted);font-weight:700">Pay securely with PayPal</div>
       <div id="paypal-cart-buttons"></div>
     `;
     const buttonsTarget = document.getElementById('paypal-cart-buttons');
-
     try {
       window.paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
@@ -1480,10 +1545,8 @@
       showToast('Unable to initialize PayPal cart checkout: ' + (err.message || 'unknown'), 'error');
     }
   }
-
   // Router + renderers
   const app = document.getElementById('app');
-
   function renderHome(){
     app.innerHTML = `
       <section class="hero">
@@ -1511,396 +1574,192 @@
           </div>
         </div>
       </section>
+      
+<section class="knowledge-hero">
+  <div class="wrap">
+    <h1>Knowledge Center</h1>
+    <p>
+      Educational resources focused on peptide chemistry, handling, stability,
+      and laboratory research considerations. All information is provided strictly
+      for non‑clinical, non‑human research purposes.
+    </p>
+  </div>
+</section>
 
-      <section class="section">
-        <div class="wrap">
-          <h2>Featured products</h2>
-          <div class="subhead">Top picks for lab workflows and analytical studies.</div>
-
-          <div class="grid" id="featured-grid" style="margin-top:18px">
-            ${PRODUCTS.slice(0,4).map(p => productCardHTML(p)).join('')}
-          </div>
+<section class="section">
+  <div class="wrap">
+    <div class="knowledge-grid">
+      <article class="kcard">
+        <img src="images/knowledge-bonds.jpg" alt="Peptide bonds">
+        <div class="body">
+          <h3>Understanding Peptide Bonds</h3>
+          <p>
+            A foundational overview of how peptide bonds form, their chemical
+            significance, and why sequence integrity matters in research models.
+          </p>
         </div>
-      </section>
+      </article>
 
-      <section class="trust">
-        <div class="wrap">
-          <h2>What researchers appreciate</h2>
-          <div class="trust-grid" style="margin-top:18px">
-            <div class="trust-card">
-              <div class="icon">QC</div>
-              <h3>Certificate-ready</h3>
-              <p>Lot and QC documentation available to support reproducible research.</p>
-            </div>
-            <div class="trust-card">
-              <div class="icon">SHIP</div>
-              <h3>Discreet shipping</h3>
-              <p>Packaging designed for laboratory logistics and regulatory compliance.</p>
-            </div>
-            <div class="trust-card">
-              <div class="icon">SUP</div>
-              <h3>Research support</h3>
-              <p>We provide product data and handling guidance for non-clinical studies.</p>
-            </div>
-          </div>
+      <article class="kcard">
+        <img src="images/knowledge-solubility.jpg" alt="Peptide solubility">
+        <div class="body">
+          <h3>Peptide Solubility & Reconstitution</h3>
+          <p>
+            Factors affecting solubility, solvent selection, and best‑practice
+            laboratory handling for peptide compounds.
+          </p>
         </div>
-      </section>
+      </article>
+
+      <article class="kcard">
+        <img src="images/knowledge-purification.jpg" alt="Peptide purification">
+        <div class="body">
+          <h3>Purification & Quality Considerations</h3>
+          <p>
+            An educational look at purification methods, impurity profiles, and
+            analytical techniques used in peptide research.
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <div class="k-disclaimer">
+      Research Use Only — Information provided is for educational and laboratory
+      research discussion only. Not for human or veterinary use.
+    </div>
+  </div>
+</section>
+
+
+      
+<section class="knowledge-hero">
+  <div class="wrap">
+    <h1>Knowledge Center</h1>
+    <p>
+      Educational resources focused on peptide chemistry, handling, stability,
+      and laboratory research considerations. All information is provided strictly
+      for non‑clinical, non‑human research purposes.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="knowledge-grid">
+      <article class="kcard">
+        <img src="images/knowledge-bonds.jpg" alt="Peptide bonds">
+        <div class="body">
+          <h3>Understanding Peptide Bonds</h3>
+          <p>
+            A foundational overview of how peptide bonds form, their chemical
+            significance, and why sequence integrity matters in research models.
+          </p>
+        </div>
+      </article>
+
+      <article class="kcard">
+        <img src="images/knowledge-solubility.jpg" alt="Peptide solubility">
+        <div class="body">
+          <h3>Peptide Solubility & Reconstitution</h3>
+          <p>
+            Factors affecting solubility, solvent selection, and best‑practice
+            laboratory handling for peptide compounds.
+          </p>
+        </div>
+      </article>
+
+      <article class="kcard">
+        <img src="images/knowledge-purification.jpg" alt="Peptide purification">
+        <div class="body">
+          <h3>Purification & Quality Considerations</h3>
+          <p>
+            An educational look at purification methods, impurity profiles, and
+            analytical techniques used in peptide research.
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <div class="k-disclaimer">
+      Research Use Only — Information provided is for educational and laboratory
+      research discussion only. Not for human or veterinary use.
+    </div>
+  </div>
+</section>
+
     `;
   }
 
-  function renderShop(){
-    const categories = Array.from(new Set(PRODUCTS.map(p => p.category))).sort();
-    const list = filterAndSortProducts();
-
+  function renderKnowledgeArticle(slug){
+    const knowledge = POLICY_PAGES.knowledge;
+    // If you later want individual articles, we can switch this to a real article map.
+    // For now: show your existing Knowledge content under a clean page shell.
     app.innerHTML = `
-      <section class="section">
-        <div class="wrap catalog">
-          <aside class="filters" id="filters">
-            <div class="filter-block">
-              <h3>Search</h3>
-              <div style="display:flex;gap:8px">
-                <input id="filter-q" type="search" placeholder="Search products..." value="${escapeHtml(state.q || '')}" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px">
-              </div>
-            </div>
-
-            <div class="filter-block">
-              <h3>Availability</h3>
-              <label class="check"><input id="filter-instock" type="checkbox" ${state.inStockOnly ? 'checked' : ''}> In stock only</label>
-            </div>
-
-            <div class="filter-block">
-              <h3>Category</h3>
-              ${categories.map(cat => `
-                <label class="check"><input type="checkbox" data-cat="${escapeHtml(cat)}" ${state.categories.has(cat) ? 'checked' : ''}> ${escapeHtml(cat)}</label>
-              `).join('')}
-            </div>
-
-            <div class="filter-block">
-              <h3>Price</h3>
-              <div class="price-range">
-                <input id="filter-min" type="number" min="0" placeholder="Min $" value="${escapeHtml(state.minPrice || '')}">
-                <input id="filter-max" type="number" min="0" placeholder="Max $" value="${escapeHtml(state.maxPrice || '')}">
-                <button id="filter-apply" class="btn small">Apply</button>
-                <button id="filter-clear" class="btn small">Clear</button>
-              </div>
-            </div>
-
-          </aside>
-
-          <div>
-            <div class="catalog-head">
-              <div>
-                <div style="font-weight:900;font-size:22px">Catalog</div>
-                <div class="count">${list.length} products</div>
-              </div>
-              <div class="sort">
-                <label style="font-weight:800;color:var(--muted);margin-right:6px">Sort</label>
-                <select id="sort-select">
-                  <option value="default" ${state.sort === 'default' ? 'selected' : ''}>Featured</option>
-                  <option value="price-asc" ${state.sort === 'price-asc' ? 'selected' : ''}>Price: Low to High</option>
-                  <option value="price-desc" ${state.sort === 'price-desc' ? 'selected' : ''}>Price: High to Low</option>
-                  <option value="name-asc" ${state.sort === 'name-asc' ? 'selected' : ''}>Name</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grid" id="catalog-grid">
-              ${list.map(p => productCardHTML(p)).join('')}
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-
-    // Wire filters only — DO NOT attach add/buy click handler here (we use a single global handler)
-    const qEl = document.getElementById('filter-q');
-    if (qEl) qEl.addEventListener('input', (e) => { state.q = e.target.value; });
-
-    const instock = document.getElementById('filter-instock');
-    if (instock) instock.addEventListener('change', (e) => { state.inStockOnly = e.target.checked; rerenderShopGrid(); });
-
-    document.querySelectorAll('[data-cat]').forEach(ch => {
-      ch.addEventListener('change', () => {
-        const cat = ch.getAttribute('data-cat');
-        if (ch.checked) state.categories.add(cat);
-        else state.categories.delete(cat);
-        rerenderShopGrid();
-      });
-    });
-
-    document.getElementById('filter-apply').addEventListener('click', () => {
-      state.minPrice = document.getElementById('filter-min').value;
-      state.maxPrice = document.getElementById('filter-max').value;
-      rerenderShopGrid();
-    });
-    document.getElementById('filter-clear').addEventListener('click', () => {
-      state.minPrice = '';
-      state.maxPrice = '';
-      state.q = '';
-      state.inStockOnly = false;
-      state.categories = new Set();
-      document.getElementById('filter-min').value = '';
-      document.getElementById('filter-max').value = '';
-      document.getElementById('filter-q').value = '';
-      document.querySelectorAll('[data-cat]').forEach(ch => ch.checked = false);
-      document.getElementById('filter-instock').checked = false;
-      rerenderShopGrid();
-    });
-    document.getElementById('sort-select').addEventListener('change', (e) => {
-      state.sort = e.target.value;
-      rerenderShopGrid();
-    });
-  }
-
-  function rerenderShopGrid(){
-    const grid = document.getElementById('catalog-grid');
-    if (!grid) return;
-    const list = filterAndSortProducts();
-    grid.innerHTML = list.map(p => productCardHTML(p)).join('');
-  }
-
-  function renderProduct(slug){
-    const p = PRODUCTS.find(x => x.slug === slug);
-    if (!p) {
-      app.innerHTML = `<div class="wrap"><h2>Product not found</h2><p class="muted">We could not find the requested product.</p></div>`;
-      return;
-    }
-
-    const hostedContainerId = p.hostedButtonId ? ('product-paypal-hosted-' + encodeURIComponent(p.slug)) : '';
-
-    app.innerHTML = `
-      <section class="section">
+      <section class="knowledge-hero">
         <div class="wrap">
-          <div class="crumbs"><a class="backlink" href="#/shop">Catalog</a> › <span style="font-weight:900">${escapeHtml(p.name)}</span></div>
-
-          <div class="product-page">
-            <div class="media">
-              <div class="img-topbar"></div>
-              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
-            </div>
-            <div class="pinfo">
-              <h1>${escapeHtml(p.name)}</h1>
-              <div class="rating-row">
-                <div style="font-weight:900;color:var(--accent-2)">${money(p.price)}</div>
-                <div class="muted" style="font-weight:700">${p.category}</div>
-                <div class="muted" style="font-weight:700">${p.inStock ? 'In stock' : 'Out of stock'}</div>
-              </div>
-              <div class="desc">${escapeHtml(p.long)}</div>
-
-              <div class="ruo">Research Use Only — Not for human or veterinary use.</div>
-
-              <div class="form">
-                <div class="order-row">
-                  <div class="field" style="max-width:120px">
-                    <label for="qty">Qty</label>
-                    <select id="qty">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="5">5</option>
-                    </select>
-                  </div>
-                  <div style="flex:1">
-                    <label class="sr-only">Add to cart</label>
-                    <div class="order-cta" style="display:flex;gap:8px;align-items:center">
-                      <button id="add-to-cart" class="btn" type="button">Add to cart</button>
-                      <button id="buy-now" class="btn primary full" type="button" ${p.hostedButtonId ? 'style="display:none"' : ''}>Buy now</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="order-help">Orders are processed via PayPal. Documentation available for research orders.</div>
-                <div id="${hostedContainerId}" style="margin-top:8px"></div>
-              </div>
-            </div>
-          </div>
+          <h1>Knowledge Center</h1>
+          <div class="subtitle">All articles and shared info are for educational purposes only.</div>
         </div>
       </section>
+
+      
+<section class="knowledge-hero">
+  <div class="wrap">
+    <h1>Knowledge Center</h1>
+    <p>
+      Educational resources focused on peptide chemistry, handling, stability,
+      and laboratory research considerations. All information is provided strictly
+      for non‑clinical, non‑human research purposes.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="knowledge-grid">
+      <article class="kcard">
+        <img src="images/knowledge-bonds.jpg" alt="Peptide bonds">
+        <div class="body">
+          <h3>Understanding Peptide Bonds</h3>
+          <p>
+            A foundational overview of how peptide bonds form, their chemical
+            significance, and why sequence integrity matters in research models.
+          </p>
+        </div>
+      </article>
+
+      <article class="kcard">
+        <img src="images/knowledge-solubility.jpg" alt="Peptide solubility">
+        <div class="body">
+          <h3>Peptide Solubility & Reconstitution</h3>
+          <p>
+            Factors affecting solubility, solvent selection, and best‑practice
+            laboratory handling for peptide compounds.
+          </p>
+        </div>
+      </article>
+
+      <article class="kcard">
+        <img src="images/knowledge-purification.jpg" alt="Peptide purification">
+        <div class="body">
+          <h3>Purification & Quality Considerations</h3>
+          <p>
+            An educational look at purification methods, impurity profiles, and
+            analytical techniques used in peptide research.
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <div class="k-disclaimer">
+      Research Use Only — Information provided is for educational and laboratory
+      research discussion only. Not for human or veterinary use.
+    </div>
+  </div>
+</section>
+
     `;
-
-    // Add-to-cart handler on product page (single handler)
-    document.getElementById('add-to-cart').addEventListener('click', () => {
-      const qty = Number(document.getElementById('qty').value) || 1;
-      addToCart(p.slug, qty);
-      renderCartDrawer();
-    });
-
-    if (!p.hostedButtonId) {
-      document.getElementById('buy-now').addEventListener('click', () => {
-        const qty = Number(document.getElementById('qty').value) || 1;
-        startPayPalProductCheckout(p, qty);
-      });
-    } else {
-      // Render hosted button in place; if it fails, show fallback Buy button
-      renderPayPalHosted(hostedContainerId, p.hostedButtonId).then(ok => {
-        if (!ok) {
-          const bn = document.getElementById('buy-now');
-          if (bn) {
-            bn.style.display = '';
-            bn.addEventListener('click', () => {
-              const qty = Number(document.getElementById('qty').value) || 1;
-              startPayPalProductCheckout(p, qty);
-            });
-          }
-        }
-      });
-    }
   }
-
-  // Policy pages
-  const POLICY_PAGES = {
-    terms: {
-      title: 'Terms & Conditions',
-      body: `
-        <p>By accessing or purchasing from Glacier BioLabs, you agree to the following terms and conditions.</p>
-        <p>All products sold by Glacier BioLabs are intended strictly for laboratory research and analytical purposes only. Products are not intended for human or veterinary use, consumption, injection, diagnosis, treatment, or prevention of any disease.</p>
-        <p>Glacier BioLabs does not provide medical advice, dosing instructions, or usage guidance of any kind. No medical or health claims are made regarding any product sold.</p>
-        <p>Buyers are solely responsible for ensuring compliance with all applicable local, state, federal, and international laws and regulations related to the purchase, possession, and use of research materials.</p>
-        <p>Glacier BioLabs reserves the right to refuse service, cancel orders, or limit quantities at our discretion.</p>
-        <p>All content on this website is provided for informational purposes only and does not constitute professional, medical, or legal advice.</p>
-      `
-    },
-
-    privacy: {
-      title: 'Privacy Policy',
-      body: `
-        <p>Glacier BioLabs respects your privacy.</p>
-        <p>We collect limited personal information necessary to process orders and provide customer support, including name, email address, shipping address, and order details.</p>
-        <p>Payments are securely processed by third-party payment providers such as PayPal. Glacier BioLabs does not store or have access to your full payment information.</p>
-        <p>We do not sell, rent, or share personal data with third parties except as required to complete transactions, comply with legal obligations, or operate our services.</p>
-        <p>We may use cookies or basic analytics to improve website performance and user experience.</p>
-        <p>By using this website, you consent to this Privacy Policy.</p>
-      `
-    },
-
-    refunds: {
-      title: 'Refund & Returns',
-      body: `
-        <p>Due to the nature of laboratory research materials, all sales are final.</p>
-        <p>We do not accept returns or offer refunds once an order has been processed or shipped.</p>
-        <p>Refunds or replacements may be considered only in cases where an item arrives damaged or incorrect. Any issues must be reported within 48 hours of delivery by contacting <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a>.</p>
-        <p>Approved refunds or replacements are issued at the sole discretion of Glacier BioLabs.</p>
-      `
-    },
-
-    shipping: {
-      title: 'Shipping Policy',
-      body: `
-        <p>Orders are typically processed within 1–2 business days.</p>
-        <p>All shipments include tracking information once dispatched.</p>
-        <p>Shipping times vary depending on destination and carrier. Glacier BioLabs is not responsible for delays caused by carriers, weather conditions, or incorrect address information provided by the customer.</p>
-        <p>Shipping is currently available within the United States unless otherwise stated.</p>
-      `
-    },
-
-    disclaimer: {
-      title: 'Research Use Only Disclaimer',
-      body: `
-        <p>All products sold by Glacier BioLabs are intended strictly for laboratory research and analytical purposes.</p>
-        <p>Products are not intended for human or veterinary use, consumption, injection, diagnosis, treatment, or prevention of any condition or disease.</p>
-        <p>No dosing information, usage instructions, or application guidance is provided or implied.</p>
-        <p>By purchasing from Glacier BioLabs, the buyer acknowledges and agrees to these restrictions.</p>
-      `
-    },
-
-    contact: {
-      title: 'Contact & Support',
-      body: `
-        <p>All support and documentation requests should be directed to our official support address below. We respond to institutional and order inquiries in a timely manner and can provide lot-specific documentation where available.</p>
-
-        <h3 style="margin-top:12px">Primary support</h3>
-        <p>Email: <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a><br>
-        Typical response time: 1–2 business days.</p>
-
-        <h3 style="margin-top:12px">Order & invoicing inquiries</h3>
-        <p>Email: <a href="mailto:orders@glacierbiolabs.com">orders@glacierbiolabs.com</a><br>
-        For purchase orders, include your PO number, billing address, and the products/quantities in question.</p>
-
-        <h3 style="margin-top:12px">Documentation requests (COA / lot data)</h3>
-        <p>If you require Certificates of Analysis, MSDS, or lot-specific data for institutional records, email <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a> with the product name and lot number. We will provide any available documentation and guidance for record-keeping.</p>
-
-        <h3 style="margin-top:12px">Business / institutional partnerships</h3>
-        <p>Email: <a href="mailto:business@glacierbiolabs.com">business@glacierbiolabs.com</a> — for account setup, institutional pricing, or supply agreements.</p>
-
-        <h3 style="margin-top:12px">Phone (US)</h3>
-        <p>Phone support is available for verified institutional customers. To request a callback, email <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a> with your preferred time and contact number.</p>
-
-        <h3 style="margin-top:12px">Security & privacy</h3>
-        <p>We do not process payments on this site directly — payments are handled via PayPal. We only use customer contact information to process orders and respond to support requests, and we do not sell personal information.</p>
-      `
-    },
-
-    about: {
-      title: 'About Glacier BioLabs',
-      body: `
-        <p><strong>Glacier BioLabs</strong> is a supplier of laboratory research materials focusing on peptides and analytical reagents. We operate with a commitment to rigorous documentation, clear labeling, and institutional-grade support to enable reproducible scientific work.</p>
-
-        <h3 style="margin-top:12px">Purpose and scope</h3>
-        <p>Glacier BioLabs supplies materials designated strictly for research and analytical use. Our operations and documentation practices are designed to support academic, industrial, and institutional laboratories that require traceable materials and supporting data.</p>
-
-        <h3 style="margin-top:12px">Quality and documentation</h3>
-        <p>We emphasize transparency: lot-specific Certificates of Analysis (COA), product specifications, and storage recommendations are provided when available. These documents are intended to assist with data integrity, record-keeping, and regulatory compliance within research environments.</p>
-
-        <h3 style="margin-top:12px">Strict Research Use Only (RUO) policy</h3>
-        <p>All products listed are RUO. They are not intended for human or veterinary use, clinical diagnosis, or therapeutic application. Glacier BioLabs does not offer clinical guidance, dosing, or medical advice. Purchasers are responsible for ensuring lawful, ethical, and institutional-compliant use of products.</p>
-
-        <h3 style="margin-top:12px">Institutional support</h3>
-        <p>We assist with institutional procurement, purchase orders, volume supply, and documentation requests. For institutional inquiries, please contact our business team or the support address listed on our Contact page.</p>
-
-        <p style="margin-top:12px">For documentation requests or product inquiries, contact <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a>.</p>
-      `
-    },
-
-    knowledge: {
-      title: 'Knowledge & Resources',
-      body: `
-        <p><strong>Essential, high‑level guidance for the safe, compliant handling of research materials.</strong> Content on this page is descriptive and intended to aid laboratory best practices; it does not constitute a protocol or provide clinical or dosing instructions.</p>
-
-        <h3 style="margin-top:12px">Research Use Only — clear boundary</h3>
-        <p>Products provided by Glacier BioLabs are designated RUO. They are intended solely for laboratory research and analytical purposes. RUO materials must not be used in humans or animals except within approved institutional research protocols and oversight.</p>
-
-        <h3 style="margin-top:12px">Laboratory safety fundamentals</h3>
-        <ul>
-          <li><strong>PPE:</strong> Use appropriate personal protective equipment (gloves, lab coat, eye protection) consistent with institutional chemical and biological safety policies.</li>
-          <li><strong>Engineering controls:</strong> Perform procedures that can generate aerosols or sprays in appropriate enclosures (biosafety cabinet or fume hood) as determined by your institutional risk assessment.</li>
-          <li><strong>Training:</strong> Ensure staff are trained in chemical hygiene, biosafety, and institutional procedures before handling reagents.</li>
-        </ul>
-
-        <h3 style="margin-top:12px">Storage and stability (high level)</h3>
-        <ul>
-          <li>Store lyophilized peptides and small molecules in accordance with the product label—commonly at -20°C—and protect them from moisture.</li>
-          <li>Avoid repeated freeze-thaw cycles. When reconstituting, aliquot into single-use vials and label with product, lot, concentration, date, and preparer.</li>
-          <li>Follow COA or product-specific storage guidance when provided.</li>
-        </ul>
-
-        <h3 style="margin-top:12px">Reconstitution and solvents (high level)</h3>
-        <p>Selection of solvent is determined by compound solubility and assay requirements. Typical solvents used in laboratory workflows include sterile water, buffered saline, or organic solvents such as DMSO for low-solubility compounds. Document solvent, concentration, and date of preparation in your experimental records.</p>
-
-        <h3 style="margin-top:12px">Labeling, recordkeeping, and traceability</h3>
-        <p>Maintain records linking experiments to product lot numbers and COAs. Accurate labeling and recordkeeping are essential for reproducibility and institutional compliance.</p>
-
-        <h3 style="margin-top:12px">Waste and disposal</h3>
-        <p>Dispose of chemical and biological waste in accordance with institutional procedures and applicable laws. Consult your Environmental Health & Safety (EHS) office for proper disposal methods.</p>
-
-        <h3 style="margin-top:12px">Technical support and documentation</h3>
-        <p>For COAs, safety data sheets (SDS/MSDS), or technical questions, contact <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a> and include the product name and lot number. For protocol development or experimental design, consult institutional resources and peer-reviewed literature; Glacier BioLabs does not provide clinical or dosing guidance.</p>
-      `
-    },
-
-    safety: {
-      title: 'Safety & Compliance',
-      body: `
-        <p>Glacier BioLabs sells products exclusively for laboratory research and analytical use. We take safety and compliance seriously.</p>
-        <p>Key safety and compliance points:</p>
-        <ul>
-          <li>All products are labeled and sold as Research Use Only (RUO). They are not intended for human or veterinary use.</li>
-          <li>We do not provide dosing, administration, or medical use instructions.</li>
-          <li>Buyers must ensure products are used only in controlled laboratory or institutional settings and in accordance with applicable laws and institutional policies.</li>
-          <li>We ship to verified laboratory or institutional addresses and may require additional documentation for certain shipments.</li>
-          <li>Payments are processed by third-party providers (e.g., PayPal); Glacier BioLabs is not involved in payment processing beyond order fulfillment.</li>
-        </ul>
-        <p>If you require certificates, lot documentation, or compliance information for your institutional records, contact <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a>.</p>
-      `
-    }
-  };
 
   function renderPolicy(slug){
     const page = POLICY_PAGES[slug];
@@ -1918,7 +1777,6 @@
       </section>
     `;
   }
-
   function router(){
     setActiveNav();
     const hash = location.hash || '#/';
@@ -1942,12 +1800,11 @@
     if (hash.startsWith('#/disclaimer')) return renderPolicy('disclaimer');
     if (hash.startsWith('#/contact') || hash.startsWith('#/faq')) return renderPolicy('contact');
     if (hash.startsWith('#/about') || hash.startsWith('#/learn')) return renderPolicy('about');
-    if (hash.startsWith('#/knowledge')) return renderPolicy('knowledge');
+    if (hash === '#/knowledge' || hash.startsWith('#/knowledge?')) return renderKnowledge();
+    if (hash.startsWith('#/knowledge/')) { const slug = decodeURIComponent(hash.replace('#/knowledge/','').split('?')[0]); return renderKnowledgeArticle(slug); }
     if (hash.startsWith('#/safety')) return renderPolicy('safety');
-
     app.innerHTML = `<div class="wrap"><h2>Page not found</h2></div>`;
   }
-
   // UI: drawer, cart toggle, search handling
   document.getElementById('open-drawer').addEventListener('click', () => {
     const d = document.getElementById('drawer');
@@ -1967,7 +1824,6 @@
     d.setAttribute('aria-hidden', 'true');
     document.getElementById('open-drawer').setAttribute('aria-expanded', 'false');
   }
-
   // Cart toggle
   document.getElementById('cart-toggle').addEventListener('click', () => {
     const cd = document.getElementById('cart-drawer');
@@ -1980,7 +1836,6 @@
     cd.classList.remove('open');
     cd.setAttribute('aria-hidden', 'true');
   });
-
   // checkout from cart
   document.getElementById('checkout-from-cart').addEventListener('click', () => {
     startPayPalCartCheckout();
@@ -1991,12 +1846,10 @@
       renderCartDrawer();
     }
   });
-
   // modal close hook
   document.getElementById('paypal-modal-close').addEventListener('click', () => {
     closePaypalModal();
   });
-
   // Global single handler for Add / Buy on cards (prevents double-add)
   document.body.addEventListener('click', (ev) => {
     const add = ev.target.closest('[data-add]');
@@ -2020,7 +1873,6 @@
       }
     }
   });
-
   // search form behavior
   document.getElementById('search-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -2033,7 +1885,6 @@
       rerenderShopGrid();
     }, 60);
   });
-
   // initialize site logo and year
   (function initBranding(){
     const logoEl = document.getElementById('site-logo');
@@ -2044,14 +1895,12 @@
     const y = new Date().getFullYear();
     document.getElementById('year').textContent = y;
   })();
-
   // initial render
   window.addEventListener('hashchange', router);
   window.addEventListener('load', () => {
     router();
     renderCartBadge();
   });
-
   // expose helpers for debugging
   window.Glacier = {
     PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout, getPayPalClientId
