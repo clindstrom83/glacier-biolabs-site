@@ -1482,91 +1482,135 @@
   const app = document.getElementById('app');
 
   function renderHome(){
-    app.innerHTML = `
-      <section class="hero">
-        <div class="wrap">
-          <div>
-            <div class="kicker">RESEARCH USE ONLY</div>
-            <h1>High-purity compounds for laboratory research</h1>
-            <p>Glacier BioLabs supplies analytical-grade peptides and laboratory supplies for controlled, non-clinical research. All products are intended for research purposes only — not for human or veterinary use.</p>
-            <div class="cta-row">
-              <a class="btn primary" href="#/shop">Browse Peptides</a>
-              <a class="btn ghost" href="#/learn">Learn More</a>
-            </div>
-            <div class="badge" style="margin-top:18px">Free standard shipping over $150</div>
-          </div>
-          <div>
-            <div class="panel">
-              <strong>Fast, discreet shipping</strong>
-              <small>All orders ship domestically from our U.S.-based lab and fulfillment center located in Alaska.</small>
-            </div>
-            <div style="height:14px"></div>
-            <div class="panel">
-              <strong>Verified quality</strong>
-              <small>Analytical certificates and lot information available on request for research use.</small>
-            </div>
-          </div>
+  app.innerHTML = `
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <div class="kicker">RESEARCH USE ONLY</div>
+        <h1>High-purity compounds for laboratory research</h1>
+        <p>
+          Glacier BioLabs supplies analytical-grade peptides and laboratory
+          materials for controlled, non-clinical research.
+        </p>
+
+        <div class="cta-row">
+          <a class="btn primary" href="#/shop">Browse Peptides</a>
+          <a class="btn ghost" href="#/learn">Learn More</a>
         </div>
-      </section>
-      <section class="section">
-  <div class="wrap">
-    <h2>About Glacier Bio Labs</h2>
 
-    <p class="subhead">
-      Glacier Bio Labs is a U.S.-based research supply company with our labs and fulfillment
-      operations located in Alaska. All orders ship domestically within the United States.
-    </p>
-
-    <p class="muted" style="max-width:70ch">
-      We are not a drop-shipper. Every order is processed, packaged, and shipped directly
-      by our team. Because shipments originate from Alaska, tracking updates may not appear
-      immediately after label creation. Tracking updates once the carrier completes the
-      first scan.
-    </p>
-
-    <p class="muted" style="max-width:70ch">
-  We stand behind our products and our service. Returns are accepted within 48 hours of
-  delivery for unopened and untampered items. If there’s an issue, contact us promptly
-  and we’ll work with you to resolve it.
-</p>
-  </div>
-</section>
-
-      <section class="section">
-        <div class="wrap">
-          <h2>Featured products</h2>
-          <div class="subhead">Top picks for lab workflows and analytical studies.</div>
-
-          <div class="grid" id="featured-grid" style="margin-top:18px">
-            ${PRODUCTS.slice(0,4).map(p => productCardHTML(p)).join('')}
-          </div>
+        <div class="badge" style="margin-top:18px">
+          Free standard shipping over $150
         </div>
-      </section>
+      </div>
 
-      <section class="trust">
-        <div class="wrap">
-          <h2>What researchers appreciate</h2>
-          <div class="trust-grid" style="margin-top:18px">
-            <div class="trust-card">
-              <div class="icon">QC</div>
-              <h3>Certificate-ready</h3>
-              <p>Lot and QC documentation available to support reproducible research.</p>
-            </div>
-            <div class="trust-card">
-              <div class="icon">SHIP</div>
-              <h3>Discreet shipping</h3>
-              <p>Packaging designed for laboratory logistics and regulatory compliance.</p>
-            </div>
-            <div class="trust-card">
-              <div class="icon">SUP</div>
-              <h3>Research support</h3>
-              <p>We provide product data and handling guidance for non-clinical studies.</p>
-            </div>
-          </div>
+      <div>
+        <div class="panel">
+          <strong>Fast shipping</strong>
+          <small>Domestic fulfillment from Alaska.</small>
         </div>
-      </section>
-    `;
-  }
+
+        <div style="height:14px"></div>
+
+        <div class="panel">
+          <strong>Verified quality</strong>
+          <small>Documentation available for research use.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section">
+    <div class="wrap">
+
+      <h2 style="text-align:center;margin-bottom:30px">
+        About Glacier BioLabs
+      </h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center;margin-bottom:40px">
+        <img src="images/lab1.jpg" style="width:100%;border-radius:14px">
+        <div>
+          <h3>Our Mission</h3>
+          <p class="muted">
+            Glacier BioLabs supplies high-purity research compounds for
+            professional laboratory workflows.
+          </p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center;margin-bottom:40px">
+        <div>
+          <h3>Commitment to Quality</h3>
+          <p class="muted">
+            Orders are processed in-house with strict labeling and
+            documentation standards.
+          </p>
+        </div>
+        <img src="images/lab2.jpg" style="width:100%;border-radius:14px">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center">
+        <img src="images/lab3.jpg" style="width:100%;border-radius:14px">
+        <div>
+          <h3>Professional Research Supply</h3>
+          <p class="muted">
+            U.S.-based supplier focused strictly on research-use materials.
+          </p>
+
+          <a href="#/shop" class="btn primary" style="margin-top:12px">
+            Browse Products
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  <section class="section">
+    <div class="wrap">
+      <h2>Featured products</h2>
+      <div class="subhead">
+        Top picks for lab workflows and analytical studies.
+      </div>
+
+      <div class="grid" style="margin-top:18px">
+        ${PRODUCTS.slice(0,4).map(p => productCardHTML(p)).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="trust">
+    <div class="wrap">
+      <h2>What researchers appreciate</h2>
+
+      <div class="trust-grid" style="margin-top:18px">
+        <div class="trust-card">
+          <div class="icon">QC</div>
+          <h3>Certificate-ready</h3>
+          <p>Lot documentation available.</p>
+        </div>
+
+        <div class="trust-card">
+          <div class="icon">SHIP</div>
+          <h3>Discreet shipping</h3>
+          <p>Professional packaging standards.</p>
+        </div>
+
+        <div class="trust-card">
+          <div class="icon">SUP</div>
+          <h3>Research support</h3>
+          <p>Responsive assistance when needed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  `;
+}
 
   function renderShop(){
     const categories = Array.from(new Set(PRODUCTS.map(p => p.category))).sort();
