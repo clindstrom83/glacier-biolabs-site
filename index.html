@@ -1900,31 +1900,67 @@
     },
 
     contact: {
-      title: 'Contact & Support',
-      body: `
-        <p>All support and documentation requests should be directed to our official support address below. We respond to institutional and order inquiries in a timely manner and can provide lot-specific documentation where available.</p>
+  title: 'Contact & Support',
+  body: `
 
-        <h3 style="margin-top:12px">Primary support</h3>
-        <p>Email: <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a><br>
-        Typical response time: 1–2 business days.</p>
+<section class="hero" style="padding:60px 0;text-align:center">
+  <div class="wrap">
+    <h1 style="color:#fff">Contact Us</h1>
+  </div>
+</section>
 
-        <h3 style="margin-top:12px">Order & invoicing inquiries</h3>
-        <p>Email: <a href="mailto:orders@glacierbiolabs.com">orders@glacierbiolabs.com</a><br>
-        For purchase orders, include your PO number, billing address, and the products/quantities in question.</p>
+<section class="section">
+  <div class="wrap">
 
-        <h3 style="margin-top:12px">Documentation requests (COA / lot data)</h3>
-        <p>If you require Certificates of Analysis, MSDS, or lot-specific data for institutional records, email <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a> with the product name and lot number. We will provide any available documentation and guidance for record-keeping.</p>
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 2fr;
+      gap:40px;
+      background:#fff;
+      padding:40px;
+      border-radius:14px;
+      border:1px solid var(--line);
+    ">
 
-        <h3 style="margin-top:12px">Business / institutional partnerships</h3>
-        <p>Email: <a href="mailto:business@glacierbiolabs.com">business@glacierbiolabs.com</a> — for account setup, institutional pricing, or supply agreements.</p>
+      <div>
+        <h3>Contact Information</h3>
 
-        <h3 style="margin-top:12px">Phone (US)</h3>
-        <p>Phone support is available for verified institutional customers. To request a callback, email <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a> with your preferred time and contact number.</p>
+        <p><strong>Email</strong><br>
+        glacierbiolabs@outlook.com</p>
 
-        <h3 style="margin-top:12px">Security & privacy</h3>
-        <p>We do not process payments on this site directly — payments are handled via PayPal. We only use customer contact information to process orders and respond to support requests, and we do not sell personal information.</p>
-      `
-    },
+        <p><strong>Support Hours</strong><br>
+        Mon–Fri<br>
+        9am – 5pm</p>
+
+        <p class="muted">
+        We respond to all inquiries within 1–2 business days.
+        </p>
+      </div>
+
+      <form id="contact-form" style="display:grid;gap:14px">
+
+        <input placeholder="Name" required
+          style="padding:12px;border:1px solid var(--line);border-radius:10px">
+
+        <input type="email" placeholder="Email" required
+          style="padding:12px;border:1px solid var(--line);border-radius:10px">
+
+        <textarea placeholder="Message" rows="6" required
+          style="padding:12px;border:1px solid var(--line);border-radius:10px"></textarea>
+
+        <button class="btn primary" type="submit">
+          Send Message
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+</section>
+
+`
+},
 
     about: {
   title: 'About Glacier BioLabs',
