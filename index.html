@@ -967,9 +967,48 @@
       content: "👁️";
       font-size: 14px;
     }
+
+    /* ===== Promo Banner ===== */
+    .promo-banner {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px;
+      position: relative;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(220,38,38,.25);
+    }
+    .promo-banner strong {
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .promo-banner .promo-code {
+      background: rgba(255,255,255,.2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin: 0 6px;
+      font-family: monospace;
+      font-size: 15px;
+      border: 1px solid rgba(255,255,255,.3);
+    }
+    .promo-banner .promo-deadline {
+      opacity: .95;
+      font-size: 13px;
+      margin-top: 4px;
+    }
   </style>
 </head>
 
+  <!-- Promo Banner -->
+  <div class="promo-banner">
+    <div>
+      <strong>🔥 Limited Time:</strong> Get <strong>15% OFF</strong> all orders with code <span class="promo-code">FEB15</span>
+    </div>
+    <div class="promo-deadline">⏰ Offer ends Sunday, Feb 23rd at midnight</div>
+  </div>
 
   <header>
     <div class="wrap header">
@@ -2669,9 +2708,9 @@
   <div id="exit-intent-popup" class="exit-popup">
     <div class="exit-popup-content">
       <button class="exit-popup-close" aria-label="Close">×</button>
-      <h3>Wait! Before You Go...</h3>
-      <p>Get <strong>10% off</strong> your first order of research-grade peptides. Third-party tested, fast shipping, with documentation.</p>
-      <p style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Use code <strong style="color: var(--accent); font-size: 16px;">FIRST10</strong> at checkout</p>
+      <h3>Wait! Limited Time Offer! 🔥</h3>
+      <p>Get <strong>15% OFF</strong> all orders of research-grade peptides. Third-party tested, fast shipping, with documentation.</p>
+      <p style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Use code <strong style="color: var(--accent); font-size: 16px;">FEB15</strong> at checkout<br><small style="opacity: .8;">Ends Sunday, Feb 23rd</small></p>
       <button class="btn primary">Browse Peptides →</button>
     </div>
   </div>
