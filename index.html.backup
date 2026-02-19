@@ -743,211 +743,6 @@
     }
     #paypal-modal .modal .modal-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
     #paypal-modal .modal .close { background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:8px;cursor:pointer }
-
-    /* ===== Testimonials Section ===== */
-    .testimonials {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      padding: 48px 0;
-      margin: 32px 0;
-    }
-    .testimonials h2 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    .testimonials .subhead {
-      text-align: center;
-      margin: 0 auto 32px;
-    }
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      margin-top: 24px;
-    }
-    .testimonial-card {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-    .testimonial-card .stars {
-      color: #fbbf24;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-    .testimonial-card .quote {
-      font-style: italic;
-      line-height: 1.6;
-      margin-bottom: 14px;
-      color: var(--ink);
-    }
-    .testimonial-card .author {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--line);
-    }
-    .testimonial-card .author-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 16px;
-    }
-    .testimonial-card .author-info {
-      flex: 1;
-    }
-    .testimonial-card .author-name {
-      font-weight: 700;
-      color: var(--ink);
-    }
-    .testimonial-card .author-title {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* ===== Trust Badges ===== */
-    .trust-badges {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 24px;
-      margin: 32px 0;
-      padding: 24px;
-      background: rgba(2,6,23,.02);
-      border-radius: var(--radius);
-    }
-    .trust-badge {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--ink);
-    }
-    .trust-badge-icon {
-      font-size: 20px;
-    }
-
-    /* ===== Exit Intent Popup ===== */
-    .exit-popup {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-      background: rgba(2,6,23,.65);
-      backdrop-filter: blur(4px);
-      animation: fadeIn .25s ease;
-    }
-    .exit-popup.show {
-      display: flex;
-    }
-    .exit-popup-content {
-      background: #fff;
-      border-radius: var(--radius);
-      padding: 32px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 20px 60px rgba(2,6,23,.35);
-      position: relative;
-      animation: slideUp .35s ease;
-    }
-    .exit-popup-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: transparent;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--muted);
-      line-height: 1;
-      padding: 4px 8px;
-    }
-    .exit-popup-close:hover {
-      color: var(--ink);
-    }
-    .exit-popup h3 {
-      margin: 0 0 12px;
-      font-size: 24px;
-      color: var(--ink);
-    }
-    .exit-popup p {
-      margin: 0 0 20px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .exit-popup .btn {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes slideUp {
-      from { transform: translateY(30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* ===== Urgency Elements ===== */
-    .urgency-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      box-shadow: 0 4px 12px rgba(239,68,68,.35);
-    }
-    .trending-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      box-shadow: 0 4px 12px rgba(59,130,246,.35);
-    }
-    .viewing-count {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
-      font-weight: 600;
-    }
-    .viewing-count::before {
-      content: "👁️";
-      font-size: 14px;
-    }
   </style>
 </head>
 
@@ -1390,22 +1185,12 @@
   function productCardHTML(p){
     const img = imgPath(p.image);
     const stockText = p.inStock ? 'In Stock' : 'Out of Stock';
-    
-    // Urgency badges (show for specific products)
-    const showLowStock = ['retatrutide', 'melanotan-ii'].includes(p.slug);
-    const showTrending = ['bpc-157', 'retatrutide'].includes(p.slug);
-    
-    // Random viewing count (2-8 people)
-    const viewingCount = Math.floor(Math.random() * 7) + 2;
-    
     return `
       <article class="card" data-slug="${escapeHtml(p.slug)}">
         <a href="#/product/${encodeURIComponent(p.slug)}" aria-label="${escapeHtml(p.name)}">
-          <div class="img-wrap" style="position:relative">
+          <div class="img-wrap">
             <div class="img-topbar"></div>
             ${p.sale ? `<div class="tag-sale">SALE</div>` : ``}
-            ${showLowStock ? `<div class="urgency-badge">Low Stock</div>` : ``}
-            ${showTrending ? `<div class="trending-badge">Trending</div>` : ``}
             <img src="${escapeHtml(img)}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
           </div>
         </a>
@@ -1413,7 +1198,6 @@
           <h3>${escapeHtml(p.name)}</h3>
           <div class="price">${money(p.price)}</div>
           <div class="small">${escapeHtml(p.short || '')}</div>
-          <div class="viewing-count">${viewingCount} people viewing</div>
           <div class="small" style="text-align:center;margin-top:10px;font-weight:900;color:${p.inStock ? 'var(--accent-2)' : 'var(--muted)'}">${escapeHtml(stockText)}</div>
           <div class="actions">
             <button class="btn small" data-add="${escapeHtml(p.slug)}">Add</button>
@@ -1767,78 +1551,6 @@
           <div class="icon">SUP</div>
           <h3>Research support</h3>
           <p>Responsive assistance when needed.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section class="testimonials">
-    <div class="wrap">
-      <h2>What Researchers Say</h2>
-      <div class="subhead">Real feedback from labs using our compounds</div>
-
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "COAs match perfectly. Exactly what I need for replication studies. Shipping was fast and discreet."
-          </div>
-          <div class="author">
-            <div class="author-avatar">DM</div>
-            <div class="author-info">
-              <div class="author-name">Dr. Michael Chen</div>
-              <div class="author-title">Independent Researcher</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "Finally, a supplier that provides actual documentation. Purity was as advertised. Will order again."
-          </div>
-          <div class="author">
-            <div class="author-avatar">JS</div>
-            <div class="author-info">
-              <div class="author-name">Jennifer Sanders</div>
-              <div class="author-title">Research Assistant</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "Transparent sourcing, verified results, professional packaging. This is how it should be done."
-          </div>
-          <div class="author">
-            <div class="author-avatar">RK</div>
-            <div class="author-info">
-              <div class="author-name">Robert Kim</div>
-              <div class="author-title">Lab Manager</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Trust Badges -->
-      <div class="trust-badges">
-        <div class="trust-badge">
-          <span class="trust-badge-icon">🔒</span>
-          <span>Secure Checkout</span>
-        </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">✅</span>
-          <span>Third-Party Tested</span>
-        </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">💯</span>
-          <span>Money-Back Guarantee</span>
-        </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">🚚</span>
-          <span>Fast US Shipping</span>
         </div>
       </div>
     </div>
@@ -2522,79 +2234,6 @@
   window.Glacier = {
     PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout, getPayPalClientId
   };
-
-  // ===== Exit-Intent Popup =====
-  (function() {
-    const POPUP_SHOWN_KEY = 'glacier_exit_popup_shown';
-    const EXIT_POPUP_ID = 'exit-intent-popup';
-    
-    // Check if already shown in this session
-    if (sessionStorage.getItem(POPUP_SHOWN_KEY)) {
-      return;
-    }
-
-    let exitIntentShown = false;
-
-    function showExitPopup() {
-      if (exitIntentShown) return;
-      exitIntentShown = true;
-      sessionStorage.setItem(POPUP_SHOWN_KEY, 'true');
-      
-      const popup = document.getElementById(EXIT_POPUP_ID);
-      if (popup) {
-        popup.classList.add('show');
-      }
-    }
-
-    function hideExitPopup() {
-      const popup = document.getElementById(EXIT_POPUP_ID);
-      if (popup) {
-        popup.classList.remove('show');
-      }
-    }
-
-    // Detect mouse leaving viewport (exit intent)
-    document.addEventListener('mouseleave', (e) => {
-      if (e.clientY <= 0) {
-        showExitPopup();
-      }
-    });
-
-    // Close popup handlers
-    setTimeout(() => {
-      const closeBtn = document.querySelector('.exit-popup-close');
-      const popup = document.getElementById(EXIT_POPUP_ID);
-      const ctaBtn = document.querySelector('.exit-popup .btn');
-      
-      if (closeBtn) {
-        closeBtn.addEventListener('click', hideExitPopup);
-      }
-      if (popup) {
-        popup.addEventListener('click', (e) => {
-          if (e.target === popup) {
-            hideExitPopup();
-          }
-        });
-      }
-      if (ctaBtn) {
-        ctaBtn.addEventListener('click', () => {
-          hideExitPopup();
-          window.location.hash = '#/shop';
-        });
-      }
-    }, 500);
-  })();
   </script>
-
-  <!-- Exit-Intent Popup -->
-  <div id="exit-intent-popup" class="exit-popup">
-    <div class="exit-popup-content">
-      <button class="exit-popup-close" aria-label="Close">×</button>
-      <h3>Wait! Before You Go...</h3>
-      <p>Get <strong>10% off</strong> your first order of research-grade peptides. Third-party tested, fast shipping, with documentation.</p>
-      <p style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Use code <strong style="color: var(--accent); font-size: 16px;">FIRST10</strong> at checkout</p>
-      <button class="btn primary">Browse Peptides →</button>
-    </div>
-  </div>
 </body>
 </html>
