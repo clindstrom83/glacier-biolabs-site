@@ -2024,312 +2024,45 @@
   <!-- HERO -->
   <section class="hero-ad-style">
     <div class="hero-ad-bg"></div>
-    
-    <div class="discount-badge-topright">
-      <div class="discount-inner-ad">15%<br>OFF</div>
-    </div>
-    
-    <div class="wrap" style="max-width:1200px; position:relative; z-index:2">
-      <div class="hero-ad-grid">
-        
-        <div class="hero-ad-left">
-          <h1 class="hero-ad-h1">RESEARCH-GRADE<br>PEPTIDES</h1>
-          <p class="hero-ad-subtitle">Lab-Tested Purity You Can Trust</p>
-          
-          <div class="trust-badges-stack">
-            <div class="trust-item">
-              <div class="trust-icon">✓</div>
-              <div class="trust-text">COA VERIFIED</div>
-            </div>
-            <div class="trust-item">
-              <div class="trust-icon">✓</div>
-              <div class="trust-text">3RD PARTY TESTED</div>
-            </div>
-            <div class="trust-item">
-              <div class="trust-icon">🇺🇸</div>
-              <div class="trust-text">USA LAB</div>
-            </div>
-            <div class="trust-item">
-              <div class="trust-icon">⭐</div>
-              <div class="trust-text">>99% PURITY</div>
-            </div>
-            <div class="trust-item">
-              <div class="trust-icon">📦</div>
-              <div class="trust-text">FAST SHIPPING</div>
-            </div>
-          </div>
-          
-          <div class="hero-social-proof">
-            <div class="stars-gold">★★★★★</div>
-            <div class="rating-num">4.9/5</div>
-          </div>
-          <div class="customers-text">2,500+ Happy Customers</div>
-        </div>
-        
-      </div>
-      
-      <div class="hero-cta-bottom">
-        <a href="#/shop" class="btn-shop-now">SHOP NOW</a>
-      </div>
-    </div>
+    <a href="#/shop" class="hero-click-overlay"></a>
   </section>
   
 <style>
 /* AD-STYLE HERO */
 .hero-ad-style{
   position:relative;
-  min-height:auto;
-  display:flex;
-  align-items:center;
+  width:100%;
+  padding-top:150%;
   overflow:hidden;
+  cursor:pointer;
 }
 
 .hero-ad-bg{
   position:absolute;
   inset:0;
-  background-image:url('images/glacier-hero-ad.jpg');
+  background-image:url('images/hero-bg-full.jpg');
   background-size:cover;
   background-position:center;
   z-index:1;
 }
 
-.hero-ad-bg::after{
-  content:"";
+.hero-click-overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.15);
-}
-
-.discount-badge-topright{
-  position:absolute;
-  top:15px;
-  right:15px;
-  z-index:10;
-  animation:float-discount 3s ease-in-out infinite;
-}
-
-.discount-inner-ad{
-  width:70px;
-  height:70px;
-  background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:18px;
-  font-weight:900;
-  line-height:1.2;
-  box-shadow:0 8px 30px rgba(239, 68, 68, 0.7);
-  border:2px solid rgba(255,255,255,0.3);
-  text-align:center;
-}
-
-@keyframes float-discount{
-  0%, 100%{transform:translateY(0px)}
-  50%{transform:translateY(-15px)}
-}
-
-.hero-ad-grid{
-  position:relative;
   z-index:2;
-  display:flex;
-  justify-content:center;
-  padding:25px 20px 15px;
-}
-
-.hero-ad-left{
-  position:relative;
-  max-width:450px;
-}
-
-.hero-ad-h1{
-  margin:0 0 8px;
-  font-size:32px;
-  font-weight:900;
-  color:#fff;
-  line-height:0.95;
-  letter-spacing:-1px;
-  text-transform:uppercase;
-}
-
-.hero-ad-subtitle{
-  margin:0 0 20px;
-  font-size:16px;
-  color:#4facfe;
-  font-weight:700;
-}
-
-.trust-badges-stack{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-bottom:20px;
-}
-
-.trust-item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(10px);
-  padding:8px 12px;
-  border-radius:8px;
-  border:1px solid rgba(255,255,255,0.2);
-}
-
-.trust-icon{
-  font-size:16px;
-  width:32px;
-  height:32px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(79, 172, 254, 0.2);
-  border-radius:6px;
-  flex-shrink:0;
-}
-
-.trust-text{
-  font-size:13px;
-  font-weight:800;
-  color:#fff;
-  letter-spacing:0.3px;
-}
-
-.hero-social-proof{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:4px;
-}
-
-.stars-gold{
-  font-size:16px;
-  color:#fbbf24;
-  letter-spacing:2px;
-}
-
-.rating-num{
-  font-size:15px;
-  font-weight:800;
-  color:#fff;
-}
-
-.customers-text{
-  font-size:13px;
-  font-weight:700;
-  color:#fff;
-  margin-bottom:15px;
-}
-
-.hero-cta-bottom{
-  position:relative;
-  z-index:2;
-  text-align:center;
-  padding:0 20px 20px;
-}
-
-.btn-shop-now{
-  display:inline-block;
-  padding:12px 50px;
-  background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color:#000;
-  font-size:16px;
-  font-weight:900;
-  border-radius:10px;
-  text-decoration:none;
-  box-shadow:0 8px 30px rgba(79, 172, 254, 0.7);
-  transition:all 0.3s ease;
-  letter-spacing:0.5px;
-}
-
-.btn-shop-now:hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 40px rgba(79, 172, 254, 0.9);
+  cursor:pointer;
 }
 
 /* MOBILE */
 @media (max-width: 900px){
-  .hero-ad-grid{
-    padding:20px 20px 15px;
-  }
-  .hero-ad-h1{
-    font-size:28px;
-    text-align:center;
-  }
-  .hero-ad-subtitle{
-    font-size:15px;
-    text-align:center;
-  }
-  .trust-badges-stack{
-    align-items:center;
-  }
-  .trust-item{
-    max-width:100%;
-  }
-  .trust-text{
-    font-size:12px;
-  }
-  .trust-icon{
-    width:28px;
-    height:28px;
-    font-size:14px;
-  }
-  .hero-social-proof, .customers-text{
-    justify-content:center;
-    text-align:center;
-  }
-  .discount-badge-topright{
-    top:10px;
-    right:10px;
-  }
-  .discount-inner-ad{
-    width:60px;
-    height:60px;
-    font-size:16px;
-  }
-  .btn-shop-now{
-    font-size:15px;
-    padding:11px 45px;
-  }
-  .hero-cta-bottom{
-    padding:0 20px 15px;
+  .hero-ad-style{
+    padding-top:150%;
   }
 }
 
 @media (max-width: 430px){
-  .hero-ad-h1{
-    font-size:24px;
-  }
-  .hero-ad-subtitle{
-    font-size:14px;
-  }
-  .trust-icon{
-    font-size:12px;
-    width:26px;
-    height:26px;
-  }
-  .trust-text{
-    font-size:11px;
-  }
-  .stars-gold{
-    font-size:14px;
-  }
-  .rating-num{
-    font-size:13px;
-  }
-  .customers-text{
-    font-size:12px;
-  }
-  .discount-inner-ad{
-    width:55px;
-    height:55px;
-    font-size:14px;
-  }
-  .btn-shop-now{
-    font-size:14px;
-    padding:10px 35px;
+  .hero-ad-style{
+    padding-top:150%;
   }
 }
 </style>
