@@ -2032,8 +2032,27 @@
           <span style="font-size:13px; line-height:1">OFF</span>
         </div>
         <div class="product-glow"></div>
+        <!-- Floating particles -->
+        <div style="position:absolute; width:30px; height:30px; border-radius:50%; background:rgba(79, 172, 254, 0.3); filter:blur(4px); top:15%; left:20%; animation:float1 4s ease-in-out infinite"></div>
+        <div style="position:absolute; width:40px; height:40px; border-radius:50%; background:rgba(0, 242, 254, 0.2); filter:blur(6px); top:60%; right:15%; animation:float2 5s ease-in-out infinite"></div>
+        <div style="position:absolute; width:25px; height:25px; border-radius:50%; background:rgba(79, 172, 254, 0.4); filter:blur(3px); bottom:20%; left:30%; animation:float3 3.5s ease-in-out infinite"></div>
         <img src="images/retatrutide-10mg.png" alt="Research Peptide" class="hero-product-img">
       </div>
+      
+      <style>
+        @keyframes float1{
+          0%, 100%{ transform:translateY(0px) scale(1); opacity:0.6; }
+          50%{ transform:translateY(-20px) scale(1.1); opacity:0.8; }
+        }
+        @keyframes float2{
+          0%, 100%{ transform:translateY(0px) translateX(0px); opacity:0.5; }
+          50%{ transform:translateY(-15px) translateX(10px); opacity:0.9; }
+        }
+        @keyframes float3{
+          0%, 100%{ transform:translateY(0px) scale(1); opacity:0.7; }
+          50%{ transform:translateY(15px) scale(0.9); opacity:0.5; }
+        }
+      </style>
 
       <!-- Content -->
       <div class="hero-content">
@@ -2166,14 +2185,15 @@
       display:flex;
       align-items:center;
       justify-content:center;
+      min-height:400px;
     }
     
     .discount-badge{
       position:absolute;
-      top:20px;
-      right:20px;
-      width:90px;
-      height:90px;
+      top:30px;
+      right:30px;
+      width:80px;
+      height:80px;
       background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       border-radius:50%;
       display:flex;
@@ -2188,18 +2208,28 @@
     
     .product-glow{
       position:absolute;
-      inset:-50px;
-      background:radial-gradient(circle, rgba(79, 172, 254, 0.25) 0%, transparent 70%);
-      filter:blur(50px);
+      width:400px;
+      height:400px;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      background:radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.2) 30%, transparent 70%);
+      filter:blur(60px);
       z-index:1;
+      animation:pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse{
+      0%, 100%{ transform:translate(-50%, -50%) scale(1); opacity:0.8; }
+      50%{ transform:translate(-50%, -50%) scale(1.1); opacity:1; }
     }
     
     .hero-product-img{
       position:relative;
       z-index:2;
       width:100%;
-      max-width:350px;
-      filter:drop-shadow(0 25px 70px rgba(79, 172, 254, 0.5));
+      max-width:220px;
+      filter:drop-shadow(0 20px 60px rgba(79, 172, 254, 0.6)) brightness(1.05);
     }
     
     @media (max-width: 900px){
@@ -2210,8 +2240,15 @@
       }
       .hero-image{
         order:-1;
-        max-width:280px;
         margin:0 auto;
+        min-height:300px;
+      }
+      .hero-product-img{
+        max-width:200px;
+      }
+      .product-glow{
+        width:300px;
+        height:300px;
       }
       .hero-title{
         font-size:38px !important;
@@ -2259,7 +2296,14 @@
         font-size:34px !important;
       }
       .hero-image{
-        max-width:240px;
+        min-height:280px;
+      }
+      .hero-product-img{
+        max-width:180px;
+      }
+      .product-glow{
+        width:280px;
+        height:280px;
       }
       .trust-badges-compact{
         gap:8px;
@@ -2267,6 +2311,18 @@
       .badge-pill{
         font-size:12px;
         padding:7px 12px;
+      }
+      .discount-badge{
+        width:65px;
+        height:65px;
+        top:20px;
+        right:20px;
+      }
+      .discount-badge span:first-child{
+        font-size:18px;
+      }
+      .discount-badge span:last-child{
+        font-size:10px;
       }
     }
   </style>
