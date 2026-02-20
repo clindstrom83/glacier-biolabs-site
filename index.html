@@ -267,19 +267,25 @@
     .hero{
       position:relative;
       overflow:hidden;
-      border-bottom:1px solid var(--line);
       background:
-        radial-gradient(1200px 500px at 20% 30%, rgba(208,53,44,.35), transparent 55%),
-        radial-gradient(1000px 500px at 75% 30%, rgba(2,6,23,.18), transparent 60%),
-        linear-gradient(135deg, rgba(2,6,23,.75), rgba(2,6,23,.45));
+        radial-gradient(circle at 30% 50%, rgba(79, 172, 254, 0.15), transparent 60%),
+        radial-gradient(circle at 70% 50%, rgba(208,53,44, 0.1), transparent 50%),
+        linear-gradient(180deg, #000000 0%, #0a0a14 100%);
+      min-height:580px;
+      display:flex;
+      align-items:center;
     }
     .hero::before{
       content:"";
-      position:absolute; inset:0;
+      position:absolute;
+      inset:0;
       background:
-        url("images/hero.jpg") center/cover no-repeat;
-      opacity:.22;
-      filter:saturate(1.1) contrast(1.05);
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent);
+      background-size: 200px 200px, 300px 300px, 250px 250px, 280px 280px;
+      opacity:0.3;
     }
     .hero .wrap{
       position:relative;
@@ -730,8 +736,9 @@
       nav.desktop-nav{display:none}
       .hamburger{display:inline-flex}
       .brand{min-width: unset}
-      .hero .wrap{grid-template-columns: 1fr; padding:42px 16px 36px}
-      .hero h1{font-size:34px}
+      .hero .wrap{grid-template-columns: 1fr !important; padding:42px 16px 36px !important; gap:32px !important}
+      .hero h1{font-size:36px !important}
+      .hero .wrap > div:last-child{order:-1}
       .catalog{grid-template-columns: 1fr}
       aside.filters{display:none}
       .grid{grid-template-columns: repeat(2, minmax(0,1fr)); gap:16px}
@@ -752,8 +759,9 @@
     @media (max-width: 430px){
       .header{gap:10px}
       .brand-text strong{font-size:14px}
-      .hero h1{font-size:30px; line-height: 1.2}
-      .hero p{font-size:16px; line-height:1.5}
+      .hero h1{font-size:32px !important; line-height: 1.1 !important}
+      .hero p{font-size:16px !important; line-height:1.4 !important}
+      .hero .wrap{padding:32px 16px !important}
       .grid{gap:14px}
       .card img{height:180px}
       .card{padding:14px}
@@ -2015,36 +2023,57 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="wrap">
-      <div>
-        <div class="kicker">RESEARCH USE ONLY</div>
-        <h1>High-purity compounds for laboratory research</h1>
-        <p>
-          Glacier BioLabs supplies analytical-grade peptides and laboratory
-          materials for controlled, non-clinical research.
+    <div class="wrap" style="display:grid; grid-template-columns:1.1fr 1fr; align-items:center; gap:40px; padding:60px 16px; position:relative">
+      <div style="position:relative; z-index:2">
+        <h1 style="font-size:48px; font-weight:900; margin:0 0 12px; color:#fff; letter-spacing:-0.5px; line-height:1.1">
+          RESEARCH-GRADE<br>PEPTIDES
+        </h1>
+        <p style="font-size:18px; color:#4facfe; font-weight:600; margin:0 0 32px">
+          Lab-Tested Purity You Can Trust
         </p>
 
-        <div class="cta-row">
-          <a class="btn primary" href="#/shop">Browse Peptides</a>
-          <a class="btn ghost" href="#/learn">Learn More</a>
+        <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:32px">
+          <div style="display:flex; align-items:center; gap:12px">
+            <div style="width:32px; height:32px; background:rgba(16, 185, 129, 0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#10b981; font-size:18px">✓</div>
+            <span style="color:#fff; font-weight:700; font-size:15px">COA VERIFIED</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px">
+            <div style="width:32px; height:32px; background:rgba(79, 172, 254, 0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#4facfe; font-size:18px">✓</div>
+            <span style="color:#fff; font-weight:700; font-size:15px">3RD PARTY TESTED</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px">
+            <div style="width:32px; height:32px; background:rgba(239, 68, 68, 0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px">🇺🇸</div>
+            <span style="color:#fff; font-weight:700; font-size:15px">USA LAB</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px">
+            <div style="width:32px; height:32px; background:rgba(251, 191, 36, 0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fbbf24; font-size:18px">★</div>
+            <span style="color:#fff; font-weight:700; font-size:15px">>99% PURITY</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px">
+            <div style="width:32px; height:32px; background:rgba(139, 92, 246, 0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#8b5cf6; font-size:18px">⚡</div>
+            <span style="color:#fff; font-weight:700; font-size:15px">FAST SHIPPING</span>
+          </div>
         </div>
 
-        <div class="badge" style="margin-top:18px">
-          Free standard shipping over $150
+        <a class="btn primary" href="#/shop" style="font-size:18px; padding:16px 40px; background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color:#000; box-shadow:0 10px 40px rgba(79, 172, 254, 0.4); border:none; font-weight:900">
+          SHOP NOW
+        </a>
+
+        <div style="margin-top:24px; display:flex; align-items:center; gap:8px">
+          <div style="color:#fbbf24; font-size:18px">★★★★★</div>
+          <span style="color:rgba(255,255,255,0.9); font-weight:700">4.9/5</span>
+          <span style="color:rgba(255,255,255,0.6); margin-left:8px">2,500+ Happy Customers</span>
         </div>
       </div>
 
-      <div>
-        <div class="panel">
-          <strong>Fast shipping</strong>
-          <small>Domestic fulfillment from the United States.</small>
+      <div style="position:relative; z-index:2; display:flex; align-items:center; justify-content:center">
+        <div style="position:absolute; top:20px; right:20px; width:80px; height:80px; background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 8px 32px rgba(239, 68, 68, 0.5); z-index:3">
+          <span style="color:#fff; font-weight:900; font-size:22px; line-height:1">15%</span>
+          <span style="color:#fff; font-weight:700; font-size:14px; line-height:1">OFF</span>
         </div>
-
-        <div style="height:14px"></div>
-
-        <div class="panel">
-          <strong>Verified quality</strong>
-          <small>Documentation available for research use.</small>
+        <div style="position:relative">
+          <div style="position:absolute; inset:-40px; background:radial-gradient(circle, rgba(79, 172, 254, 0.3) 0%, transparent 70%); filter:blur(40px); z-index:1"></div>
+          <img src="images/retatrutide-10mg.png" alt="Research Peptide" style="position:relative; z-index:2; width:100%; max-width:320px; filter:drop-shadow(0 20px 60px rgba(79, 172, 254, 0.4))">
         </div>
       </div>
     </div>
