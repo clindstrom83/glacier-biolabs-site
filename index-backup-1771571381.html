@@ -2022,197 +2022,301 @@
   app.innerHTML = `
 
   <!-- HERO -->
-  <section class="hero-new">
-    <div class="hero-bg-cosmic"></div>
-    <div class="wrap" style="max-width:800px; position:relative; z-index:2">
-      <div class="hero-center">
-        
-        <h1 class="hero-h1-arctic">
-          Lab-Tested Research Peptides + Fast US Shipping + Verified COAs
+  <section class="hero">
+    <div class="wrap hero-grid">
+      
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Highest Quality<br>Peptides For Sale
         </h1>
-        
-        <p class="hero-desc-arctic">
-          Third-party tested research compounds with batch documentation. Fast, discreet U.S. shipping and support that actually responds.
+        <p class="hero-subtitle">
+          We are proud to carry the highest quality peptides and peptide blends in the research industry.
         </p>
-        
-        <div class="hero-ctas-arctic">
-          <a href="#/shop" class="btn-arctic-primary">
-            Shop Best Sellers
-          </a>
-          <a href="#/shop" class="btn-arctic-secondary">
-            View All Products
-          </a>
+
+        <a class="hero-cta-btn" href="#/shop">
+          BUY PEPTIDES
+        </a>
+      </div>
+
+      <div class="hero-image">
+        <div class="discount-badge">
+          <span>15%</span>
+          <span>OFF</span>
         </div>
-        
-        <div class="trust-pills-arctic">
-          <div class="pill">✓ Third-party tested (COA included)</div>
-          <div class="pill">🇺🇸 Ships from USA (24h handling)</div>
-          <div class="pill">🔒 Secure checkout (Apple Pay / Cards)</div>
+        <div class="product-glow"></div>
+        <img src="images/retatrutide-10mg.png" alt="Research Peptide" class="hero-product-img">
+      </div>
+
+    </div>
+    
+    <!-- Trust badges below hero -->
+    <div class="wrap trust-row">
+      <div class="trust-item">
+        <div class="trust-icon">✓</div>
+        <div class="trust-text">
+          <strong>COA Verified</strong>
+          <small>Certificates of Analysis with every order</small>
         </div>
-        
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🔬</div>
+        <div class="trust-text">
+          <strong>3rd Party Tested</strong>
+          <small>Highest quality peptides available</small>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🇺🇸</div>
+        <div class="trust-text">
+          <strong>USA Lab</strong>
+          <small>Domestic fulfillment, fast shipping</small>
+        </div>
       </div>
     </div>
   </section>
   
-<style>
-/* ARCTIC LABS HERO STYLES */
-.hero-new{
-  position:relative;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  overflow:hidden;
-}
-
-.hero-bg-cosmic{
-  position:absolute;
-  inset:0;
-  background-image:url('images/cosmic-bg.jpg');
-  background-size:cover;
-  background-position:center;
-  z-index:1;
-}
-
-.hero-bg-cosmic::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.4) 100%);
-}
-
-.hero-center{
-  position:relative;
-  z-index:2;
-  text-align:center;
-  padding:80px 20px;
-}
-
-.hero-h1-arctic{
-  margin:0 0 30px;
-  font-size:42px;
-  font-weight:800;
-  color:#fff;
-  line-height:1.2;
-  max-width:900px;
-  margin-left:auto;
-  margin-right:auto;
-}
-
-.hero-desc-arctic{
-  font-size:18px;
-  color:rgba(255,255,255,0.85);
-  margin:0 0 40px;
-  line-height:1.6;
-  max-width:650px;
-  margin-left:auto;
-  margin-right:auto;
-}
-
-.hero-ctas-arctic{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  align-items:center;
-  margin-bottom:50px;
-}
-
-.btn-arctic-primary{
-  display:inline-block;
-  padding:18px 60px;
-  background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color:#000;
-  font-size:18px;
-  font-weight:800;
-  border-radius:12px;
-  text-decoration:none;
-  box-shadow:0 10px 40px rgba(79, 172, 254, 0.6);
-  transition:all 0.3s ease;
-  width:100%;
-  max-width:400px;
-  text-align:center;
-}
-
-.btn-arctic-primary:hover{
-  transform:translateY(-3px);
-  box-shadow:0 15px 50px rgba(79, 172, 254, 0.8);
-}
-
-.btn-arctic-secondary{
-  display:inline-block;
-  padding:18px 60px;
-  background:rgba(0, 20, 60, 0.8);
-  backdrop-filter:blur(10px);
-  border:2px solid rgba(255,255,255,0.25);
-  color:#fff;
-  font-size:18px;
-  font-weight:800;
-  border-radius:12px;
-  text-decoration:none;
-  transition:all 0.3s ease;
-  width:100%;
-  max-width:400px;
-  text-align:center;
-}
-
-.btn-arctic-secondary:hover{
-  background:rgba(0, 30, 80, 0.9);
-  border-color:rgba(255,255,255,0.4);
-}
-
-.trust-pills-arctic{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  max-width:500px;
-  margin:0 auto;
-}
-
-.pill{
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(10px);
-  padding:16px 24px;
-  border-radius:999px;
-  color:#000;
-  font-size:15px;
-  font-weight:700;
-  box-shadow:0 4px 20px rgba(0,0,0,0.2);
-  text-align:center;
-}
-
-/* MOBILE */
-@media (max-width: 768px){
-  .hero-h1-arctic{
-    font-size:32px;
-  }
-  .hero-desc-arctic{
-    font-size:16px;
-  }
-  .btn-arctic-primary, .btn-arctic-secondary{
-    font-size:16px;
-    padding:16px 40px;
-  }
-  .pill{
-    font-size:14px;
-    padding:14px 20px;
-  }
-  .hero-center{
-    padding:60px 16px;
-  }
-}
-
-@media (max-width: 430px){
-  .hero-h1-arctic{
-    font-size:28px;
-  }
-  .hero-desc-arctic{
-    font-size:15px;
-  }
-  .btn-arctic-primary, .btn-arctic-secondary{
-    font-size:15px;
-    padding:15px 32px;
-  }
-}
-</style>
+  <style>
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.1fr 1fr;
+      align-items:center;
+      gap:40px;
+      padding:60px 16px;
+      position:relative;
+    }
+    
+    .hero-content{
+      position:relative;
+      z-index:2;
+    }
+    
+    .hero-title{
+      font-size:52px;
+      font-weight:900;
+      margin:0 0 16px;
+      color:#fff;
+      letter-spacing:-1px;
+      line-height:1;
+    }
+    
+    .hero-subtitle{
+      font-size:19px;
+      color:rgba(255,255,255,0.8);
+      font-weight:600;
+      margin:0 0 28px;
+      letter-spacing:0.3px;
+    }
+    
+    .trust-badges-compact{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:32px;
+    }
+    
+    .badge-pill{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      backdrop-filter:blur(10px);
+      padding:10px 16px;
+      border-radius:999px;
+      color:#fff;
+      font-weight:700;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    
+    .hero-cta-btn{
+      display:inline-block;
+      font-size:18px;
+      padding:16px 48px;
+      background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color:#000;
+      box-shadow:0 10px 40px rgba(79, 172, 254, 0.5);
+      border:none;
+      font-weight:900;
+      border-radius:999px;
+      text-decoration:none;
+      transition:all 0.3s ease;
+    }
+    
+    .hero-cta-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 15px 50px rgba(79, 172, 254, 0.6);
+    }
+    
+    .social-proof-line{
+      margin-top:24px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    
+    .stars{
+      color:#fbbf24;
+      font-size:18px;
+      letter-spacing:2px;
+    }
+    
+    .rating{
+      color:#fff;
+      font-weight:700;
+      font-size:16px;
+    }
+    
+    .customers{
+      color:rgba(255,255,255,0.6);
+      font-size:15px;
+    }
+    
+    .hero-image{
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:400px;
+    }
+    
+    .discount-badge{
+      position:absolute;
+      top:30px;
+      right:30px;
+      width:80px;
+      height:80px;
+      background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border-radius:50%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 32px rgba(239, 68, 68, 0.6);
+      z-index:3;
+      color:#fff;
+      font-weight:900;
+    }
+    
+    .product-glow{
+      position:absolute;
+      width:400px;
+      height:400px;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      background:radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.2) 30%, transparent 70%);
+      filter:blur(60px);
+      z-index:1;
+      animation:pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse{
+      0%, 100%{ transform:translate(-50%, -50%) scale(1); opacity:0.8; }
+      50%{ transform:translate(-50%, -50%) scale(1.1); opacity:1; }
+    }
+    
+    .hero-product-img{
+      position:relative;
+      z-index:2;
+      width:100%;
+      max-width:220px;
+      filter:drop-shadow(0 20px 60px rgba(79, 172, 254, 0.6)) brightness(1.05);
+    }
+    
+    @media (max-width: 900px){
+      .hero-grid{
+        grid-template-columns:1fr !important;
+        gap:32px !important;
+        padding:40px 20px !important;
+      }
+      .hero-image{
+        order:-1;
+        margin:0 auto;
+        min-height:300px;
+      }
+      .hero-product-img{
+        max-width:200px;
+      }
+      .product-glow{
+        width:300px;
+        height:300px;
+      }
+      .hero-title{
+        font-size:38px !important;
+        text-align:center;
+      }
+      .hero-subtitle{
+        font-size:16px !important;
+        text-align:center;
+      }
+      .trust-badges-compact{
+        justify-content:center;
+      }
+      .badge-pill{
+        font-size:13px;
+        padding:8px 14px;
+      }
+      .hero-cta-btn{
+        display:block;
+        text-align:center;
+        padding:18px 40px;
+        font-size:17px;
+      }
+      .social-proof-line{
+        justify-content:center;
+      }
+      .discount-badge{
+        width:70px;
+        height:70px;
+        top:10px;
+        right:10px;
+      }
+      .discount-badge span:first-child{
+        font-size:20px;
+      }
+      .discount-badge span:last-child{
+        font-size:11px;
+      }
+    }
+    
+    @media (max-width: 430px){
+      .hero-grid{
+        padding:32px 16px !important;
+      }
+      .hero-title{
+        font-size:34px !important;
+      }
+      .hero-image{
+        min-height:280px;
+      }
+      .hero-product-img{
+        max-width:180px;
+      }
+      .product-glow{
+        width:280px;
+        height:280px;
+      }
+      .trust-badges-compact{
+        gap:8px;
+      }
+      .badge-pill{
+        font-size:12px;
+        padding:7px 12px;
+      }
+      .discount-badge{
+        width:65px;
+        height:65px;
+        top:20px;
+        right:20px;
+      }
+      .discount-badge span:first-child{
+        font-size:18px;
+      }
+      .discount-badge span:last-child{
+        font-size:10px;
+      }
+    }
+  </style>
 
 
 
