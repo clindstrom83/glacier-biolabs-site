@@ -734,20 +734,73 @@
       .hero h1{font-size:34px}
       .catalog{grid-template-columns: 1fr}
       aside.filters{display:none}
-      .grid{grid-template-columns: repeat(2, minmax(0,1fr))}
+      .grid{grid-template-columns: repeat(2, minmax(0,1fr)); gap:16px}
       .product-page{grid-template-columns: 1fr}
       .media img{height:320px}
       .trust-grid{grid-template-columns:1fr}
       .nl-form{grid-template-columns:1fr}
       .float-offer{display:none}
-      .cart-drawer{right:10px; left:10px; top:auto; bottom:16px}
+      .cart-drawer{right:10px; left:10px; top:auto; bottom:16px; max-height:70vh; overflow-y:auto}
+    }
+    
+    /* Single column for very small phones (iPhone SE, etc) */
+    @media (max-width: 380px){
+      .grid{grid-template-columns: 1fr; gap:18px}
+      .card{padding:16px}
+      .card img{height:200px}
     }
     @media (max-width: 430px){
       .header{gap:10px}
       .brand-text strong{font-size:14px}
-      .hero h1{font-size:30px}
+      .hero h1{font-size:30px; line-height: 1.2}
+      .hero p{font-size:16px; line-height:1.5}
       .grid{gap:14px}
-      .card img{height:150px}
+      .card img{height:180px}
+      .card{padding:14px}
+      .card .name{font-size:15px}
+      .card .price{font-size:18px}
+      .btn{padding:14px 20px; font-size:15px; min-height:48px}
+      .product-page .btn{min-height:52px; font-size:16px}
+      .pinfo{padding:20px 16px}
+      .topbar{font-size:12px; padding:0 12px}
+      .section{padding:32px 0}
+    }
+    
+    /* iPhone specific improvements */
+    @media (max-width: 430px){
+      /* Make product cards more tappable */
+      .card{
+        border-radius:16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .card:active{
+        transform: scale(0.98);
+      }
+      /* Improve form inputs for iPhone */
+      input, select, textarea{
+        font-size:16px !important; /* Prevents iOS zoom on focus */
+        padding:14px;
+      }
+      /* Better CTA visibility */
+      .hero .cta{
+        flex-direction:column;
+        gap:12px;
+      }
+      .hero .cta .btn{
+        width:100%;
+        max-width:300px;
+      }
+      /* Improve trust badges */
+      .trust-badge{
+        padding:12px;
+        font-size:13px;
+      }
+      /* Better product page layout */
+      .product-page .media img{
+        height:auto;
+        max-height:400px;
+        object-fit:contain;
+      }
     }
 
     /* PayPal modal styles */
