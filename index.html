@@ -1272,7 +1272,10 @@
             purchase_units: [{
               amount: { value: value, currency_code: 'USD' },
               description: product.name
-            }]
+            }],
+            application_context: {
+              shipping_preference: 'GET_FROM_FILE'
+            }
           });
         },
         onApprove: function(data, actions) {
@@ -1831,7 +1834,7 @@
               items: items
             }],
             application_context: {
-              shipping_preference: 'NO_SHIPPING'
+              shipping_preference: 'GET_FROM_FILE'
             }
           });
         },
