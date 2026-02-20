@@ -2024,7 +2024,37 @@
   <!-- HERO -->
   <section class="hero-ad-style">
     <div class="hero-ad-bg"></div>
-    <a href="#/shop" class="hero-click-overlay"></a>
+    
+    <div class="hero-overlay-content">
+      <div class="hero-left-badges">
+        <div class="trust-item">
+          <div class="trust-icon">✓</div>
+          <div class="trust-text">COA VERIFIED</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">✓</div>
+          <div class="trust-text">3RD PARTY TESTED</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">🇺🇸</div>
+          <div class="trust-text">USA LAB</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">⭐</div>
+          <div class="trust-text">>99% PURITY</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">📦</div>
+          <div class="trust-text">FAST SHIPPING</div>
+        </div>
+        
+        <div class="hero-social-proof">
+          <div class="stars-gold">★★★★★</div>
+          <div class="rating-num">4.9/5</div>
+        </div>
+        <div class="customers-text">2,500+ Happy Customers</div>
+      </div>
+    </div>
   </section>
   
 <style>
@@ -2034,7 +2064,6 @@
   width:100%;
   height:85vh;
   overflow:hidden;
-  cursor:pointer;
 }
 
 .hero-ad-bg{
@@ -2047,11 +2076,74 @@
   z-index:1;
 }
 
-.hero-click-overlay{
+.hero-overlay-content{
   position:absolute;
   inset:0;
   z-index:2;
-  cursor:pointer;
+  display:flex;
+  align-items:center;
+  padding:0 40px;
+}
+
+.hero-left-badges{
+  max-width:400px;
+}
+
+.trust-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(10px);
+  padding:10px 16px;
+  border-radius:10px;
+  border:2px solid rgba(255,255,255,0.25);
+  margin-bottom:12px;
+}
+
+.trust-icon{
+  font-size:20px;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(79, 172, 254, 0.25);
+  border-radius:8px;
+  flex-shrink:0;
+}
+
+.trust-text{
+  font-size:16px;
+  font-weight:800;
+  color:#fff;
+  letter-spacing:0.5px;
+}
+
+.hero-social-proof{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:20px;
+  margin-bottom:8px;
+}
+
+.stars-gold{
+  font-size:20px;
+  color:#fbbf24;
+  letter-spacing:3px;
+}
+
+.rating-num{
+  font-size:18px;
+  font-weight:800;
+  color:#fff;
+}
+
+.customers-text{
+  font-size:16px;
+  font-weight:700;
+  color:#fff;
 }
 
 /* MOBILE */
@@ -2059,11 +2151,56 @@
   .hero-ad-style{
     height:80vh;
   }
+  .hero-overlay-content{
+    padding:0 20px;
+    align-items:flex-start;
+    padding-top:60px;
+  }
+  .hero-left-badges{
+    max-width:100%;
+  }
+  .trust-item{
+    padding:8px 12px;
+    margin-bottom:8px;
+  }
+  .trust-icon{
+    width:32px;
+    height:32px;
+    font-size:16px;
+  }
+  .trust-text{
+    font-size:13px;
+  }
 }
 
 @media (max-width: 430px){
   .hero-ad-style{
     height:75vh;
+  }
+  .hero-overlay-content{
+    padding:0 15px;
+    padding-top:40px;
+  }
+  .trust-item{
+    padding:7px 10px;
+    margin-bottom:6px;
+  }
+  .trust-icon{
+    width:28px;
+    height:28px;
+    font-size:14px;
+  }
+  .trust-text{
+    font-size:11px;
+  }
+  .stars-gold{
+    font-size:16px;
+  }
+  .rating-num{
+    font-size:14px;
+  }
+  .customers-text{
+    font-size:13px;
   }
 }
 </style>
