@@ -2032,7 +2032,7 @@
 .hero-ad-style{
   position:relative;
   width:100%;
-  padding-top:150%;
+  height:400px;
   overflow:hidden;
   cursor:pointer;
 }
@@ -2041,8 +2041,9 @@
   position:absolute;
   inset:0;
   background-image:url('images/hero-bg-full.jpg');
-  background-size:cover;
-  background-position:center;
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center top;
   z-index:1;
 }
 
@@ -2056,13 +2057,13 @@
 /* MOBILE */
 @media (max-width: 900px){
   .hero-ad-style{
-    padding-top:150%;
+    height:350px;
   }
 }
 
 @media (max-width: 430px){
   .hero-ad-style{
-    padding-top:150%;
+    height:300px;
   }
 }
 </style>
