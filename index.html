@@ -2022,9 +2022,12 @@
   app.innerHTML = `
 
   <!-- HERO -->
-  <a href="#/shop" class="hero-simple">
+  <section class="hero-simple">
     <div class="hero-bg-simple"></div>
-  </a>
+    <div class="hero-shop-btn-wrapper">
+      <a href="#/shop" class="btn-shop-bottom-left">SHOP NOW</a>
+    </div>
+  </section>
   
 <style>
 /* SIMPLE HERO - IMAGE AS-IS */
@@ -2034,22 +2037,43 @@
   width:100%;
   height:85vh;
   overflow:hidden;
-  cursor:pointer;
 }
 
 .hero-bg-simple{
   position:absolute;
   inset:0;
   background-image:url('images/hero-perfect.jpg');
-  background-size:cover;
+  background-size:contain;
   background-repeat:no-repeat;
   background-position:center center;
   z-index:1;
-  transition:transform 0.3s ease;
 }
 
-.hero-simple:hover .hero-bg-simple{
-  transform:scale(1.02);
+.hero-shop-btn-wrapper{
+  position:absolute;
+  bottom:30px;
+  left:40px;
+  z-index:2;
+}
+
+.btn-shop-bottom-left{
+  display:inline-block;
+  padding:18px 70px;
+  background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color:#000;
+  font-size:20px;
+  font-weight:900;
+  border-radius:12px;
+  text-decoration:none;
+  box-shadow:0 10px 40px rgba(79, 172, 254, 0.8);
+  transition:all 0.3s ease;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.btn-shop-bottom-left:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 50px rgba(79, 172, 254, 1);
 }
 
 /* MOBILE */
@@ -2057,11 +2081,27 @@
   .hero-simple{
     height:80vh;
   }
+  .hero-shop-btn-wrapper{
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%);
+  }
+  .btn-shop-bottom-left{
+    padding:16px 60px;
+    font-size:18px;
+  }
 }
 
 @media (max-width: 430px){
   .hero-simple{
     height:75vh;
+  }
+  .hero-shop-btn-wrapper{
+    bottom:20px;
+  }
+  .btn-shop-bottom-left{
+    padding:14px 50px;
+    font-size:16px;
   }
 }
 </style>
