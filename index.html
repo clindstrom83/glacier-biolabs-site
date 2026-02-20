@@ -2022,41 +2022,65 @@
   app.innerHTML = `
 
   <!-- HERO -->
-  <section class="hero-new">
-    <div class="hero-bg-cosmic"></div>
-    <div class="wrap" style="max-width:800px; position:relative; z-index:2">
-      <div class="hero-center">
+  <section class="hero-ad-style">
+    <div class="hero-ad-bg"></div>
+    
+    <div class="discount-badge-topright">
+      <div class="discount-inner-ad">15%<br>OFF</div>
+    </div>
+    
+    <div class="wrap" style="max-width:1200px; position:relative; z-index:2">
+      <div class="hero-ad-grid">
         
-        <h1 class="hero-h1-arctic">
-          Lab-Tested Research Peptides + Fast US Shipping + Verified COAs
-        </h1>
-        
-        <p class="hero-desc-arctic">
-          Third-party tested research compounds with batch documentation. Fast, discreet U.S. shipping and support that actually responds.
-        </p>
-        
-        <div class="hero-ctas-arctic">
-          <a href="#/shop" class="btn-arctic-primary">
-            Shop Best Sellers
-          </a>
-          <a href="#/shop" class="btn-arctic-secondary">
-            View All Products
-          </a>
+        <div class="hero-ad-left">
+          <h1 class="hero-ad-h1">RESEARCH-GRADE<br>PEPTIDES</h1>
+          <p class="hero-ad-subtitle">Lab-Tested Purity You Can Trust</p>
+          
+          <div class="trust-badges-stack">
+            <div class="trust-item">
+              <div class="trust-icon">✓</div>
+              <div class="trust-text">COA VERIFIED</div>
+            </div>
+            <div class="trust-item">
+              <div class="trust-icon">✓</div>
+              <div class="trust-text">3RD PARTY TESTED</div>
+            </div>
+            <div class="trust-item">
+              <div class="trust-icon">🇺🇸</div>
+              <div class="trust-text">USA LAB</div>
+            </div>
+            <div class="trust-item">
+              <div class="trust-icon">⭐</div>
+              <div class="trust-text">>99% PURITY</div>
+            </div>
+            <div class="trust-item">
+              <div class="trust-icon">📦</div>
+              <div class="trust-text">FAST SHIPPING</div>
+            </div>
+          </div>
+          
+          <div class="hero-social-proof">
+            <div class="stars-gold">★★★★★</div>
+            <div class="rating-num">4.9/5</div>
+          </div>
+          <div class="customers-text">2,500+ Happy Customers</div>
         </div>
         
-        <div class="trust-pills-arctic">
-          <div class="pill">✓ Third-party tested (COA included)</div>
-          <div class="pill">🇺🇸 Ships from USA (24h handling)</div>
-          <div class="pill">🔒 Secure checkout (Apple Pay / Cards)</div>
+        <div class="hero-ad-right">
+          <img src="images/retatrutide-10mg.png" alt="Glacier BioLabs Research Peptide" class="vial-hero">
         </div>
         
+      </div>
+      
+      <div class="hero-cta-bottom">
+        <a href="#/shop" class="btn-shop-now">SHOP NOW</a>
       </div>
     </div>
   </section>
   
 <style>
-/* ARCTIC LABS HERO STYLES */
-.hero-new{
+/* AD-STYLE HERO */
+.hero-ad-style{
   position:relative;
   min-height:100vh;
   display:flex;
@@ -2064,152 +2088,276 @@
   overflow:hidden;
 }
 
-.hero-bg-cosmic{
+.hero-ad-bg{
   position:absolute;
   inset:0;
-  background-image:url('images/cosmic-bg.jpg');
+  background-image:url('images/glacier-hero-ad.jpg');
   background-size:cover;
   background-position:center;
   z-index:1;
 }
 
-.hero-bg-cosmic::after{
+.hero-ad-bg::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.4) 100%);
+  background:rgba(0,0,0,0.15);
 }
 
-.hero-center{
+.discount-badge-topright{
+  position:absolute;
+  top:80px;
+  right:60px;
+  z-index:10;
+  animation:float-discount 3s ease-in-out infinite;
+}
+
+.discount-inner-ad{
+  width:120px;
+  height:120px;
+  background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:32px;
+  font-weight:900;
+  line-height:1.2;
+  box-shadow:0 10px 50px rgba(239, 68, 68, 0.7);
+  border:4px solid rgba(255,255,255,0.3);
+  text-align:center;
+}
+
+@keyframes float-discount{
+  0%, 100%{transform:translateY(0px)}
+  50%{transform:translateY(-15px)}
+}
+
+.hero-ad-grid{
   position:relative;
   z-index:2;
-  text-align:center;
-  padding:80px 20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+  padding:100px 20px 60px;
 }
 
-.hero-h1-arctic{
-  margin:0 0 30px;
-  font-size:42px;
-  font-weight:800;
+.hero-ad-left{
+  position:relative;
+}
+
+.hero-ad-h1{
+  margin:0 0 16px;
+  font-size:54px;
+  font-weight:900;
   color:#fff;
-  line-height:1.2;
-  max-width:900px;
-  margin-left:auto;
-  margin-right:auto;
+  line-height:1;
+  letter-spacing:-1px;
+  text-transform:uppercase;
 }
 
-.hero-desc-arctic{
-  font-size:18px;
-  color:rgba(255,255,255,0.85);
-  margin:0 0 40px;
-  line-height:1.6;
-  max-width:650px;
-  margin-left:auto;
-  margin-right:auto;
+.hero-ad-subtitle{
+  margin:0 0 50px;
+  font-size:28px;
+  color:#4facfe;
+  font-weight:700;
 }
 
-.hero-ctas-arctic{
+.trust-badges-stack{
   display:flex;
   flex-direction:column;
-  gap:16px;
-  align-items:center;
+  gap:20px;
   margin-bottom:50px;
 }
 
-.btn-arctic-primary{
+.trust-item{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(10px);
+  padding:14px 20px;
+  border-radius:12px;
+  border:2px solid rgba(255,255,255,0.2);
+  max-width:400px;
+}
+
+.trust-icon{
+  font-size:28px;
+  width:50px;
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(79, 172, 254, 0.2);
+  border-radius:10px;
+  flex-shrink:0;
+}
+
+.trust-text{
+  font-size:20px;
+  font-weight:800;
+  color:#fff;
+  letter-spacing:0.5px;
+}
+
+.hero-social-proof{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+}
+
+.stars-gold{
+  font-size:28px;
+  color:#fbbf24;
+  letter-spacing:4px;
+}
+
+.rating-num{
+  font-size:22px;
+  font-weight:800;
+  color:#fff;
+}
+
+.customers-text{
+  font-size:20px;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:40px;
+}
+
+.hero-ad-right{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.vial-hero{
+  width:100%;
+  max-width:450px;
+  filter:drop-shadow(0 30px 80px rgba(79, 172, 254, 0.8)) brightness(1.1);
+  animation:float-vial 6s ease-in-out infinite;
+}
+
+@keyframes float-vial{
+  0%, 100%{transform:translateY(0px) rotate(-2deg)}
+  50%{transform:translateY(-25px) rotate(2deg)}
+}
+
+.hero-cta-bottom{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  padding:0 20px 60px;
+}
+
+.btn-shop-now{
   display:inline-block;
-  padding:18px 60px;
+  padding:22px 80px;
   background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   color:#000;
-  font-size:18px;
-  font-weight:800;
-  border-radius:12px;
+  font-size:22px;
+  font-weight:900;
+  border-radius:16px;
   text-decoration:none;
-  box-shadow:0 10px 40px rgba(79, 172, 254, 0.6);
+  box-shadow:0 15px 60px rgba(79, 172, 254, 0.7);
   transition:all 0.3s ease;
-  width:100%;
-  max-width:400px;
-  text-align:center;
+  letter-spacing:1px;
 }
 
-.btn-arctic-primary:hover{
-  transform:translateY(-3px);
-  box-shadow:0 15px 50px rgba(79, 172, 254, 0.8);
-}
-
-.btn-arctic-secondary{
-  display:inline-block;
-  padding:18px 60px;
-  background:rgba(0, 20, 60, 0.8);
-  backdrop-filter:blur(10px);
-  border:2px solid rgba(255,255,255,0.25);
-  color:#fff;
-  font-size:18px;
-  font-weight:800;
-  border-radius:12px;
-  text-decoration:none;
-  transition:all 0.3s ease;
-  width:100%;
-  max-width:400px;
-  text-align:center;
-}
-
-.btn-arctic-secondary:hover{
-  background:rgba(0, 30, 80, 0.9);
-  border-color:rgba(255,255,255,0.4);
-}
-
-.trust-pills-arctic{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  max-width:500px;
-  margin:0 auto;
-}
-
-.pill{
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(10px);
-  padding:16px 24px;
-  border-radius:999px;
-  color:#000;
-  font-size:15px;
-  font-weight:700;
-  box-shadow:0 4px 20px rgba(0,0,0,0.2);
-  text-align:center;
+.btn-shop-now:hover{
+  transform:translateY(-5px);
+  box-shadow:0 20px 80px rgba(79, 172, 254, 0.9);
 }
 
 /* MOBILE */
-@media (max-width: 768px){
-  .hero-h1-arctic{
-    font-size:32px;
+@media (max-width: 900px){
+  .hero-ad-grid{
+    grid-template-columns:1fr;
+    gap:40px;
+    padding:80px 20px 40px;
   }
-  .hero-desc-arctic{
-    font-size:16px;
+  .hero-ad-right{
+    order:-1;
   }
-  .btn-arctic-primary, .btn-arctic-secondary{
-    font-size:16px;
-    padding:16px 40px;
+  .hero-ad-h1{
+    font-size:38px;
+    text-align:center;
   }
-  .pill{
-    font-size:14px;
-    padding:14px 20px;
+  .hero-ad-subtitle{
+    font-size:22px;
+    text-align:center;
   }
-  .hero-center{
-    padding:60px 16px;
+  .trust-badges-stack{
+    align-items:center;
+  }
+  .trust-item{
+    max-width:100%;
+  }
+  .trust-text{
+    font-size:18px;
+  }
+  .hero-social-proof, .customers-text{
+    justify-content:center;
+    text-align:center;
+  }
+  .discount-badge-topright{
+    top:40px;
+    right:20px;
+  }
+  .discount-inner-ad{
+    width:90px;
+    height:90px;
+    font-size:24px;
+  }
+  .vial-hero{
+    max-width:350px;
+  }
+  .btn-shop-now{
+    font-size:18px;
+    padding:18px 60px;
   }
 }
 
 @media (max-width: 430px){
-  .hero-h1-arctic{
-    font-size:28px;
+  .hero-ad-h1{
+    font-size:32px;
   }
-  .hero-desc-arctic{
-    font-size:15px;
+  .hero-ad-subtitle{
+    font-size:18px;
   }
-  .btn-arctic-primary, .btn-arctic-secondary{
-    font-size:15px;
-    padding:15px 32px;
+  .trust-icon{
+    font-size:20px;
+    width:40px;
+    height:40px;
+  }
+  .trust-text{
+    font-size:16px;
+  }
+  .stars-gold{
+    font-size:22px;
+  }
+  .rating-num{
+    font-size:18px;
+  }
+  .customers-text{
+    font-size:16px;
+  }
+  .vial-hero{
+    max-width:280px;
+  }
+  .discount-inner-ad{
+    width:75px;
+    height:75px;
+    font-size:20px;
+  }
+  .btn-shop-now{
+    font-size:16px;
+    padding:16px 50px;
   }
 }
 </style>
