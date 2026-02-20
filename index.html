@@ -2022,20 +2022,20 @@
   app.innerHTML = `
 
   <!-- HERO -->
-  <section class="hero-ad-style">
+  <a href="#/shop" class="hero-ad-style">
     <div class="hero-ad-bg"></div>
-    <div class="hero-cta-overlay">
-      <a href="#/shop" class="btn-shop-hero">SHOP NOW</a>
-    </div>
-  </section>
+  </a>
   
 <style>
 /* AD-STYLE HERO */
 .hero-ad-style{
   position:relative;
+  display:block;
   width:100%;
   height:85vh;
   overflow:hidden;
+  cursor:pointer;
+  text-decoration:none;
 }
 
 .hero-ad-bg{
@@ -2046,36 +2046,11 @@
   background-repeat:no-repeat;
   background-position:center center;
   z-index:1;
+  transition:transform 0.3s ease;
 }
 
-.hero-cta-overlay{
-  position:absolute;
-  bottom:40px;
-  left:0;
-  right:0;
-  z-index:2;
-  display:flex;
-  justify-content:center;
-}
-
-.btn-shop-hero{
-  display:inline-block;
-  padding:18px 80px;
-  background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color:#000;
-  font-size:20px;
-  font-weight:900;
-  border-radius:12px;
-  text-decoration:none;
-  box-shadow:0 10px 40px rgba(79, 172, 254, 0.8);
-  transition:all 0.3s ease;
-  letter-spacing:1px;
-  text-transform:uppercase;
-}
-
-.btn-shop-hero:hover{
-  transform:translateY(-3px);
-  box-shadow:0 15px 50px rgba(79, 172, 254, 1);
+.hero-ad-style:hover .hero-ad-bg{
+  transform:scale(1.02);
 }
 
 /* MOBILE */
@@ -2083,25 +2058,11 @@
   .hero-ad-style{
     height:80vh;
   }
-  .hero-cta-overlay{
-    bottom:30px;
-  }
-  .btn-shop-hero{
-    padding:16px 60px;
-    font-size:18px;
-  }
 }
 
 @media (max-width: 430px){
   .hero-ad-style{
     height:75vh;
-  }
-  .hero-cta-overlay{
-    bottom:20px;
-  }
-  .btn-shop-hero{
-    padding:14px 50px;
-    font-size:16px;
   }
 }
 </style>
