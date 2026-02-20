@@ -7,6 +7,14 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-NVSME04P2L');
+
+  // Virtual pageview tracking for single-page app
+  function trackPageView(path, title) {
+    gtag('event', 'page_view', {
+      page_path: path,
+      page_title: title || path
+    });
+  }
 </script>
 
   <!-- Meta Pixel Code -->
@@ -1261,6 +1269,9 @@
     info.textContent = `${product.name} — ${money(product.price)} × ${qty}`;
 
     modal.style.display = 'flex';
+
+    // Track checkout start
+    trackPageView('/checkout', 'Checkout - ' + product.name);
     modal.setAttribute('aria-hidden', 'false');
 
     try {
@@ -1787,6 +1798,9 @@
     }
     const totalStr = finalTotal.toFixed(2);
 
+    // Track checkout start from cart
+    trackPageView('/checkout', 'Checkout - Cart');
+
     const containerId = 'paypal-cart-container';
     const container = document.getElementById(containerId);
     if (!container) {
@@ -2079,6 +2093,9 @@
 }
 
   function renderShop(){
+    // Track shop/catalog page view
+    trackPageView('/shop', 'Product Catalog');
+    
     const categories = Array.from(new Set(PRODUCTS.map(p => p.category))).sort();
     const list = filterAndSortProducts();
 
@@ -2258,6 +2275,9 @@
       return;
     }
 
+    // Track product page view
+    trackPageView(`/product/${slug}`, p.name);
+
     const hostedContainerId = p.hostedButtonId ? ('product-paypal-hosted-' + encodeURIComponent(p.slug)) : '';
 
     app.innerHTML = `
@@ -2316,6 +2336,19 @@
     document.getElementById('add-to-cart').addEventListener('click', () => {
       const qty = Number(document.getElementById('qty').value) || 1;
       addToCart(p.slug, qty);
+      
+      // Track add to cart event
+      gtag('event', 'add_to_cart', {
+        currency: 'USD',
+        value: (p.price / 100) * qty,
+        items: [{
+          item_id: p.slug,
+          item_name: p.name,
+          price: p.price / 100,
+          quantity: qty
+        }]
+      });
+      
       renderCartDrawer();
     });
 
@@ -2674,7 +2707,11 @@
     const cd = document.getElementById('cart-drawer');
     const open = cd.classList.toggle('open');
     cd.setAttribute('aria-hidden', open ? 'false' : 'true');
-    if (open) renderCartDrawer();
+    if (open) {
+      renderCartDrawer();
+      // Track cart view
+      trackPageView('/cart', 'Shopping Cart');
+    }
   });
   document.getElementById('close-cart').addEventListener('click', () => {
     const cd = document.getElementById('cart-drawer');
