@@ -2017,403 +2017,189 @@
   function renderHome(){
   app.innerHTML = `
 
-  <!-- HERO -->
-  <section class="hero-simple">
-    <div class="hero-bg-simple"></div>
-    <div class="discount-badge-bounce">15%<br>OFF</div>
-    
-    <div class="hero-text-overlay">
-      <h1 class="hero-main-headline">RESEARCH-GRADE<br>PEPTIDES</h1>
-      <p class="hero-main-subline">Premium Quality You Can Trust</p>
-    </div>
-    
-    <div class="hero-shop-btn-wrapper">
-      <div class="hero-trust-mini">
-        <span class="mini-badge big-badge">✓ COA VERIFIED</span>
-        <span class="mini-badge big-badge">✓ LAB TESTED</span>
-        <span class="mini-badge big-badge">🇺🇸 USA LAB</span>
-        <span class="mini-badge big-badge">⭐ 99% PURE</span>
+  <!-- FREE SHIPPING BANNER -->
+  <div style="background:#16a34a;color:#fff;text-align:center;padding:10px;font-weight:700;font-size:14px">
+    🚚 FREE SHIPPING ON ORDERS OVER $149
+  </div>
+
+  <!-- HERO SECTION -->
+  <section style="background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:80px 20px;text-align:center;color:#fff">
+    <div class="wrap" style="max-width:1000px">
+      <h1 style="font-size:48px;font-weight:900;margin:0 0 20px;line-height:1.2">
+        Lab-Tested Research Peptides<br>+ Fast US Shipping + Verified COAs
+      </h1>
+      <p style="font-size:18px;color:#cbd5e1;margin:0 0 40px;max-width:700px;margin-left:auto;margin-right:auto">
+        Third-party tested research compounds with batch documentation. Fast, discreet U.S. shipping and support that actually responds.
+      </p>
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:50px;flex-wrap:wrap">
+        <a href="#/shop" class="btn primary" style="font-size:18px;padding:16px 40px">Shop Best Sellers</a>
+        <a href="#/testing" class="btn" style="font-size:18px;padding:16px 40px;background:#475569;border:none">🧪 View COAs</a>
       </div>
-      <a href="#/shop" class="btn-shop-bottom-left">SHOP NOW</a>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:900px;margin:0 auto">
+        <div style="padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;backdrop-filter:blur(10px)">
+          <div style="font-size:28px;margin-bottom:8px">🧪</div>
+          <div style="font-weight:700">Third-party tested</div>
+          <div style="font-size:14px;color:#cbd5e1">(COA included)</div>
+        </div>
+        <div style="padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;backdrop-filter:blur(10px)">
+          <div style="font-size:28px;margin-bottom:8px">🇺🇸</div>
+          <div style="font-weight:700">Ships from USA</div>
+          <div style="font-size:14px;color:#cbd5e1">(24h handling)</div>
+        </div>
+        <div style="padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;backdrop-filter:blur(10px)">
+          <div style="font-size:28px;margin-bottom:8px">🔒</div>
+          <div style="font-weight:700">Secure checkout</div>
+          <div style="font-size:14px;color:#cbd5e1">(Apple Pay / Cards)</div>
+        </div>
+        <div style="padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;backdrop-filter:blur(10px)">
+          <div style="font-size:28px;margin-bottom:8px">💬</div>
+          <div style="font-weight:700">US-based support</div>
+          <div style="font-size:14px;color:#cbd5e1">(Real responses)</div>
+        </div>
+      </div>
     </div>
   </section>
-  
-<style>
-/* SIMPLE HERO - IMAGE AS-IS */
-.hero-simple{
-  position:relative;
-  display:block;
-  width:100%;
-  height:72vh;
-  overflow:hidden;
-}
 
-.hero-bg-simple{
-  position:absolute;
-  inset:0;
-  background-image:url('images/hero-bg-clean.jpg');
-  background-size:contain;
-  background-repeat:no-repeat;
-  background-position:center center;
-  z-index:1;
-}
-
-.hero-text-overlay{
-  position:absolute;
-  top:15%;
-  left:27%;
-  z-index:2;
-}
-
-.hero-main-headline{
-  margin:0 0 12px;
-  font-size:48px;
-  font-weight:900;
-  color:#fff;
-  line-height:1;
-  letter-spacing:-1px;
-  text-transform:uppercase;
-  text-shadow:0 2px 8px rgba(0,0,0,0.9), 0 4px 20px rgba(0,0,0,0.7);
-}
-
-.hero-main-subline{
-  margin:0;
-  font-size:22px;
-  color:#fff;
-  font-weight:700;
-  text-shadow:0 2px 6px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.6);
-}
-
-.discount-badge-bounce{
-  position:absolute;
-  top:8%;
-  right:13%;
-  width:90px;
-  height:90px;
-  background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:22px;
-  font-weight:900;
-  line-height:1.2;
-  box-shadow:0 10px 50px rgba(239, 68, 68, 0.8);
-  border:3px solid rgba(255,255,255,0.4);
-  text-align:center;
-  z-index:3;
-  animation:bounce-float 3s ease-in-out infinite;
-}
-
-@keyframes bounce-float{
-  0%, 100%{transform:translateY(0px) rotate(-3deg)}
-  25%{transform:translateY(-15px) rotate(2deg)}
-  50%{transform:translateY(0px) rotate(-2deg)}
-  75%{transform:translateY(-10px) rotate(3deg)}
-}
-
-.hero-shop-btn-wrapper{
-  position:absolute;
-  bottom:5%;
-  left:27%;
-  z-index:2;
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:10px;
-}
-
-.hero-trust-mini{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  align-items:flex-start;
-}
-
-.mini-badge{
-  background:rgba(0,0,0,0.7);
-  backdrop-filter:blur(10px);
-  padding:6px 12px;
-  border-radius:6px;
-  border:1px solid rgba(255,255,255,0.3);
-  color:#fff;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:0.3px;
-  white-space:nowrap;
-}
-
-.big-badge{
-  font-size:14px;
-  padding:8px 16px;
-  font-weight:900;
-}
-
-.btn-shop-bottom-left{
-  display:inline-block;
-  padding:16px 63px;
-  background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color:#000;
-  font-size:18px;
-  font-weight:900;
-  border-radius:11px;
-  text-decoration:none;
-  box-shadow:0 9px 36px rgba(79, 172, 254, 0.8);
-  transition:all 0.3s ease;
-  letter-spacing:0.9px;
-  text-transform:uppercase;
-}
-
-.btn-shop-bottom-left:hover{
-  transform:translateY(-3px);
-  box-shadow:0 14px 45px rgba(79, 172, 254, 1);
-}
-
-/* MOBILE */
-@media (max-width: 900px){
-  main{
-    padding-top:0 !important;
-  }
-  .hero-simple{
-    height:68vh;
-  }
-  .hero-text-overlay{
-    top:25%;
-    left:6%;
-    transform:none;
-    text-align:left;
-  }
-  .hero-main-headline{
-    font-size:18px;
-  }
-  .hero-main-subline{
-    font-size:13px;
-  }
-  .hero-shop-btn-wrapper{
-    bottom:22%;
-    left:6%;
-    transform:none;
-    align-items:flex-start;
-    gap:6px;
-  }
-  .hero-trust-mini{
-    align-items:flex-start;
-    gap:5px;
-  }
-  .btn-shop-bottom-left{
-    padding:8px 32px;
-    font-size:13px;
-  }
-  .big-badge{
-    font-size:10px;
-    padding:5px 10px;
-  }
-  .discount-badge-bounce{
-    width:55px;
-    height:55px;
-    font-size:14px;
-    top:24%;
-    right:6%;
-  }
-}
-
-@media (max-width: 430px){
-  .hero-simple{
-    height:65vh;
-  }
-  .hero-text-overlay{
-    top:28%;
-    left:5%;
-  }
-  .hero-main-headline{
-    font-size:16px;
-  }
-  .hero-main-subline{
-    font-size:12px;
-  }
-  .hero-shop-btn-wrapper{
-    bottom:24%;
-    left:5%;
-    gap:5px;
-  }
-  .btn-shop-bottom-left{
-    padding:7px 28px;
-    font-size:12px;
-  }
-  .big-badge{
-    font-size:9px;
-    padding:4px 9px;
-  }
-  .discount-badge-bounce{
-    width:50px;
-    height:50px;
-    font-size:13px;
-    top:26%;
-    right:7%;
-  }
-}
-</style>
-
-
-
-  <!-- ALL PRODUCTS -->
+  <!-- BEST SELLERS -->
   <section class="section">
     <div class="wrap">
-      <h2>Shop All Products</h2>
-      <div class="subhead">
-        Research-grade peptides with verified purity and documentation.
+      <div style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:36px;font-weight:900;margin:0 0 12px">Best Sellers</h2>
+        <p style="color:var(--muted);font-size:16px">Most ordered this week — verified quality + fast fulfillment.</p>
       </div>
 
       <div class="grid" style="margin-top:18px">
-        ${PRODUCTS.map(p => productCardHTML(p)).join('')}
+        ${PRODUCTS.slice(0, 6).map(p => productCardHTML(p)).join('')}
+      </div>
+
+      <div style="text-align:center;margin-top:40px">
+        <a href="#/shop" class="btn primary" style="font-size:16px;padding:14px 32px">View All Products →</a>
       </div>
     </div>
   </section>
 
-  <!-- TRUST -->
-  <section class="trust">
+  <!-- WHY CHOOSE GBL -->
+  <section style="background:#f8fafc;padding:80px 20px">
     <div class="wrap">
-      <h2>What researchers appreciate</h2>
+      <div style="text-align:center;margin-bottom:50px">
+        <h2 style="font-size:36px;font-weight:900;margin:0 0 12px">Why Glacier BioLabs</h2>
+        <p style="color:var(--muted);font-size:16px">Built for researchers who care about documentation, consistency, and fast delivery.</p>
+      </div>
 
-      <div class="trust-grid" style="margin-top:18px">
-        <div class="trust-card">
-          <div class="icon">QC</div>
-          <h3>Certificate-ready</h3>
-          <p>Lot documentation available.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px">
+        <div style="text-align:center">
+          <div style="font-size:48px;margin-bottom:16px">🚚</div>
+          <h3 style="font-size:20px;font-weight:900;margin:0 0 12px">Fast Delivery</h3>
+          <p style="color:var(--muted);line-height:1.6">Orders ship within 24 hours. Most deliveries arrive within 4 business days.</p>
         </div>
-
-        <div class="trust-card">
-          <div class="icon">SHIP</div>
-          <h3>Discreet shipping</h3>
-          <p>Professional packaging standards.</p>
+        <div style="text-align:center">
+          <div style="font-size:48px;margin-bottom:16px">🧪</div>
+          <h3 style="font-size:20px;font-weight:900;margin:0 0 12px">Quality Documentation</h3>
+          <p style="color:var(--muted);line-height:1.6">Batch documentation and third-party testing where available for transparency.</p>
         </div>
-
-        <div class="trust-card">
-          <div class="icon">SUP</div>
-          <h3>Research support</h3>
-          <p>Responsive assistance when needed.</p>
+        <div style="text-align:center">
+          <div style="font-size:48px;margin-bottom:16px">🔒</div>
+          <h3 style="font-size:20px;font-weight:900;margin:0 0 12px">Secure Payments</h3>
+          <p style="color:var(--muted);line-height:1.6">Secure checkout — cards & Apple Pay accepted.</p>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:48px;margin-bottom:16px">🎁</div>
+          <h3 style="font-size:20px;font-weight:900;margin:0 0 12px">Free Shipping</h3>
+          <p style="color:var(--muted);line-height:1.6">Free U.S. shipping on orders over $149.99. Orders under $149.99 have a $6.95 shipping fee.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials">
+  <!-- BUNDLES SECTION -->
+  <section class="section">
     <div class="wrap">
-      <h2>What Researchers Say</h2>
-      <div class="subhead">Real feedback from labs using our compounds</div>
-
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "COAs match perfectly. Exactly what I need for replication studies. Shipping was fast and discreet."
-          </div>
-          <div class="author">
-            <div class="author-avatar">DM</div>
-            <div class="author-info">
-              <div class="author-name">Dr. Michael Chen</div>
-              <div class="author-title">Independent Researcher</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "Finally, a supplier that provides actual documentation. Purity was as advertised. Will order again."
-          </div>
-          <div class="author">
-            <div class="author-avatar">JS</div>
-            <div class="author-info">
-              <div class="author-name">Jennifer Sanders</div>
-              <div class="author-title">Research Assistant</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "Transparent sourcing, verified results, professional packaging. This is how it should be done."
-          </div>
-          <div class="author">
-            <div class="author-avatar">RK</div>
-            <div class="author-info">
-              <div class="author-name">Robert Kim</div>
-              <div class="author-title">Lab Manager</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "Third order now. Consistency is incredible. Same quality every time, documentation always included."
-          </div>
-          <div class="author">
-            <div class="author-avatar">TP</div>
-            <div class="author-info">
-              <div class="author-name">Thomas Porter</div>
-              <div class="author-title">Biochemistry Student</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "Impressed by the speed and professionalism. Got my order in 3 days with all proper documentation."
-          </div>
-          <div class="author">
-            <div class="author-avatar">AL</div>
-            <div class="author-info">
-              <div class="author-name">Amanda Lee</div>
-              <div class="author-title">Research Coordinator</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <div class="quote">
-            "Best peptide source I've found. Clean product, accurate COAs, and customer service actually responds."
-          </div>
-          <div class="author">
-            <div class="author-avatar">MH</div>
-            <div class="author-info">
-              <div class="author-name">Marcus Hayes</div>
-              <div class="author-title">Independent Researcher</div>
-            </div>
-          </div>
-        </div>
+      <div style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:36px;font-weight:900;margin:0 0 12px">💊 Multi-Packs — Save Up To $30</h2>
+        <p style="color:var(--muted);font-size:16px">Stock up and save big on our best sellers.</p>
       </div>
 
-      <!-- Trust Badges -->
-      <div class="trust-badges">
-        <div class="trust-badge">
-          <span class="trust-badge-icon">🔒</span>
-          <span>Secure Checkout</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;max-width:800px;margin:0 auto">
+        <div style="border:2px solid var(--line);border-radius:16px;padding:32px;text-align:center;position:relative">
+          <div style="position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:6px 20px;border-radius:20px;font-size:13px;font-weight:900">Save $20</div>
+          <h3 style="font-size:22px;font-weight:900;margin:0 0 20px">2-Pack Retatrutide</h3>
+          <div style="margin-bottom:20px">
+            <span style="text-decoration:line-through;color:var(--muted);font-size:18px;margin-right:10px">$190.00</span>
+            <span style="font-size:32px;font-weight:900;color:var(--accent-2)">$170</span>
+          </div>
+          <p style="color:var(--muted);margin-bottom:24px;font-size:14px">2x Retatrutide 10mg</p>
+          <button class="btn primary full" style="font-size:16px;padding:14px" onclick="alert('Bundle functionality coming soon!')">Add to Cart</button>
         </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">✅</span>
-          <span>Third-Party Tested</span>
-        </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">💯</span>
-          <span>Money-Back Guarantee</span>
-        </div>
-        <div class="trust-badge">
-          <span class="trust-badge-icon">🚚</span>
-          <span>Fast US Shipping</span>
+        <div style="border:2px solid #16a34a;border-radius:16px;padding:32px;text-align:center;position:relative;background:rgba(22,163,74,0.05)">
+          <div style="position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:6px 20px;border-radius:20px;font-size:13px;font-weight:900">Best Value</div>
+          <h3 style="font-size:22px;font-weight:900;margin:0 0 20px">3-Pack Retatrutide</h3>
+          <div style="margin-bottom:20px">
+            <span style="text-decoration:line-through;color:var(--muted);font-size:18px;margin-right:10px">$285.00</span>
+            <span style="font-size:32px;font-weight:900;color:var(--accent-2)">$255</span>
+          </div>
+          <p style="color:var(--muted);margin-bottom:24px;font-size:14px">3x Retatrutide 10mg • Save $30</p>
+          <button class="btn primary full" style="font-size:16px;padding:14px" onclick="alert('Bundle functionality coming soon!')">Add to Cart</button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- EMAIL SIGNUP -->
+  <section style="background:#1e293b;color:#fff;padding:60px 20px;text-align:center">
+    <div class="wrap" style="max-width:600px">
+      <div style="font-size:36px;margin-bottom:16px">📬</div>
+      <h3 style="font-size:28px;font-weight:900;margin:0 0 12px">Join 100+ Researchers</h3>
+      <p style="color:#cbd5e1;margin:0 0 30px;font-size:16px">Get exclusive deals, restock alerts & early access to new products.</p>
+      <form id="email-signup-form" style="display:flex;gap:12px;max-width:500px;margin:0 auto 16px;flex-wrap:wrap;justify-content:center">
+        <input type="email" id="email-signup-input" placeholder="your@email.com" required style="flex:1;min-width:250px;padding:14px 20px;border-radius:10px;border:none;font-size:16px">
+        <button type="submit" class="btn primary" style="font-size:16px;padding:14px 32px;white-space:nowrap">Subscribe</button>
+      </form>
+      <p style="color:#94a3b8;font-size:13px;margin:0">No spam. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <!-- DISCLAIMERS -->
+  <section class="section">
+    <div class="wrap" style="max-width:800px">
+      <h2 style="text-align:center;font-size:28px;font-weight:900;margin:0 0 30px">Why researchers choose Glacier BioLabs</h2>
+      <p style="color:var(--muted);line-height:1.8;text-align:center;margin-bottom:40px">
+        We focus on transparency, fast fulfillment, and consistent lab supplies. Our goal is simple: make it easy to purchase research compounds with clear documentation and reliable support.
+      </p>
+      <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:12px;padding:24px;margin-bottom:20px">
+        <p style="margin:0 0 12px;color:#991b1b"><strong>ℹ️ FDA Disclaimer:</strong> The statements made on this website have not been evaluated by the U.S. Food and Drug Administration.</p>
+        <p style="margin:0;color:#991b1b">These research chemicals are not drugs, food, or cosmetics.</p>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:14px;margin:0">For laboratory research use only. Not for human or veterinary consumption.</p>
     </div>
   </section>
 
   `;
+
+  // Email signup handler
+  const emailForm = document.getElementById('email-signup-form');
+  if (emailForm) {
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('email-signup-input');
+      const email = input.value.trim();
+      if (!email) return;
+      
+      try {
+        const emails = JSON.parse(localStorage.getItem('gbl_emails') || '[]');
+        if (!emails.includes(email)) {
+          emails.push({email, date: new Date().toISOString()});
+          localStorage.setItem('gbl_emails', JSON.stringify(emails));
+        }
+        
+        input.value = '';
+        alert('✅ Thanks for subscribing! You will hear from us soon.');
+      } catch (err) {
+        alert('Something went wrong. Please try again.');
+      }
+    });
+  }
 }
+
 
   function renderShop(){
     // Track shop/catalog page view
