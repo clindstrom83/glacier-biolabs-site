@@ -1072,12 +1072,7 @@
 </head>
 
   <!-- Promo Banner -->
-  <div class="promo-banner">
-    <div>
-      <strong>🔥 Limited Time:</strong> Get <strong>15% OFF</strong> all orders with code <span class="promo-code">FEB15</span>
-    </div>
-    <div class="promo-deadline">⏰ Offer ends Sunday, Feb 23rd at midnight | Use "Add to Cart" to apply discount automatically</div>
-  </div>
+  <!-- REMOVED: No active promotions -->
 
   <header>
     <div class="wrap header">
@@ -1143,12 +1138,13 @@
       <div class="cart-total" id="cart-total"></div>
       
       <!-- Discount Code Input -->
-      <div id="discount-code-section" style="margin:12px 0">
+      <!-- REMOVED: No active discount codes -->
+      <div id="discount-code-section" style="margin:12px 0; display:none">
         <div style="display:flex;gap:6px">
           <input 
             id="discount-code-input" 
             type="text" 
-            placeholder="Discount code (e.g., FEB15)" 
+            placeholder="Discount code" 
             style="flex:1;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:14px"
           />
           <button 
@@ -1942,14 +1938,8 @@
           <small style="color:#15803d">Code: ${discountState.code}</small>
         </div>
       `;
-    } else {
-      promoHTML = `
-        <div style="padding:12px;background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;margin-bottom:12px;text-align:center">
-          <strong style="color:#dc2626">💰 Save 15% with code FEB15</strong><br>
-          <small style="color:#991b1b">Apply code in cart above</small>
-        </div>
-      `;
     }
+    // No active promotions - removed FEB15 promo banner
 
     container.innerHTML = `
       ${promoHTML}
@@ -2676,10 +2666,7 @@
                     </div>
                   </div>
                 </div>
-                <div style="padding:12px;background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;margin-bottom:12px;text-align:center">
-                  <strong style="color:#dc2626">💰 Save 15% with code FEB15</strong><br>
-                  <small style="color:#991b1b">Add to cart and apply code at checkout (discount codes don't work with Buy Now)</small>
-                </div>
+                <!-- REMOVED: No active promotions -->
                 <div class="order-help">Orders are processed via PayPal. Documentation available for research orders.</div>
                 <div id="${hostedContainerId}" style="margin-top:8px"></div>
               </div>
@@ -3281,9 +3268,8 @@
   <div id="exit-intent-popup" class="exit-popup">
     <div class="exit-popup-content">
       <button class="exit-popup-close" aria-label="Close">×</button>
-      <h3>Wait! Limited Time Offer! 🔥</h3>
-      <p>Get <strong>15% OFF</strong> all orders of research-grade peptides. Third-party tested, fast shipping, with documentation.</p>
-      <p style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Use code <strong style="color: var(--accent); font-size: 16px;">FEB15</strong><br><small style="opacity: .8;">Use "Add to Cart" to apply discount automatically | Ends Sunday, Feb 23rd</small></p>
+      <h3>Research-Grade Peptides</h3>
+      <p>Third-party tested peptides with documentation. Fast shipping, quality-assured compounds for your research needs.</p>
       <button class="btn primary">Browse Peptides →</button>
     </div>
   </div>

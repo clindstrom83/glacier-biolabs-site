@@ -1,0 +1,12 @@
+    /* Testimonials */
+    .testimonials-section{padding:80px 0;background:#fff}
+    .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;margin-top:40px}
+    .testimonial-card{background:#f9fafb;padding:30px;border-radius:var(--radius);border:2px solid var(--line)}
+    .stars{color:#fbbf24;font-size:18px;margin-bottom:12px}
+    .testimonial-text{font-size:15px;line-height:1.7;margin-bottom:20px;color:var(--ink)}
+    .testimonial-author{border-top:1px solid var(--line);padding-top:16px}
+    .testimonial-author strong{display:block;font-size:14px;margin-bottom:4px}
+    .testimonial-author span{font-size:13px;color:var(--muted)}
+    /* Product Details Link */
+    .product-details-link{display:inline-block;margin-top:12px;font-size:14px;color:var(--accent);text-decoration:underline}
+    .product-details-link:hover{color:var(--accent-2)}
