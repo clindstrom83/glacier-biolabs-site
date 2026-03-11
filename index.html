@@ -1417,7 +1417,8 @@
     {
       slug: 'retatrutide',
       name: 'Retatrutide (10 mg)',
-      price: 7500,
+      price: 9500,
+      regularPrice: 11875,
       category: 'Peptides',
       inStock: true,
       image: IMAGE_FILES.retatrutide,
@@ -1429,7 +1430,8 @@
     {
       slug: 'ghk-cu',
       name: 'GHK-Cu (Copper Peptide) – 50 mg',
-      price: 5500,
+      price: 6500,
+      regularPrice: 8125,
       category: 'Peptides',
       inStock: true,
       image: IMAGE_FILES.ghk,
@@ -1442,6 +1444,7 @@
       slug: 'melanotan-ii',
       name: 'Melanotan II (10 mg)',
       price: 5000,
+      regularPrice: 6250,
       category: 'Peptides',
       inStock: true,
       image: IMAGE_FILES.mt2,
@@ -1453,25 +1456,27 @@
     {
       slug: 'bpc-157',
       name: 'BPC-157 (10 mg)',
-      price: 6500,
+      price: 7500,
+      regularPrice: 9375,
       category: 'Peptides',
       inStock: true,
       image: IMAGE_FILES.bpc,
       short: 'Peptide fragment used in controlled research models.',
       long: `BPC-157 is provided strictly as a research compound. It appears in literature related to cellular response and signaling in controlled experimental models. Not for human or veterinary use.`,
-      sale: false,
+      sale: true,
       hostedButtonId: '699XYHCQE3ZV2'
     },
     {
       slug: 'water',
       name: 'Bacteriostatic Water (10 mL)',
-      price: 1000,
+      price: 1200,
+      regularPrice: 1500,
       category: 'Supplies',
       inStock: true,
       image: IMAGE_FILES.water,
       short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
       long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
-      sale: false,
+      sale: true,
       hostedButtonId: '7URDJP2ZKGVQN'
     },
     {
@@ -1672,7 +1677,11 @@
         </a>
         <div class="body">
           <h3>${escapeHtml(p.name)}</h3>
-          <div class="price">${money(p.price)}</div>
+          <div class="price">
+            ${p.regularPrice ? `<span style="text-decoration:line-through;color:var(--muted);font-size:0.85em;margin-right:8px">${money(p.regularPrice)}</span>` : ''}
+            <span style="color:var(--accent-2);font-weight:900">${money(p.price)}</span>
+            ${p.regularPrice ? `<span style="color:#16a34a;font-size:0.75em;margin-left:6px;font-weight:700">20% OFF</span>` : ''}
+          </div>
           <div class="small">${escapeHtml(p.short || '')}</div>
           <div class="viewing-count">${viewingCount} people viewing</div>
           <div class="small" style="text-align:center;margin-top:10px;font-weight:900;color:${p.inStock ? 'var(--accent-2)' : 'var(--muted)'}">${escapeHtml(stockText)}</div>
@@ -2640,7 +2649,11 @@
             <div class="pinfo">
               <h1>${escapeHtml(p.name)}</h1>
               <div class="rating-row">
-                <div style="font-weight:900;color:var(--accent-2)">${money(p.price)}</div>
+                <div style="font-weight:900;color:var(--accent-2)">
+                  ${p.regularPrice ? `<span style="text-decoration:line-through;color:var(--muted);font-size:0.85em;margin-right:10px">${money(p.regularPrice)}</span>` : ''}
+                  ${money(p.price)}
+                  ${p.regularPrice ? `<span style="background:#16a34a;color:#fff;font-size:0.7em;margin-left:10px;padding:4px 8px;border-radius:6px;font-weight:700">20% OFF</span>` : ''}
+                </div>
                 <div class="muted" style="font-weight:700">${p.category}</div>
                 <div class="muted" style="font-weight:700">${p.inStock ? 'In stock' : 'Out of stock'}</div>
               </div>
