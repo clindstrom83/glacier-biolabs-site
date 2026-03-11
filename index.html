@@ -1538,6 +1538,32 @@
       long: `MOTS-c is supplied as a lyophilized research compound for laboratory investigation only. This mitochondrial-derived peptide is referenced in studies exploring cellular metabolism and energy regulation in controlled experimental settings. Research use only.`,
       sale: true,
       hostedButtonId: '' // PayPal button to be created
+    },
+    {
+      slug: 'reta-2pack',
+      name: '2-Pack Retatrutide (10 mg)',
+      price: 17000,
+      regularPrice: 19000,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: '2x Retatrutide 10mg - Save $20',
+      long: `Bundle pack containing two (2) Retatrutide 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $20 compared to buying individually.`,
+      sale: true,
+      hostedButtonId: ''
+    },
+    {
+      slug: 'reta-3pack',
+      name: '3-Pack Retatrutide (10 mg)',
+      price: 25500,
+      regularPrice: 28500,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: '3x Retatrutide 10mg - Save $30 (Best Value)',
+      long: `Bundle pack containing three (3) Retatrutide 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $30 compared to buying individually. Best value option.`,
+      sale: true,
+      hostedButtonId: ''
     }
   ];
 
@@ -2128,7 +2154,7 @@
             <span style="font-size:32px;font-weight:900;color:var(--accent-2)">$170</span>
           </div>
           <p style="color:var(--muted);margin-bottom:24px;font-size:14px">2x Retatrutide 10mg</p>
-          <button class="btn primary full" style="font-size:16px;padding:14px" onclick="alert('Bundle functionality coming soon!')">Add to Cart</button>
+          <button class="btn primary full" style="font-size:16px;padding:14px" data-add="reta-2pack">Add to Cart</button>
         </div>
         <div style="border:2px solid #16a34a;border-radius:16px;padding:32px;text-align:center;position:relative;background:rgba(22,163,74,0.05)">
           <div style="position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:6px 20px;border-radius:20px;font-size:13px;font-weight:900">Best Value</div>
@@ -2138,7 +2164,7 @@
             <span style="font-size:32px;font-weight:900;color:var(--accent-2)">$255</span>
           </div>
           <p style="color:var(--muted);margin-bottom:24px;font-size:14px">3x Retatrutide 10mg • Save $30</p>
-          <button class="btn primary full" style="font-size:16px;padding:14px" onclick="alert('Bundle functionality coming soon!')">Add to Cart</button>
+          <button class="btn primary full" style="font-size:16px;padding:14px" data-add="reta-3pack">Add to Cart</button>
         </div>
       </div>
     </div>
