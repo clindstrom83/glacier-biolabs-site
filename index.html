@@ -723,6 +723,23 @@
     .order-row .field{ flex:1; margin:0; }
     .btn.primary.full { width:100%; padding:14px 16px; font-size:16px; border-radius:12px; }
     .order-help{ color:var(--muted); font-size:13px; margin-top:8px; }
+    
+    /* Sticky Mobile Add to Cart */
+    .sticky-mobile-cart {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 2px solid var(--line);
+      padding: 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      z-index: 999;
+    }
+    .sticky-mobile-cart.show {
+      display: block;
+    }
     @media (max-width: 900px){
       .order-row{ flex-direction:column; align-items:stretch; }
     }
@@ -1197,9 +1214,41 @@
     <a href="#/about">About</a>
   </div>
 
-  <footer>
+  <footer style="background:#0f172a;color:#cbd5e1;padding:60px 20px 30px">
     <div class="wrap">
-      © <span id="year"></span> Glacier BioLabs — Research Use Only — Not for human or veterinary use.
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:50px">
+        <div>
+          <h4 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 16px">Policies</h4>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <a href="#/terms" style="color:#94a3b8;text-decoration:none">Terms & Conditions</a>
+            <a href="#/privacy" style="color:#94a3b8;text-decoration:none">Privacy Policy</a>
+            <a href="#/refunds" style="color:#94a3b8;text-decoration:none">Refund & Returns</a>
+            <a href="#/shipping" style="color:#94a3b8;text-decoration:none">Shipping Policy</a>
+            <a href="#/disclaimer" style="color:#94a3b8;text-decoration:none">Research Use Disclaimer</a>
+          </div>
+        </div>
+        <div>
+          <h4 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 16px">Quick Links</h4>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <a href="#/" style="color:#94a3b8;text-decoration:none">Home</a>
+            <a href="#/shop" style="color:#94a3b8;text-decoration:none">Products</a>
+            <a href="#/testing" style="color:#94a3b8;text-decoration:none">COA / Testing</a>
+            <a href="#/faq" style="color:#94a3b8;text-decoration:none">FAQ</a>
+            <a href="#/contact" style="color:#94a3b8;text-decoration:none">Contact Us</a>
+            <a href="#/affiliates" style="color:#10b981;text-decoration:none;font-weight:700">Become an Affiliate</a>
+          </div>
+        </div>
+        <div>
+          <h4 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 16px">Why Choose Glacier BioLabs</h4>
+          <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin:0">
+            Glacier BioLabs supplies high-purity research reagents and peptides designed exclusively for laboratory and analytical applications. Every product is sold for research use only.
+          </p>
+        </div>
+      </div>
+      <div style="border-top:1px solid #1e293b;padding-top:30px;text-align:center">
+        <div style="margin-bottom:12px;color:#94a3b8;font-size:14px">© <span id="year"></span> Glacier BioLabs. All rights reserved.</div>
+        <div style="color:#64748b;font-size:13px">Glacier BioLabs is a chemical supplier. All products are sold solely for research, laboratory, or analytical purposes and are not intended for human or veterinary consumption.</div>
+      </div>
     </div>
   </footer>
 
@@ -2490,11 +2539,39 @@
                 <!-- REMOVED: No active promotions -->
                 <div class="order-help">Orders are processed via PayPal. Documentation available for research orders.</div>
                 <div id="${hostedContainerId}" style="margin-top:8px"></div>
+                
+                <!-- Guarantee Badge -->
+                <div style="background:#f0fdf4;border:2px solid #10b981;border-radius:12px;padding:20px;margin-top:24px;text-align:center">
+                  <div style="font-size:32px;margin-bottom:8px">✅</div>
+                  <div style="font-weight:900;color:#065f46;font-size:18px;margin-bottom:8px">100% Money-Back Guarantee</div>
+                  <div style="color:#065f46;font-size:14px">Not satisfied? Full refund within 30 days. No questions asked.</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      <!-- Customers Also Bought -->
+      <section class="section" style="background:#f8fafc">
+        <div class="wrap">
+          <h2 style="text-align:center;font-size:32px;font-weight:900;margin-bottom:40px">Customers Also Bought</h2>
+          <div class="grid">
+            ${PRODUCTS.filter(x => x.slug !== p.slug && x.category === p.category).slice(0, 4).map(rec => productCardHTML(rec)).join('')}
+          </div>
+        </div>
+      </section>
+
+      <!-- Sticky Mobile Add to Cart -->
+      <div class="sticky-mobile-cart" id="sticky-mobile-cart">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="flex:1">
+            <div style="font-weight:900;font-size:18px;color:var(--accent-2)">${money(p.price)}</div>
+            <div style="font-size:13px;color:var(--muted)">${escapeHtml(p.name)}</div>
+          </div>
+          <button id="sticky-add-to-cart" class="btn primary" style="padding:14px 24px;white-space:nowrap">Add to Cart</button>
+        </div>
+      </div>
     `;
 
     // Add-to-cart handler on product page (single handler)
@@ -2535,6 +2612,33 @@
             });
           }
         }
+      });
+    }
+
+    // Sticky mobile cart functionality
+    const stickyCart = document.getElementById('sticky-mobile-cart');
+    const stickyAddBtn = document.getElementById('sticky-add-to-cart');
+    const mainAddBtn = document.getElementById('add-to-cart');
+    
+    if (stickyCart && stickyAddBtn && mainAddBtn) {
+      // Show sticky cart when user scrolls past main button
+      let observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting && window.innerWidth <= 900) {
+            stickyCart.classList.add('show');
+          } else {
+            stickyCart.classList.remove('show');
+          }
+        });
+      }, { threshold: 0 });
+      
+      observer.observe(mainAddBtn);
+      
+      // Handle sticky cart click
+      stickyAddBtn.addEventListener('click', () => {
+        const qty = Number(document.getElementById('qty').value) || 1;
+        addToCart(p.slug, qty);
+        renderCartDrawer();
       });
     }
   }
@@ -2814,6 +2918,481 @@
     `;
   }
 
+  function renderAffiliate(){
+  app.innerHTML = `
+  
+  <style>
+  .affiliate-hero {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #fff;
+    padding: 80px 20px;
+    text-align: center;
+  }
+  .affiliate-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 30px;
+    max-width: 900px;
+    margin: 40px auto 50px;
+  }
+  .stat-box {
+    text-align: center;
+  }
+  .stat-number {
+    font-size: 48px;
+    font-weight: 900;
+    color: #10b981;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-size: 14px;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+  .benefit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    margin-top: 50px;
+  }
+  .benefit-card {
+    text-align: center;
+  }
+  .benefit-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+  }
+  .step-card {
+    background: #f8fafc;
+    padding: 32px;
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+  }
+  .step-number {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .earnings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .earnings-card {
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid var(--line);
+  }
+  .earnings-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+  .earnings-price {
+    font-size: 20px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .earnings-commission {
+    font-size: 16px;
+    color: #10b981;
+    font-weight: 700;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--line);
+    padding: 24px 0;
+  }
+  .faq-question {
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faq-answer {
+    display: none;
+    margin-top: 16px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .form-grid {
+    display: grid;
+    gap: 24px;
+    max-width: 600px;
+    margin: 40px auto;
+  }
+  .form-field label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .form-field input, .form-field textarea, .form-field select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    font-size: 16px;
+  }
+  .form-field textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  </style>
+
+  <!-- HERO -->
+  <section class="affiliate-hero">
+    <div class="wrap" style="max-width: 900px">
+      <div style="font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #10b981; margin-bottom: 20px">AFFILIATE PROGRAM</div>
+      <h1 style="font-size: 48px; font-weight: 900; margin: 0 0 20px; line-height: 1.2">
+        Earn 20% Commission Promoting Premium Research Peptides
+      </h1>
+      <p style="font-size: 18px; color: #cbd5e1; margin: 0 0 40px">
+        Partner with Glacier BioLabs and earn industry-leading commissions on every sale. High-purity products, high average order values, and a brand your audience will trust.
+      </p>
+      
+      <div class="affiliate-stats">
+        <div class="stat-box">
+          <div class="stat-number">20%</div>
+          <div class="stat-label">Commission Rate</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">$85</div>
+          <div class="stat-label">Avg Order Value</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">$17+</div>
+          <div class="stat-label">Per Referral</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">30 Day</div>
+          <div class="stat-label">Cookie Window</div>
+        </div>
+      </div>
+
+      <a href="#apply" class="btn primary" style="font-size: 18px; padding: 16px 40px">Apply Now — It's Free</a>
+    </div>
+  </section>
+
+  <!-- WHY PARTNER -->
+  <section class="section">
+    <div class="wrap">
+      <h2 style="text-align: center; font-size: 36px; font-weight: 900; margin-bottom: 16px">Why Partner With Us</h2>
+      
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">💰</div>
+          <h3 style="font-size: 20px; font-weight: 900; margin: 0 0 12px">Industry-Leading Commissions</h3>
+          <p style="color: var(--muted); line-height: 1.6">20% on every sale — no caps, no tiers. Earn $17+ per average referral from day one.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">⭐</div>
+          <h3 style="font-size: 20px; font-weight: 900; margin: 0 0 12px">Premium Brand, Easy Sell</h3>
+          <p style="color: var(--muted); line-height: 1.6">Third-party tested, pharmaceutical-grade peptides with 99%+ purity. Your audience will thank you.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">📊</div>
+          <h3 style="font-size: 20px; font-weight: 900; margin: 0 0 12px">Real-Time Dashboard</h3>
+          <p style="color: var(--muted); line-height: 1.6">Track clicks, conversions, and earnings in real time through your affiliate portal.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🎁</div>
+          <h3 style="font-size: 20px; font-weight: 900; margin: 0 0 12px">Custom Discount Codes</h3>
+          <p style="color: var(--muted); line-height: 1.6">Give your audience an exclusive 10% discount — makes conversion effortless.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">💬</div>
+          <h3 style="font-size: 20px; font-weight: 900; margin: 0 0 12px">Dedicated Support</h3>
+          <p style="color: var(--muted); line-height: 1.6">Direct line to our team for questions, custom content, or campaign strategy.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">📦</div>
+          <h3 style="font-size: 20px; font-weight: 900; margin: 0 0 12px">Ready-Made Resources</h3>
+          <p style="color: var(--muted); line-height: 1.6">Swipe copy, email templates, product guides, and social media assets ready to use.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section style="background: #f8fafc; padding: 80px 20px">
+    <div class="wrap">
+      <h2 style="text-align: center; font-size: 36px; font-weight: 900; margin-bottom: 16px">How It Works</h2>
+      
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <h3 style="font-size: 22px; font-weight: 900; margin: 20px 0 12px">Apply</h3>
+          <p style="color: var(--muted); line-height: 1.6">Fill out the application form below. We'll review and get back to you within 24-48 hours.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <h3 style="font-size: 22px; font-weight: 900; margin: 20px 0 12px">Share</h3>
+          <p style="color: var(--muted); line-height: 1.6">Promote Glacier BioLabs with your unique referral link and custom discount code across any platform.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <h3 style="font-size: 22px; font-weight: 900; margin: 20px 0 12px">Earn</h3>
+          <p style="color: var(--muted); line-height: 1.6">Earn 20% commission on every sale. Track everything in real time and get paid monthly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EARNINGS CALCULATOR -->
+  <section class="section">
+    <div class="wrap">
+      <h2 style="text-align: center; font-size: 36px; font-weight: 900; margin-bottom: 16px">What You Could Earn</h2>
+      <p style="text-align: center; color: var(--muted); margin-bottom: 40px">Here's what 20% commission looks like on our top-selling products:</p>
+      
+      <div class="earnings-grid">
+        <div class="earnings-card">
+          <h4>Retatrutide 10MG</h4>
+          <div class="earnings-price">$95.00</div>
+          <div class="earnings-commission">You earn $19.00</div>
+        </div>
+        <div class="earnings-card">
+          <h4>BPC-157 10MG</h4>
+          <div class="earnings-price">$75.00</div>
+          <div class="earnings-commission">You earn $15.00</div>
+        </div>
+        <div class="earnings-card">
+          <h4>GHK-Cu 50MG</h4>
+          <div class="earnings-price">$65.00</div>
+          <div class="earnings-commission">You earn $13.00</div>
+        </div>
+        <div class="earnings-card">
+          <h4>Melanotan II 10MG</h4>
+          <div class="earnings-price">$50.00</div>
+          <div class="earnings-commission">You earn $10.00</div>
+        </div>
+        <div class="earnings-card">
+          <h4>2-Pack Bundle</h4>
+          <div class="earnings-price">$170.00</div>
+          <div class="earnings-commission">You earn $34.00</div>
+        </div>
+        <div class="earnings-card">
+          <h4>3-Pack Bundle</h4>
+          <div class="earnings-price">$255.00</div>
+          <div class="earnings-commission">You earn $51.00</div>
+        </div>
+      </div>
+
+      <p style="text-align: center; margin-top: 40px; font-size: 18px; color: var(--muted)">
+        <strong>Just 5 referrals/month at AOV = $85+ in passive income</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section style="background: #f8fafc; padding: 80px 20px">
+    <div class="wrap" style="max-width: 800px">
+      <h2 style="text-align: center; font-size: 36px; font-weight: 900; margin-bottom: 50px">Frequently Asked Questions</h2>
+      
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>How much commission do I earn?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          You earn 20% commission on every sale referred through your unique link. There are no caps, tiers, or minimums. If someone buys $100 worth of products using your link, you earn $20.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>How long does the tracking cookie last?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Our tracking cookie lasts 30 days. If someone clicks your link and purchases within 30 days, you get credit for the sale.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>When and how do I get paid?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Payouts are processed monthly via PayPal or bank transfer. You'll receive payment for all commissions earned in the previous month, with a minimum payout threshold of $50.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>Who can join the affiliate program?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Anyone with an audience interested in research peptides, health optimization, or fitness. This includes content creators, bloggers, fitness coaches, researchers, and educators.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>Do I need a large following?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          No! We value quality over quantity. If you have an engaged audience that trusts your recommendations, you're a great fit regardless of follower count.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>What marketing materials do I get?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Once approved, you'll get access to product images, pre-written social posts, email templates, product guides, and custom graphics. We also provide one-on-one support for campaign ideas.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>Can I promote on any platform?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Yes! Instagram, TikTok, YouTube, Twitter/X, blogs, email lists, podcasts — anywhere your audience engages with you. We only prohibit spam and paid search bidding on our brand name.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">
+          <span>Is there a cost to join?</span>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          No! The affiliate program is 100% free to join. There are no setup fees, monthly fees, or hidden costs.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPLICATION FORM -->
+  <section class="section" id="apply">
+    <div class="wrap" style="max-width: 700px">
+      <h2 style="text-align: center; font-size: 36px; font-weight: 900; margin-bottom: 16px">Apply Now — It's Free</h2>
+      <p style="text-align: center; color: var(--muted); margin-bottom: 40px">No minimum followers. No fees. Just fill out the form and we'll get you set up.</p>
+      
+      <form id="affiliate-application-form" class="form-grid">
+        <div class="form-field">
+          <label>Full Name *</label>
+          <input type="text" name="name" required placeholder="Your name">
+        </div>
+
+        <div class="form-field">
+          <label>Email *</label>
+          <input type="email" name="email" required placeholder="you@example.com">
+        </div>
+
+        <div class="form-field">
+          <label>Social Media / Website URL *</label>
+          <input type="url" name="url" required placeholder="https://instagram.com/yourhandle">
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>Follower Count (approx)</label>
+            <input type="text" name="followers" placeholder="e.g., 5,000">
+          </div>
+          <div class="form-field">
+            <label>Preferred Platform *</label>
+            <select name="platform" required>
+              <option value="">Select...</option>
+              <option value="Instagram">Instagram</option>
+              <option value="TikTok">TikTok</option>
+              <option value="YouTube">YouTube</option>
+              <option value="Twitter/X">Twitter/X</option>
+              <option value="Blog">Blog</option>
+              <option value="Email List">Email List</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>How will you promote Glacier BioLabs? *</label>
+          <textarea name="strategy" required placeholder="Tell us about your content style, audience, and promotion ideas..."></textarea>
+        </div>
+
+        <button type="submit" class="btn primary full" style="font-size: 18px; padding: 16px">Submit Application</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 30px; color: var(--muted)">
+        Already an affiliate? <a href="mailto:support@gblpeptides.com" style="color: var(--accent); font-weight: 700">Access your resource kit →</a>
+      </p>
+    </div>
+  </section>
+
+  `;
+
+  // Handle affiliate form submission
+  const form = document.getElementById('affiliate-application-form');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      
+      // Email mailto link with pre-filled subject and body
+      const subject = encodeURIComponent('Affiliate Program Application - ' + data.name);
+      const body = encodeURIComponent(`
+NEW AFFILIATE APPLICATION
+
+Name: ${data.name}
+Email: ${data.email}
+Social/Website: ${data.url}
+Followers: ${data.followers || 'Not specified'}
+Platform: ${data.platform}
+
+Promotion Strategy:
+${data.strategy}
+
+---
+Submitted: ${new Date().toLocaleString()}
+      `.trim());
+      
+      window.location.href = `mailto:rustbuyer101@gmail.com?subject=${subject}&body=${body}`;
+      
+      alert('✅ Application submitted! We will review and get back to you within 24-48 hours.');
+      form.reset();
+    });
+  }
+}
   function router(){
     setActiveNav();
     const hash = location.hash || '#/';
@@ -2843,6 +3422,7 @@
     if (hash.startsWith('#/about') || hash.startsWith('#/learn')) return renderPolicy('about');
     if (hash.startsWith('#/knowledge')) return renderPolicy('knowledge');
     if (hash.startsWith('#/safety')) return renderPolicy('safety');
+    if (hash.startsWith('#/affiliates')) return renderAffiliate();
 
     app.innerHTML = `<div class="wrap"><h2>Page not found</h2></div>`;
   }
@@ -3063,7 +3643,7 @@
     setTimeout(() => {
       const closeBtn = document.querySelector('.exit-popup-close');
       const popup = document.getElementById(EXIT_POPUP_ID);
-      const ctaBtn = document.querySelector('.exit-popup .btn');
+      const exitEmailForm = document.getElementById('exit-email-form');
       
       if (closeBtn) {
         closeBtn.addEventListener('click', hideExitPopup);
@@ -3075,10 +3655,24 @@
           }
         });
       }
-      if (ctaBtn) {
-        ctaBtn.addEventListener('click', () => {
-          hideExitPopup();
-          window.location.hash = '#/shop';
+      if (exitEmailForm) {
+        exitEmailForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('exit-email-input');
+          const email = input.value.trim();
+          if (!email) return;
+          
+          try {
+            const emails = JSON.parse(localStorage.getItem('gbl_emails') || '[]');
+            emails.push({email, date: new Date().toISOString(), source: 'exit-intent'});
+            localStorage.setItem('gbl_emails', JSON.stringify(emails));
+            
+            hideExitPopup();
+            alert('🎉 Success! Use code FIRST10 for 10% off your first order!');
+            window.location.hash = '#/shop';
+          } catch (err) {
+            alert('Something went wrong. Please try again.');
+          }
         });
       }
     }, 500);
@@ -3089,9 +3683,14 @@
   <div id="exit-intent-popup" class="exit-popup">
     <div class="exit-popup-content">
       <button class="exit-popup-close" aria-label="Close">×</button>
-      <h3>Research-Grade Peptides</h3>
-      <p>Third-party tested peptides with documentation. Fast shipping, quality-assured compounds for your research needs.</p>
-      <button class="btn primary">Browse Peptides →</button>
+      <div style="font-size:48px;margin-bottom:16px">🎁</div>
+      <h3 style="font-size:28px;font-weight:900;margin:0 0 12px">Wait! Get 10% OFF Your First Order</h3>
+      <p style="margin:0 0 24px;color:var(--muted)">Join 100+ researchers. Enter your email for an exclusive discount code.</p>
+      <form id="exit-email-form" style="display:flex;gap:12px;margin-bottom:16px">
+        <input type="email" id="exit-email-input" placeholder="your@email.com" required style="flex:1;padding:14px;border-radius:10px;border:2px solid var(--line);font-size:16px">
+        <button type="submit" class="btn primary" style="padding:14px 24px;white-space:nowrap">Get 10% OFF</button>
+      </form>
+      <p style="font-size:13px;color:var(--muted);margin:0">No spam. Unsubscribe anytime.</p>
     </div>
   </div>
 </body>
