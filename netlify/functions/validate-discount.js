@@ -45,10 +45,20 @@ exports.handler = async (event, context) => {
 
     // Active discount codes
     const discounts = {
-      'FEB15': {
-        percent: 15,
-        expires: new Date('2026-02-23T23:59:59-05:00'), // Feb 23, 2026 11:59 PM EST
-        description: '15% off all orders'
+      'BB10': {
+        percent: 10,
+        expires: new Date('2030-12-31T23:59:59-05:00'), // Active indefinitely
+        description: '10% off all orders'
+      },
+      'ASU10': {
+        percent: 10,
+        expires: new Date('2030-12-31T23:59:59-05:00'), // Active indefinitely
+        description: '10% off all orders'
+      },
+      'FIRST10': {
+        percent: 10,
+        expires: new Date('2030-12-31T23:59:59-05:00'), // Active indefinitely (exit popup code)
+        description: '10% off your first order'
       }
     };
 
