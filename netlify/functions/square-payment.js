@@ -4,8 +4,8 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://bjgrwedgahitrakwzoob.s
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 const SQUARE_ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
-const SQUARE_LOCATION_ID = process.env.SQUARE_LOCATION_ID || 'LBQSYJSGKW87F';
-const SQUARE_API_BASE = 'connect.squareupsandbox.com';
+const SQUARE_LOCATION_ID = process.env.SQUARE_LOCATION_ID || 'LFWWTP3HWZPC2';
+const SQUARE_API_BASE = 'connect.squareup.com';
 
 function squareRequest(path, method, body) {
   return new Promise((resolve, reject) => {
