@@ -1,5 +1,8 @@
 const https = require('https');
 
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://bjgrwedgahitrakwzoob.supabase.co';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
 const SQUARE_ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
 const SQUARE_LOCATION_ID = process.env.SQUARE_LOCATION_ID || 'LBQSYJSGKW87F';
 const SQUARE_API_BASE = 'connect.squareupsandbox.com';
@@ -108,6 +111,56 @@ exports.handler = async (event) => {
     const itemsList = items ? items.map(i => `  - ${i.name} x${i.qty}: $${(i.price / 100).toFixed(2)}`).join('\n') : 'N/A';
     const customerName = buyerName || (shippingAddress ? `${shippingAddress.firstName || ''} ${shippingAddress.lastName || ''}`.trim() : 'N/A');
     const shipTo = shippingAddress ? `${shippingAddress.addressLine1 || ''}, ${shippingAddress.city || ''}, ${shippingAddress.state || ''} ${shippingAddress.postalCode || ''}` : 'N/A';
+
+    // Save order to Supabase
+    if (SUPABASE_SERVICE_KEY) {
+      try {
+        const orderData = JSON.stringify({
+          payment_id: payment.id,
+          status: payment.status,
+          amount_cents: Math.round(amount),
+          currency: currency || 'USD',
+          customer_name: buyerName || customerName,
+          customer_email: buyerEmail || null,
+          shipping_address: shippingAddress ? shippingAddress.addressLine1 : null,
+          shipping_city: shippingAddress ? shippingAddress.city : null,
+          shipping_state: shippingAddress ? shippingAddress.state : null,
+          shipping_zip: shippingAddress ? shippingAddress.postalCode : null,
+          items: items || [],
+          receipt_url: payment.receipt_url || null
+        });
+        await new Promise((resolve) => {
+          const req = https.request({
+            hostname: SUPABASE_URL.replace('https://', ''),
+            path: '/rest/v1/orders',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_SERVICE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+              'Prefer': 'return=minimal',
+              'Content-Length': Buffer.byteLength(orderData)
+            }
+          }, (res) => {
+            let d = '';
+            res.on('data', c => d += c);
+            res.on('end', () => {
+              if (res.statusCode >= 200 && res.statusCode < 300) {
+                console.log('✓ Order saved to Supabase');
+              } else {
+                console.error('Supabase insert error:', res.statusCode, d);
+              }
+              resolve();
+            });
+          });
+          req.on('error', (e) => { console.error('Supabase request error:', e); resolve(); });
+          req.write(orderData);
+          req.end();
+        });
+      } catch (e) {
+        console.error('Failed to save order to Supabase:', e);
+      }
+    }
 
     await notifyOwner(
       `🎉 NEW SALE (Square)!\n\nAmount: $${(amount / 100).toFixed(2)}\nCustomer: ${customerName}\nEmail: ${buyerEmail || 'N/A'}\nShip to: ${shipTo}\nItems:\n${itemsList}\nPayment ID: ${payment.id}\nTime: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}`
