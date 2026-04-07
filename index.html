@@ -828,8 +828,8 @@
       }
     }
 
-    /* PayPal modal styles */
-    #paypal-modal {
+    /* Square checkout modal styles */
+    #checkout-modal {
       position:fixed;
       inset:0;
       display:none;
@@ -838,16 +838,26 @@
       background: rgba(2,6,23,0.5);
       z-index:220;
     }
-    #paypal-modal .modal {
+    #checkout-modal .modal {
       width: min(520px, 94vw);
+      max-height: 90vh;
+      overflow-y: auto;
       background: #fff;
       border-radius:12px;
       padding:14px;
       box-shadow: 0 20px 60px rgba(2,6,23,0.45);
       color: #0f172a;
     }
-    #paypal-modal .modal .modal-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
-    #paypal-modal .modal .close { background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:8px;cursor:pointer }
+    #checkout-modal .modal .modal-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    #checkout-modal .modal .close { background:#fff;border:1px solid var(--line);padding:6px 8px;border-radius:8px;cursor:pointer }
+    #checkout-modal .checkout-field { display:flex;flex-direction:column;gap:4px;margin-bottom:12px; }
+    #checkout-modal .checkout-field label { font-weight:700;font-size:13px;color:#334155; }
+    #checkout-modal .checkout-field input, #checkout-modal .checkout-field select { padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;width:100%;box-sizing:border-box; }
+    #checkout-modal .checkout-field input:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,0.15); }
+    #checkout-modal #card-container { min-height:89px;margin:12px 0; }
+    #checkout-modal .card-button { width:100%;padding:14px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-weight:900;font-size:16px;cursor:pointer;margin-top:8px; }
+    #checkout-modal .card-button:disabled { opacity:0.5;cursor:not-allowed; }
+    #checkout-modal .checkout-error { color:#dc2626;font-size:13px;margin-top:8px;display:none; }
 
     /* ===== Testimonials Section ===== */
     .testimonials {
@@ -1178,21 +1188,49 @@
         <button id="checkout-from-cart" class="btn primary" style="flex:1" type="button">Checkout</button>
         <button id="clear-cart" class="btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
       </div>
-      <div id="paypal-cart-container" style="margin-top:12px"></div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Cart checkout uses PayPal (preferred).</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Secure checkout powered by Square.</div>
     </div>
   </div>
 
-  <!-- PayPal modal (used for quick-buy product checkout) -->
-  <div id="paypal-modal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="paypal-modal-title">
+  <!-- Square checkout modal -->
+  <div id="checkout-modal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
       <div class="modal-head">
-        <div id="paypal-modal-title" style="font-weight:900">Secure PayPal Checkout</div>
-        <button id="paypal-modal-close" class="close" aria-label="Close checkout">Close</button>
+        <div id="checkout-modal-title" style="font-weight:900">Secure Checkout</div>
+        <button id="checkout-modal-close" class="close" aria-label="Close checkout">Close</button>
       </div>
-      <div id="paypal-modal-body" style="margin-top:12px">
-        <div id="paypal-modal-info" class="muted"></div>
-        <div id="paypal-modal-buttons" style="margin-top:12px"></div>
+      <div id="checkout-modal-body" style="margin-top:12px">
+        <div id="checkout-modal-info" class="muted" style="margin-bottom:12px"></div>
+        <div class="checkout-field">
+          <label for="checkout-email">Email</label>
+          <input type="email" id="checkout-email" placeholder="you@email.com" required>
+        </div>
+        <div class="checkout-field">
+          <label for="checkout-name">Full Name</label>
+          <input type="text" id="checkout-name" placeholder="First Last" required>
+        </div>
+        <div class="checkout-field">
+          <label for="checkout-address">Shipping Address</label>
+          <input type="text" id="checkout-address" placeholder="123 Main St" required>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div class="checkout-field" style="flex:2">
+            <label for="checkout-city">City</label>
+            <input type="text" id="checkout-city" placeholder="City" required>
+          </div>
+          <div class="checkout-field" style="flex:1">
+            <label for="checkout-state">State</label>
+            <input type="text" id="checkout-state" placeholder="NY" maxlength="2" required>
+          </div>
+          <div class="checkout-field" style="flex:1">
+            <label for="checkout-zip">ZIP</label>
+            <input type="text" id="checkout-zip" placeholder="10001" required>
+          </div>
+        </div>
+        <div style="font-weight:700;font-size:13px;color:#334155;margin-bottom:4px">Card</div>
+        <div id="card-container"></div>
+        <div id="checkout-error" class="checkout-error"></div>
+        <button id="card-button" class="card-button" type="button">Pay Now</button>
       </div>
     </div>
   </div>
@@ -1252,197 +1290,209 @@
     </div>
   </footer>
 
-  <!-- PayPal SDK (client-id preserved as you provided) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=AfADIQ6W--CiDW71V8kr3X9lVuRcoC5zs8J8_toitd5k7K85pYYWhOkpYjqQiMWGOFb1MnSDBqkvSWil&components=buttons,hosted-buttons&enable-funding=venmo&currency=USD"></script>
+  <!-- Square Web Payments SDK -->
+  <script src="https://web.squarecdn.com/v1/square.js"></script>
   <script>
   // Full application script — complete site behaviour with Knowledge/About/Contact content
-  // and improved PayPal diagnostics. Water product uses hostedButtonId so it behaves
-  // exactly like the other items.
+  // Payment processing via Square Web Payments SDK.
 
-  // Small helpers
-  function waitForPayPal(maxTries = 60, interval = 100) {
-    return new Promise((resolve, reject) => {
-      let tries = 0;
-      function step() {
-        tries++;
-        if (window.paypal && (window.paypal.Buttons || window.paypal.HostedButtons)) return resolve(true);
-        if (tries > maxTries) return reject(new Error('PayPal SDK did not load'));
-        setTimeout(step, interval);
-      }
-      step();
+  // Square config
+  const SQUARE_APP_ID = 'sq0idp-sVTRveS7UlwA2G8xl0lRaA';
+  const SQUARE_LOCATION_ID = 'LFWWTP3HWZPC2';
+  let squarePayments = null;
+  let squareCard = null;
+
+  // Initialize Square payments
+  async function initSquarePayments() {
+    if (squarePayments) return squarePayments;
+    if (!window.Square) {
+      throw new Error('Square SDK not loaded');
+    }
+    squarePayments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
+    return squarePayments;
+  }
+
+  // Initialize card form inside modal
+  async function initSquareCard() {
+    if (squareCard) {
+      try { await squareCard.destroy(); } catch(e) {}
+      squareCard = null;
+    }
+    const payments = await initSquarePayments();
+    squareCard = await payments.card();
+    await squareCard.attach('#card-container');
+    return squareCard;
+  }
+
+  // Pending checkout items (set before opening modal)
+  let pendingCheckoutItems = [];
+  let pendingCheckoutTotal = 0; // cents
+
+  function openCheckoutModal(items, totalCents, infoText) {
+    pendingCheckoutItems = items;
+    pendingCheckoutTotal = totalCents;
+
+    const modal = document.getElementById('checkout-modal');
+    const info = document.getElementById('checkout-modal-info');
+    const errorEl = document.getElementById('checkout-error');
+
+    if (!modal) { showToast('Checkout UI not available', 'error'); return; }
+
+    info.textContent = infoText || '';
+    if (errorEl) { errorEl.style.display = 'none'; errorEl.textContent = ''; }
+
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+
+    // Init card form
+    initSquareCard().catch(err => {
+      console.error('Failed to init Square card', err);
+      showToast('Could not load payment form. Please refresh and try again.', 'error');
     });
   }
 
-  function getPayPalClientId() {
-    try {
-      const scripts = Array.from(document.getElementsByTagName('script'));
-      const sdkScript = scripts.find(s => s.src && s.src.indexOf('paypal.com/sdk/js') !== -1);
-      if (!sdkScript) return null;
-      const u = new URL(sdkScript.src, location.href);
-      return u.searchParams.get('client-id') || null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // Expose helper to console for quick check
-  window.getPayPalClientId = getPayPalClientId;
-
-  function debugLogPayPalError(err) {
-    console.error('PayPal error (detailed):', err);
-    try {
-      const clientId = getPayPalClientId();
-      console.warn('PayPal SDK client-id:', clientId);
-      console.warn('If client-id is a LIVE id but you are testing or your hosted button was created in a different account, you may see NOT_AUTHORIZED (403).');
-      console.warn('To fix: verify the client-id in the paypal script (sandbox vs live) and that the PayPal app has Checkout/Orders API enabled at developer.paypal.com -> My Apps & Credentials.');
-    } catch (e) {
-      // ignore
-    }
-  }
-
-  async function renderPayPalHosted(containerId, hostedButtonId) {
-    try {
-      await waitForPayPal();
-    } catch (err) {
-      console.warn('PayPal not available for hosted button', err);
-      return false;
-    }
-    const container = document.getElementById(containerId);
-    if (!container) return false;
-    try {
-      if (window.paypal && window.paypal.HostedButtons) {
-        window.paypal.HostedButtons({ hostedButtonId }).render('#' + containerId);
-        return true;
-      } else {
-        console.warn('HostedButtons not available on PayPal SDK');
-        return false;
-      }
-    } catch (err) {
-      console.error('HostedButtons render failed', err);
-      return false;
-    }
-  }
-
-  async function startHostedButtonCheckout(hostedButtonId) {
-    try {
-      await waitForPayPal();
-    } catch (err) {
-      showToast('PayPal unavailable', 'error');
-      return;
-    }
-
-    const tmpId = 'paypal-hosted-tmp-' + Math.random().toString(36).slice(2,10);
-    const tmp = document.createElement('div');
-    tmp.id = tmpId;
-    tmp.style.position = 'absolute';
-    tmp.style.left = '-9999px';
-    tmp.style.top = '0';
-    document.body.appendChild(tmp);
-
-    try {
-      if (!window.paypal || !window.paypal.HostedButtons) {
-        throw new Error('PayPal HostedButtons not provided by SDK');
-      }
-      await window.paypal.HostedButtons({ hostedButtonId }).render('#' + tmpId);
-      const btn = tmp.querySelector('button');
-      if (btn) btn.click();
-      setTimeout(() => tmp.remove(), 3000);
-    } catch (err) {
-      console.error('HostedButtons (tmp) render failed', err);
-      tmp.remove();
-      debugLogPayPalError(err);
-      showToast('Could not initialize PayPal hosted checkout — check console for details', 'error');
-    }
-  }
-
-  async function startPayPalProductCheckout(product, qty = 1) {
-    try {
-      await waitForPayPal();
-    } catch (err) {
-      showToast('PayPal not available. Try again later.', 'error');
-      return;
-    }
-
-    const modal = document.getElementById('paypal-modal');
-    const info = document.getElementById('paypal-modal-info');
-    const buttonsContainer = document.getElementById('paypal-modal-buttons');
-    if (!modal || !buttonsContainer) {
-      showToast('Checkout UI not available', 'error');
-      return;
-    }
-
-    buttonsContainer.innerHTML = '';
-    info.textContent = `${product.name} — ${money(product.price)} × ${qty}`;
-
-    modal.style.display = 'flex';
-
-    // Track checkout start
-    trackPageView('/checkout', 'Checkout - ' + product.name);
-    modal.setAttribute('aria-hidden', 'false');
-
-    try {
-      window.paypal.Buttons({
-        style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
-        createOrder: function(data, actions) {
-          const value = ((product.price * qty) / 100).toFixed(2);
-          return actions.order.create({
-            purchase_units: [{
-              amount: { value: value, currency_code: 'USD' },
-              description: product.name
-            }],
-            application_context: {
-              shipping_preference: 'GET_FROM_FILE'
-            }
-          });
-        },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            // Track purchase with Meta Pixel
-            if (window.fbq) {
-              const orderValue = details.purchase_units[0].amount.value;
-              fbq('track', 'Purchase', {
-                value: orderValue,
-                currency: 'USD'
-              });
-            }
-            
-            closePaypalModal();
-            clearCart();
-            renderCartDrawer();
-            showToast('Payment complete — Thank you!', 'success');
-            window.location.href = window.location.origin + '/?checkout=success';
-          });
-        },
-        onError: function(err) {
-          console.error('PayPal product checkout error', err);
-          if (err && (err.name === 'NOT_AUTHORIZED' || (err.status && Number(err.status) === 403) || (err.message && err.message.indexOf('NOT_AUTHORIZED') !== -1))) {
-            debugLogPayPalError(err);
-            showToast('PayPal NOT_AUTHORIZED — check client-id / app permissions (see console)', 'error');
-          } else {
-            showToast('PayPal checkout error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
-          }
-        },
-        onCancel: function(data) {
-          showToast('Payment cancelled', 'info');
-          closePaypalModal();
-        }
-      }).render('#paypal-modal-buttons');
-    } catch (err) {
-      console.error('Failed to render PayPal Buttons in modal', err);
-      debugLogPayPalError(err);
-      showToast('Could not initialize PayPal checkout. Please try again.', 'error');
-      closePaypalModal();
-    }
-  }
-
-  function closePaypalModal() {
-    const modal = document.getElementById('paypal-modal');
-    const buttonsContainer = document.getElementById('paypal-modal-buttons');
-    if (buttonsContainer) buttonsContainer.innerHTML = '';
+  function closeCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
     if (modal) {
       modal.style.display = 'none';
       modal.setAttribute('aria-hidden', 'true');
     }
+    if (squareCard) {
+      try { squareCard.destroy(); } catch(e) {}
+      squareCard = null;
+    }
+  }
+
+  async function processSquarePayment() {
+    const btn = document.getElementById('card-button');
+    const errorEl = document.getElementById('checkout-error');
+
+    // Gather form values
+    const email = (document.getElementById('checkout-email').value || '').trim();
+    const fullName = (document.getElementById('checkout-name').value || '').trim();
+    const address = (document.getElementById('checkout-address').value || '').trim();
+    const city = (document.getElementById('checkout-city').value || '').trim();
+    const stateVal = (document.getElementById('checkout-state').value || '').trim();
+    const zip = (document.getElementById('checkout-zip').value || '').trim();
+
+    // Validate
+    if (!email || !fullName || !address || !city || !stateVal || !zip) {
+      if (errorEl) { errorEl.textContent = 'Please fill out all fields.'; errorEl.style.display = 'block'; }
+      return;
+    }
+    if (!squareCard) {
+      if (errorEl) { errorEl.textContent = 'Payment form not ready. Please wait a moment.'; errorEl.style.display = 'block'; }
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Processing…';
+    if (errorEl) { errorEl.style.display = 'none'; }
+
+    try {
+      const tokenResult = await squareCard.tokenize();
+      if (tokenResult.status !== 'OK') {
+        throw new Error(tokenResult.errors ? tokenResult.errors.map(e => e.message).join(', ') : 'Card tokenization failed');
+      }
+
+      const resp = await fetch('/.netlify/functions/square-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sourceId: tokenResult.token,
+          amount: pendingCheckoutTotal,
+          currency: 'USD',
+          items: pendingCheckoutItems,
+          buyerEmail: email,
+          buyerName: fullName,
+          shippingAddress: {
+            address: address,
+            city: city,
+            state: stateVal,
+            zip: zip
+          }
+        })
+      });
+
+      const data = await resp.json();
+      if (!resp.ok || data.error) {
+        throw new Error(data.error || data.message || 'Payment failed');
+      }
+
+      // Success — track with Meta Pixel
+      if (window.fbq) {
+        fbq('track', 'Purchase', {
+          value: (pendingCheckoutTotal / 100).toFixed(2),
+          currency: 'USD'
+        });
+      }
+
+      closeCheckoutModal();
+      clearCart();
+      renderCartDrawer();
+      showToast('Payment complete — Thank you!', 'success');
+      window.location.href = window.location.origin + '/?checkout=success';
+
+    } catch (err) {
+      console.error('Square payment error', err);
+      if (errorEl) {
+        errorEl.textContent = err.message || 'Payment failed. Please try again.';
+        errorEl.style.display = 'block';
+      }
+      btn.disabled = false;
+      btn.textContent = 'Pay Now';
+    }
+  }
+
+  // Product checkout (Buy Now on product page)
+  function startProductCheckout(product, qty = 1) {
+    // Apply discount if valid
+    let totalCents = product.price * qty;
+    if (discountState.valid && discountState.discountPercent > 0) {
+      totalCents = Math.round(totalCents * (1 - discountState.discountPercent / 100));
+    }
+
+    const items = [{
+      name: product.name,
+      slug: product.slug,
+      price: product.price,
+      quantity: qty
+    }];
+
+    trackPageView('/checkout', 'Checkout - ' + product.name);
+    openCheckoutModal(items, totalCents, `${product.name} — ${money(product.price)} × ${qty}`);
+  }
+
+  // Cart checkout
+  function startCartCheckout() {
+    const cart = readCart();
+    if (!cart || cart.length === 0) { showToast('Cart is empty', 'info'); return; }
+
+    const items = [];
+    let totalCents = 0;
+
+    for (const cartItem of cart) {
+      const p = PRODUCTS.find(x => x.slug === cartItem.slug);
+      if (!p) continue;
+      const qty = Number(cartItem.qty || 1);
+      items.push({
+        name: p.name,
+        slug: p.slug,
+        price: p.price,
+        quantity: qty
+      });
+      totalCents += p.price * qty;
+    }
+
+    if (items.length === 0) { showToast('No valid items in cart', 'error'); return; }
+
+    // Apply discount if valid
+    if (discountState.valid && discountState.discountPercent > 0) {
+      totalCents = Math.round(totalCents * (1 - discountState.discountPercent / 100));
+    }
+
+    trackPageView('/checkout', 'Checkout - Cart');
+    openCheckoutModal(items, totalCents, `Cart — ${items.length} item(s) — ${money(totalCents)}`);
   }
 
   // Images + products config
@@ -1474,7 +1524,6 @@
       short: 'High-purity compound supplied for controlled laboratory research.',
       long: `Retatrutide is supplied as a lyophilized research compound intended exclusively for laboratory, analytical, and scientific investigation. This listing is for research use only (RUO).`,
       sale: true,
-      hostedButtonId: 'L2GZSFWKHT7ZE'
     },
     {
       slug: 'ghk-cu',
@@ -1487,7 +1536,6 @@
       short: 'Copper-binding peptide used in research models of skin and tissue biology.',
       long: `GHK-Cu is supplied as a research compound intended for laboratory use only. It is frequently referenced in studies investigating cellular signaling in skin and connective tissue models under controlled experimental conditions.`,
       sale: true,
-      hostedButtonId: 'LGKJ7RFBT96BS'
     },
     {
       slug: 'melanotan-ii',
@@ -1500,7 +1548,6 @@
       short: 'Research analog used to study melanocortin receptor pathways.',
       long: `Melanotan II is supplied as a lyophilized research compound. It is commonly referenced in literature exploring melanocortin receptor signaling pathways in controlled study environments. Research use only.`,
       sale: true,
-      hostedButtonId: '4UKSV96CMCZG6'
     },
     {
       slug: 'bpc-157',
@@ -1513,7 +1560,6 @@
       short: 'Peptide fragment used in controlled research models.',
       long: `BPC-157 is provided strictly as a research compound. It appears in literature related to cellular response and signaling in controlled experimental models. Not for human or veterinary use.`,
       sale: true,
-      hostedButtonId: '699XYHCQE3ZV2'
     },
     {
       slug: 'water',
@@ -1526,7 +1572,6 @@
       short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
       long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
       sale: true,
-      hostedButtonId: '7URDJP2ZKGVQN'
     },
     {
       slug: 'sermorelin',
@@ -1538,7 +1583,6 @@
       short: 'Growth hormone-releasing hormone analog used in research applications.',
       long: `Sermorelin is supplied as a lyophilized research compound for laboratory use only. It is commonly referenced in studies examining growth hormone secretion pathways and related biological mechanisms in controlled experimental settings.`,
       sale: true,
-      hostedButtonId: '' // PayPal button to be created
     },
     {
       slug: 'klow-blend',
@@ -1550,7 +1594,6 @@
       short: 'Proprietary 4-peptide blend (BPC-157, TB-500, GHK-Cu, KPV) for advanced research.',
       long: `KLOW Blend is a specialized combination of four research peptides: BPC-157, TB-500, GHK-Cu, and KPV. Supplied as a lyophilized powder for laboratory research only. This blend is designed for controlled experimental applications investigating multiple peptide pathways.`,
       sale: true,
-      hostedButtonId: '' // PayPal button to be created
     },
     {
       slug: 'tesamorelin',
@@ -1562,7 +1605,6 @@
       short: 'Growth hormone-releasing hormone analog for research purposes.',
       long: `Tesamorelin is supplied as a lyophilized research compound intended exclusively for laboratory investigation. It is referenced in scientific literature related to growth hormone regulation and metabolic research models. Research use only.`,
       sale: true,
-      hostedButtonId: '' // PayPal button to be created
     },
     {
       slug: 'ipamorelin',
@@ -1574,7 +1616,6 @@
       short: 'Growth hormone secretagogue used in controlled research environments.',
       long: `Ipamorelin is supplied as a lyophilized research peptide for laboratory use only. It appears in scientific literature examining growth hormone release mechanisms and related pathways in experimental models. Not for human or veterinary use.`,
       sale: true,
-      hostedButtonId: '' // PayPal button to be created
     },
     {
       slug: 'mots-c',
@@ -1586,7 +1627,6 @@
       short: 'Mitochondrial-derived peptide for metabolic research applications.',
       long: `MOTS-c is supplied as a lyophilized research compound for laboratory investigation only. This mitochondrial-derived peptide is referenced in studies exploring cellular metabolism and energy regulation in controlled experimental settings. Research use only.`,
       sale: true,
-      hostedButtonId: '' // PayPal button to be created
     },
     {
       slug: 'reta-2pack',
@@ -1599,7 +1639,6 @@
       short: '2x Retatrutide 10mg - Save $20',
       long: `Bundle pack containing two (2) Retatrutide 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $20 compared to buying individually.`,
       sale: true,
-      hostedButtonId: ''
     },
     {
       slug: 'reta-3pack',
@@ -1612,7 +1651,6 @@
       short: '3x Retatrutide 10mg - Save $30 (Best Value)',
       long: `Bundle pack containing three (3) Retatrutide 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $30 compared to buying individually. Best value option.`,
       sale: true,
-      hostedButtonId: ''
     }
   ];
 
@@ -1864,8 +1902,6 @@
     if (!cart || cart.length === 0) {
       el.innerHTML = `<div class="cart-empty">Your cart is empty</div>`;
       totalEl.textContent = '';
-      const container = document.getElementById('paypal-cart-container');
-      if (container) container.innerHTML = '';
       return;
     }
     const parts = cart.map(item => {
@@ -1958,9 +1994,6 @@
       });
     });
 
-    // Clear paypal-cart-container so a fresh button will be rendered when checkout clicked
-    const container = document.getElementById('paypal-cart-container');
-    if (container) container.innerHTML = '';
   }
 
   // Toast helper
@@ -1979,138 +2012,7 @@
     }, timeout);
   }
 
-  // Cart checkout — visible, itemized PayPal Buttons
-  async function startPayPalCartCheckout() {
-    const cart = readCart();
-    if (!cart || cart.length === 0) { showToast('Cart is empty', 'info'); return; }
-
-    try {
-      await waitForPayPal();
-    } catch (err) {
-      console.error('PayPal SDK not ready', err);
-      showToast('PayPal not available. Try again later.', 'error');
-      return;
-    }
-
-    const items = [];
-    let itemTotal = 0.00;
-
-    for (const cartItem of cart) {
-      const p = PRODUCTS.find(x => x.slug === cartItem.slug);
-      if (!p) {
-        console.warn('Product not found for cart item', cartItem);
-        continue;
-      }
-      const qty = Number(cartItem.qty || 1);
-      const unit = Number(p.price) / 100; // dollars
-      const unitStr = unit.toFixed(2);
-
-      items.push({
-        name: String(p.name).slice(0, 127),
-        sku: String(p.slug),
-        unit_amount: { currency_code: 'USD', value: unitStr },
-        quantity: String(qty)
-      });
-
-      itemTotal += unit * qty;
-    }
-
-    if (items.length === 0) {
-      showToast('No valid items in cart', 'error');
-      return;
-    }
-
-    // Apply discount if valid
-    let finalTotal = itemTotal;
-    if (discountState.valid && discountState.discountPercent > 0) {
-      finalTotal = itemTotal * (1 - discountState.discountPercent / 100);
-    }
-    const totalStr = finalTotal.toFixed(2);
-
-    // Track checkout start from cart
-    trackPageView('/checkout', 'Checkout - Cart');
-
-    const containerId = 'paypal-cart-container';
-    const container = document.getElementById(containerId);
-    if (!container) {
-      showToast('Cart payment area not found', 'error');
-      return;
-    }
-
-    let promoHTML = '';
-    if (discountState.valid) {
-      promoHTML = `
-        <div style="padding:12px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;margin-bottom:12px;text-align:center">
-          <strong style="color:#16a34a">✓ ${discountState.discountPercent}% discount applied!</strong><br>
-          <small style="color:#15803d">Code: ${discountState.code}</small>
-        </div>
-      `;
-    }
-    // No active promotions - removed FEB15 promo banner
-
-    container.innerHTML = `
-      ${promoHTML}
-      <div style="margin-bottom:8px;color:var(--muted);font-weight:700">Pay securely with PayPal</div>
-      <div id="paypal-cart-buttons"></div>
-    `;
-    const buttonsTarget = document.getElementById('paypal-cart-buttons');
-
-    try {
-      window.paypal.Buttons({
-        style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
-        createOrder: function(data, actions) {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                currency_code: 'USD',
-                value: totalStr,
-                breakdown: {
-                  item_total: { currency_code: 'USD', value: totalStr }
-                }
-              },
-              items: items
-            }],
-            application_context: {
-              shipping_preference: 'GET_FROM_FILE'
-            }
-          });
-        },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            // Track purchase with Meta Pixel
-            if (window.fbq) {
-              const orderValue = details.purchase_units[0].amount.value;
-              fbq('track', 'Purchase', {
-                value: orderValue,
-                currency: 'USD'
-              });
-            }
-            
-            clearCart();
-            renderCartDrawer();
-            showToast('Payment complete — Thank you!', 'success');
-            window.location.href = window.location.origin + '/?checkout=success';
-          });
-        },
-        onError: function(err) {
-          console.error('PayPal cart error', err);
-          if (err && (err.name === 'NOT_AUTHORIZED' || (err.status && Number(err.status) === 403) || (err.message && err.message.indexOf('NOT_AUTHORIZED') !== -1))) {
-            debugLogPayPalError(err);
-            showToast('PayPal NOT_AUTHORIZED — check client-id / app permissions (see console)', 'error');
-          } else {
-            showToast('PayPal error: ' + (err && err.toString ? err.toString() : 'unknown'), 'error');
-          }
-        },
-        onCancel: function(data) {
-          showToast('Payment cancelled', 'info');
-        }
-      }).render('#paypal-cart-buttons');
-    } catch (err) {
-      console.error('Failed to render PayPal cart buttons', err);
-      debugLogPayPalError(err);
-      showToast('Unable to initialize PayPal cart checkout: ' + (err.message || 'unknown'), 'error');
-    }
-  }
+  // Cart checkout is now handled by startCartCheckout() defined above
 
   // Router + renderers
   const app = document.getElementById('app');
@@ -2518,7 +2420,6 @@
     // Track product page view
     trackPageView(`/product/${slug}`, p.name);
 
-    const hostedContainerId = p.hostedButtonId ? ('product-paypal-hosted-' + encodeURIComponent(p.slug)) : '';
 
     app.innerHTML = `
       <section class="section">
@@ -2558,13 +2459,13 @@
                     <label class="sr-only">Add to cart</label>
                     <div class="order-cta" style="display:flex;gap:8px;align-items:center">
                       <button id="add-to-cart" class="btn" type="button">Add to cart</button>
-                      <button id="buy-now" class="btn primary full" type="button" ${p.hostedButtonId ? 'style="display:none"' : ''}>Buy now</button>
+                      <button id="buy-now" class="btn primary full" type="button">Buy now</button>
                     </div>
                   </div>
                 </div>
                 <!-- REMOVED: No active promotions -->
-                <div class="order-help">Orders are processed via PayPal. Documentation available for research orders.</div>
-                <div id="${hostedContainerId}" style="margin-top:8px"></div>
+                <div class="order-help">Orders are processed securely via Square. Documentation available for research orders.</div>
+                
                 
                 <!-- Guarantee Badge -->
                 <div style="background:#f0fdf4;border:2px solid #10b981;border-radius:12px;padding:20px;margin-top:24px;text-align:center">
@@ -2620,26 +2521,10 @@
       renderCartDrawer();
     });
 
-    if (!p.hostedButtonId) {
-      document.getElementById('buy-now').addEventListener('click', () => {
-        const qty = Number(document.getElementById('qty').value) || 1;
-        startPayPalProductCheckout(p, qty);
-      });
-    } else {
-      // Render hosted button in place; if it fails, show fallback Buy button
-      renderPayPalHosted(hostedContainerId, p.hostedButtonId).then(ok => {
-        if (!ok) {
-          const bn = document.getElementById('buy-now');
-          if (bn) {
-            bn.style.display = '';
-            bn.addEventListener('click', () => {
-              const qty = Number(document.getElementById('qty').value) || 1;
-              startPayPalProductCheckout(p, qty);
-            });
-          }
-        }
-      });
-    }
+    document.getElementById('buy-now').addEventListener('click', () => {
+      const qty = Number(document.getElementById('qty').value) || 1;
+      startProductCheckout(p, qty);
+    });
 
     // Sticky mobile cart functionality
     const stickyCart = document.getElementById('sticky-mobile-cart');
@@ -2688,7 +2573,7 @@
       body: `
         <p>Glacier BioLabs respects your privacy.</p>
         <p>We collect limited personal information necessary to process orders and provide customer support, including name, email address, shipping address, and order details.</p>
-        <p>Payments are securely processed by third-party payment providers such as PayPal. Glacier BioLabs does not store or have access to your full payment information.</p>
+        <p>Payments are securely processed by third-party payment providers such as Square. Glacier BioLabs does not store or have access to your full payment information.</p>
         <p>We do not sell, rent, or share personal data with third parties except as required to complete transactions, comply with legal obligations, or operate our services.</p>
         <p>We may use cookies or basic analytics to improve website performance and user experience.</p>
         <p>By using this website, you consent to this Privacy Policy.</p>
@@ -2920,7 +2805,7 @@
           <li>We do not provide dosing, administration, or medical use instructions.</li>
           <li>Buyers must ensure products are used only in controlled laboratory or institutional settings and in accordance with applicable laws and institutional policies.</li>
           <li>We ship to verified laboratory or institutional addresses and may require additional documentation for certain shipments.</li>
-          <li>Payments are processed by third-party providers (e.g., PayPal); Glacier BioLabs is not involved in payment processing beyond order fulfillment.</li>
+          <li>Payments are processed by third-party providers (e.g., Square); Glacier BioLabs is not involved in payment processing beyond order fulfillment.</li>
         </ul>
         <p>If you require certificates, lot documentation, or compliance information for your institutional records, contact <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a>.</p>
       `
@@ -3272,7 +3157,7 @@
           <span>+</span>
         </div>
         <div class="faq-answer">
-          Payouts are processed monthly via PayPal or bank transfer. You'll receive payment for all commissions earned in the previous month, with a minimum payout threshold of $50.
+          Payouts are processed monthly via bank transfer. You'll receive payment for all commissions earned in the previous month, with a minimum payout threshold of $50.
         </div>
       </div>
 
@@ -3492,7 +3377,7 @@ Submitted: ${new Date().toLocaleString()}
 
   // checkout from cart
   document.getElementById('checkout-from-cart').addEventListener('click', () => {
-    startPayPalCartCheckout();
+    startCartCheckout();
   });
   document.getElementById('clear-cart').addEventListener('click', () => {
     if (confirm('Clear entire cart?')) {
@@ -3564,8 +3449,13 @@ Submitted: ${new Date().toLocaleString()}
   };
 
   // modal close hook
-  document.getElementById('paypal-modal-close').addEventListener('click', () => {
-    closePaypalModal();
+  document.getElementById('checkout-modal-close').addEventListener('click', () => {
+    closeCheckoutModal();
+  });
+
+  // Card button handler
+  document.getElementById('card-button').addEventListener('click', () => {
+    processSquarePayment();
   });
 
   // Global single handler for Add / Buy on cards (prevents double-add)
@@ -3582,13 +3472,7 @@ Submitted: ${new Date().toLocaleString()}
       const slug = buy.getAttribute('data-buy');
       const prod = PRODUCTS.find(p => p.slug === slug);
       if (!prod) return;
-      if (prod.hostedButtonId) {
-        // hosted button available: use hosted flow (attempt auto-click)
-        startHostedButtonCheckout(prod.hostedButtonId);
-      } else {
-        // no hosted button: navigate to product page so user can see visible checkout
-        location.hash = '#/product/' + encodeURIComponent(slug);
-      }
+      startProductCheckout(prod, 1);
     }
   });
 
@@ -3625,7 +3509,7 @@ Submitted: ${new Date().toLocaleString()}
 
   // expose helpers for debugging
   window.Glacier = {
-    PRODUCTS, addToCart, readCart, clearCart, startPayPalProductCheckout, startPayPalCartCheckout, startHostedButtonCheckout, getPayPalClientId
+    PRODUCTS, addToCart, readCart, clearCart, startProductCheckout, startCartCheckout
   };
 
   // ===== Exit-Intent Popup =====
