@@ -1227,6 +1227,9 @@
             <input type="text" id="checkout-zip" placeholder="10001" required>
           </div>
         </div>
+        <div id="apple-pay-container" style="margin-bottom:12px;display:none"></div>
+        <div id="google-pay-container" style="margin-bottom:12px;display:none"></div>
+        <div id="wallet-divider" style="display:none;text-align:center;color:#94a3b8;font-size:12px;font-weight:600;margin-bottom:12px;position:relative"><span style="background:#fff;padding:0 12px;position:relative;z-index:1">OR PAY WITH CARD</span><div style="position:absolute;top:50%;left:0;right:0;height:1px;background:#e2e8f0;z-index:0"></div></div>
         <div style="font-weight:700;font-size:13px;color:#334155;margin-bottom:4px">Card</div>
         <div id="card-container"></div>
         <div id="checkout-error" class="checkout-error"></div>
@@ -1324,6 +1327,9 @@
     return squarePayments;
   }
 
+  let squareApplePay = null;
+  let squareGooglePay = null;
+
   // Initialize card form inside modal
   async function initSquareCard() {
     if (squareCard) {
@@ -1333,7 +1339,118 @@
     const payments = await initSquarePayments();
     squareCard = await payments.card();
     await squareCard.attach('#card-container');
+
+    // Try Apple Pay
+    initWalletPayments(payments);
+
     return squareCard;
+  }
+
+  async function initWalletPayments(payments) {
+    const totalDollars = (pendingCheckoutTotal / 100).toFixed(2);
+    const paymentRequest = payments.paymentRequest({
+      countryCode: 'US',
+      currencyCode: 'USD',
+      total: { amount: totalDollars, label: 'Glacier BioLabs' }
+    });
+
+    // Apple Pay
+    const appleContainer = document.getElementById('apple-pay-container');
+    const googleContainer = document.getElementById('google-pay-container');
+    const divider = document.getElementById('wallet-divider');
+    let hasWallet = false;
+
+    try {
+      if (squareApplePay) { try { await squareApplePay.destroy(); } catch(e) {} }
+      squareApplePay = await payments.applePay(paymentRequest);
+      await squareApplePay.attach('#apple-pay-container');
+      if (appleContainer) appleContainer.style.display = 'block';
+      hasWallet = true;
+
+      squareApplePay.addEventListener('token', async (event) => {
+        await processWalletPayment(event.detail.token);
+      });
+    } catch (e) {
+      console.log('Apple Pay not available:', e.message || e);
+      if (appleContainer) appleContainer.style.display = 'none';
+    }
+
+    // Google Pay
+    try {
+      if (squareGooglePay) { try { await squareGooglePay.destroy(); } catch(e) {} }
+      squareGooglePay = await payments.googlePay(paymentRequest);
+      await squareGooglePay.attach('#google-pay-container');
+      if (googleContainer) googleContainer.style.display = 'block';
+      hasWallet = true;
+
+      squareGooglePay.addEventListener('token', async (event) => {
+        await processWalletPayment(event.detail.token);
+      });
+    } catch (e) {
+      console.log('Google Pay not available:', e.message || e);
+      if (googleContainer) googleContainer.style.display = 'none';
+    }
+
+    if (divider) divider.style.display = hasWallet ? 'block' : 'none';
+  }
+
+  async function processWalletPayment(token) {
+    const btn = document.getElementById('card-button');
+    const errorEl = document.getElementById('checkout-error');
+    const email = document.getElementById('checkout-email').value.trim();
+    const name = document.getElementById('checkout-name').value.trim();
+    const address = document.getElementById('checkout-address').value.trim();
+    const city = document.getElementById('checkout-city').value.trim();
+    const state = document.getElementById('checkout-state').value.trim();
+    const zip = document.getElementById('checkout-zip').value.trim();
+
+    if (!email || !name) {
+      if (errorEl) { errorEl.textContent = 'Please fill in your email and name above before using Apple/Google Pay.'; errorEl.style.display = 'block'; }
+      return;
+    }
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+    if (errorEl) { errorEl.style.display = 'none'; }
+
+    try {
+      const nameParts = name.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      const response = await fetch('/.netlify/functions/square-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sourceId: token,
+          amount: pendingCheckoutTotal,
+          currency: 'USD',
+          items: pendingCheckoutItems,
+          buyerEmail: email,
+          buyerName: name,
+          shippingAddress: {
+            firstName, lastName,
+            addressLine1: address, city,
+            state: state.toUpperCase(),
+            postalCode: zip, country: 'US'
+          }
+        })
+      });
+      const data = await response.json();
+      if (data.success) {
+        if (window.fbq) fbq('track', 'Purchase', { value: (pendingCheckoutTotal / 100).toFixed(2), currency: 'USD' });
+        closeCheckoutModal();
+        clearCart();
+        renderCartDrawer();
+        showToast('Payment complete — Thank you!', 'success');
+        window.location.hash = '#/order-success';
+      } else {
+        throw new Error(data.error || 'Payment failed');
+      }
+    } catch (err) {
+      console.error('Wallet payment error:', err);
+      if (errorEl) { errorEl.textContent = 'Payment failed: ' + (err.message || 'Unknown error'); errorEl.style.display = 'block'; }
+      if (btn) { btn.disabled = false; btn.textContent = `Pay $${(pendingCheckoutTotal / 100).toFixed(2)}`; }
+    }
   }
 
   // Pending checkout items (set before opening modal)
