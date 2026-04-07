@@ -1302,12 +1302,24 @@
   let squarePayments = null;
   let squareCard = null;
 
+  // Wait for Square SDK to load
+  function waitForSquare(maxTries = 60, interval = 100) {
+    return new Promise((resolve, reject) => {
+      let tries = 0;
+      function step() {
+        tries++;
+        if (window.Square) return resolve(true);
+        if (tries > maxTries) return reject(new Error('Square SDK did not load'));
+        setTimeout(step, interval);
+      }
+      step();
+    });
+  }
+
   // Initialize Square payments
   async function initSquarePayments() {
     if (squarePayments) return squarePayments;
-    if (!window.Square) {
-      throw new Error('Square SDK not loaded');
-    }
+    await waitForSquare();
     squarePayments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
     return squarePayments;
   }
@@ -1345,9 +1357,11 @@
     modal.setAttribute('aria-hidden', 'false');
 
     // Init card form
-    initSquareCard().catch(err => {
-      console.error('Failed to init Square card', err);
-      showToast('Could not load payment form. Please refresh and try again.', 'error');
+    initSquareCard().then(() => {
+      if (errorEl) { errorEl.style.display = 'none'; }
+    }).catch(err => {
+      console.error('Failed to init Square card:', err);
+      if (errorEl) { errorEl.textContent = 'Card form failed to load: ' + (err.message || 'Unknown error. Try refreshing.'); errorEl.style.display = 'block'; }
     });
   }
 
