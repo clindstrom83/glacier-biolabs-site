@@ -1404,8 +1404,8 @@
     const state = document.getElementById('checkout-state').value.trim();
     const zip = document.getElementById('checkout-zip').value.trim();
 
-    if (!email || !name) {
-      if (errorEl) { errorEl.textContent = 'Please fill in your email and name above before using Apple/Google Pay.'; errorEl.style.display = 'block'; }
+    if (!email || !name || !address || !city || !state || !zip) {
+      if (errorEl) { errorEl.textContent = 'Please fill in all fields (email, name, and shipping address) before using Apple/Google Pay.'; errorEl.style.display = 'block'; }
       return;
     }
 
