@@ -71,8 +71,8 @@ async function sendOrderConfirmation({ email, name, items, totalCents, shippingA
   const itemsHTML = (items || []).map(i =>
     `<tr>
       <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0">${i.name}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:center">${i.qty}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:right">$${((i.price * i.qty) / 100).toFixed(2)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:center">${i.qty || i.quantity}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;text-align:right">$${((i.price * i.qty || i.quantity) / 100).toFixed(2)}</td>
     </tr>`
   ).join('');
 
@@ -139,7 +139,7 @@ async function sendOrderConfirmation({ email, name, items, totalCents, shippingA
     to: [{ email: email, name: name || email }],
     subject: 'Order Confirmed — Glacier BioLabs',
     html: html,
-    text: `Order Confirmed!\n\nHi ${name || 'there'},\n\nThank you for your order of $${(totalCents / 100).toFixed(2)}.\n\nItems:\n${(items || []).map(i => `- ${i.name} x${i.qty}: $${((i.price * i.qty) / 100).toFixed(2)}`).join('\n')}\n\nShipping to: ${address}\n\nYour order will ship within 1-2 business days.\n\nQuestions? Email glacierbiolabs@outlook.com\n\nGlacier BioLabs`
+    text: `Order Confirmed!\n\nHi ${name || 'there'},\n\nThank you for your order of $${(totalCents / 100).toFixed(2)}.\n\nItems:\n${(items || []).map(i => `- ${i.name} x${i.qty || i.quantity}: $${((i.price * i.qty || i.quantity) / 100).toFixed(2)}`).join('\n')}\n\nShipping to: ${address}\n\nYour order will ship within 1-2 business days.\n\nQuestions? Email glacierbiolabs@outlook.com\n\nGlacier BioLabs`
   });
 
   return new Promise((resolve) => {
@@ -200,7 +200,7 @@ exports.handler = async (event) => {
       autocomplete: true
     };
     if (buyerEmail) paymentBody.buyer_email_address = buyerEmail;
-    if (items && items.length > 0) paymentBody.note = `Order: ${items.map(i => `${i.name} x${i.qty}`).join(', ')}`;
+    if (items && items.length > 0) paymentBody.note = `Order: ${items.map(i => `${i.name} x${i.qty || i.quantity}`).join(', ')}`;
     if (shippingAddress) {
       paymentBody.shipping_address = {
         address_line_1: shippingAddress.addressLine1 || '',
@@ -217,7 +217,7 @@ exports.handler = async (event) => {
     const result = await squareRequest('/v2/payments', 'POST', paymentBody);
     const payment = result.payment;
 
-    const itemsList = items ? items.map(i => `  - ${i.name} x${i.qty}: $${(i.price / 100).toFixed(2)}`).join('\n') : 'N/A';
+    const itemsList = items ? items.map(i => `  - ${i.name} x${i.qty || i.quantity}: $${(i.price / 100).toFixed(2)}`).join('\n') : 'N/A';
     const customerName = buyerName || (shippingAddress ? `${shippingAddress.firstName || ''} ${shippingAddress.lastName || ''}`.trim() : 'N/A');
     const shipTo = shippingAddress ? `${shippingAddress.addressLine1 || ''}, ${shippingAddress.city || ''}, ${shippingAddress.state || ''} ${shippingAddress.postalCode || ''}` : 'N/A';
 

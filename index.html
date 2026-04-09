@@ -1537,10 +1537,13 @@
           buyerEmail: email,
           buyerName: fullName,
           shippingAddress: {
-            address: address,
+            firstName: fullName.split(' ')[0] || '',
+            lastName: fullName.split(' ').slice(1).join(' ') || '',
+            addressLine1: address,
             city: city,
-            state: stateVal,
-            zip: zip
+            state: stateVal.toUpperCase(),
+            postalCode: zip,
+            country: 'US'
           }
         })
       });
