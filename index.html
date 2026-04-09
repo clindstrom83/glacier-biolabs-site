@@ -1188,7 +1188,7 @@
         <button id="checkout-from-cart" class="btn primary" style="flex:1" type="button">Checkout</button>
         <button id="clear-cart" class="btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Secure checkout powered by Square.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Secure checkout — we'll email you a payment link after placing your order.</div>
     </div>
   </div>
 
@@ -1227,13 +1227,12 @@
             <input type="text" id="checkout-zip" placeholder="10001" required>
           </div>
         </div>
-        <div id="apple-pay-container" style="margin-bottom:12px;display:none"></div>
-        <div id="google-pay-container" style="margin-bottom:12px;display:none"></div>
-        <div id="wallet-divider" style="display:none;text-align:center;color:#94a3b8;font-size:12px;font-weight:600;margin-bottom:12px;position:relative"><span style="background:#fff;padding:0 12px;position:relative;z-index:1">OR PAY WITH CARD</span><div style="position:absolute;top:50%;left:0;right:0;height:1px;background:#e2e8f0;z-index:0"></div></div>
-        <div style="font-weight:700;font-size:13px;color:#334155;margin-bottom:4px">Card</div>
-        <div id="card-container"></div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;padding:16px;border-radius:8px;margin:12px 0">
+          <p style="margin:0 0 8px;font-weight:700;color:#16a34a;font-size:14px">🔒 Secure Order Process</p>
+          <p style="margin:0;color:#15803d;font-size:13px">Place your order now — we'll email you a secure payment link within a few hours. Your order ships as soon as payment is confirmed.</p>
+        </div>
         <div id="checkout-error" class="checkout-error"></div>
-        <button id="card-button" class="card-button" type="button">Pay Now</button>
+        <button id="card-button" class="card-button" type="button">Place Order</button>
       </div>
     </div>
   </div>
@@ -1293,8 +1292,8 @@
     </div>
   </footer>
 
-  <!-- Square Web Payments SDK -->
-  <script src="https://web.squarecdn.com/v1/square.js"></script>
+  <!-- Square Web Payments SDK (disabled — using manual order flow) -->
+  <!-- <script src="https://web.squarecdn.com/v1/square.js"></script> -->
   <script>
   // Full application script — complete site behaviour with Knowledge/About/Contact content
   // Payment processing via Square Web Payments SDK.
@@ -1417,13 +1416,11 @@
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      const response = await fetch('/.netlify/functions/square-payment', {
+      const response = await fetch('/.netlify/functions/place-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sourceId: token,
-          amount: pendingCheckoutTotal,
-          currency: 'USD',
+          totalCents: pendingCheckoutTotal,
           items: pendingCheckoutItems,
           buyerEmail: email,
           buyerName: name,
@@ -1437,19 +1434,19 @@
       });
       const data = await response.json();
       if (data.success) {
-        if (window.fbq) fbq('track', 'Purchase', { value: (pendingCheckoutTotal / 100).toFixed(2), currency: 'USD' });
+        if (window.fbq) fbq('track', 'Lead', { value: (pendingCheckoutTotal / 100).toFixed(2), currency: 'USD' });
         closeCheckoutModal();
         clearCart();
         renderCartDrawer();
-        showToast('Payment complete — Thank you!', 'success');
+        showToast('Order placed! Check your email for payment details.', 'success');
         window.location.hash = '#/order-success';
       } else {
-        throw new Error(data.error || 'Payment failed');
+        throw new Error(data.error || 'Order failed');
       }
     } catch (err) {
-      console.error('Wallet payment error:', err);
-      if (errorEl) { errorEl.textContent = 'Payment failed: ' + (err.message || 'Unknown error'); errorEl.style.display = 'block'; }
-      if (btn) { btn.disabled = false; btn.textContent = `Pay $${(pendingCheckoutTotal / 100).toFixed(2)}`; }
+      console.error('Order error:', err);
+      if (errorEl) { errorEl.textContent = 'Order failed: ' + (err.message || 'Unknown error'); errorEl.style.display = 'block'; }
+      if (btn) { btn.disabled = false; btn.textContent = `Place Order`; }
     }
   }
 
@@ -1473,13 +1470,8 @@
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
 
-    // Init card form
-    initSquareCard().then(() => {
-      if (errorEl) { errorEl.style.display = 'none'; }
-    }).catch(err => {
-      console.error('Failed to init Square card:', err);
-      if (errorEl) { errorEl.textContent = 'Card form failed to load: ' + (err.message || 'Unknown error. Try refreshing.'); errorEl.style.display = 'block'; }
-    });
+    // Square card init disabled — manual order flow active
+    if (errorEl) { errorEl.style.display = 'none'; }
   }
 
   function closeCheckoutModal() {
@@ -1511,28 +1503,17 @@
       if (errorEl) { errorEl.textContent = 'Please fill out all fields.'; errorEl.style.display = 'block'; }
       return;
     }
-    if (!squareCard) {
-      if (errorEl) { errorEl.textContent = 'Payment form not ready. Please wait a moment.'; errorEl.style.display = 'block'; }
-      return;
-    }
 
     btn.disabled = true;
-    btn.textContent = 'Processing…';
+    btn.textContent = 'Placing Order…';
     if (errorEl) { errorEl.style.display = 'none'; }
 
     try {
-      const tokenResult = await squareCard.tokenize();
-      if (tokenResult.status !== 'OK') {
-        throw new Error(tokenResult.errors ? tokenResult.errors.map(e => e.message).join(', ') : 'Card tokenization failed');
-      }
-
-      const resp = await fetch('/.netlify/functions/square-payment', {
+      const resp = await fetch('/.netlify/functions/place-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sourceId: tokenResult.token,
-          amount: pendingCheckoutTotal,
-          currency: 'USD',
+          totalCents: pendingCheckoutTotal,
           items: pendingCheckoutItems,
           buyerEmail: email,
           buyerName: fullName,
@@ -1550,12 +1531,12 @@
 
       const data = await resp.json();
       if (!resp.ok || data.error) {
-        throw new Error(data.error || data.message || 'Payment failed');
+        throw new Error(data.error || data.message || 'Order failed');
       }
 
       // Success — track with Meta Pixel
       if (window.fbq) {
-        fbq('track', 'Purchase', {
+        fbq('track', 'Lead', {
           value: (pendingCheckoutTotal / 100).toFixed(2),
           currency: 'USD'
         });
@@ -1564,17 +1545,17 @@
       closeCheckoutModal();
       clearCart();
       renderCartDrawer();
-      showToast('Payment complete — Thank you!', 'success');
+      showToast('Order placed! Check your email for payment details.', 'success');
       window.location.hash = '#/order-success';
 
     } catch (err) {
-      console.error('Square payment error', err);
+      console.error('Order error', err);
       if (errorEl) {
-        errorEl.textContent = err.message || 'Payment failed. Please try again.';
+        errorEl.textContent = err.message || 'Order failed. Please try again.';
         errorEl.style.display = 'block';
       }
       btn.disabled = false;
-      btn.textContent = 'Pay Now';
+      btn.textContent = 'Place Order';
     }
   }
 
@@ -3444,15 +3425,15 @@ Submitted: ${new Date().toLocaleString()}
       <section class="section" style="min-height:60vh;display:flex;align-items:center;justify-content:center">
         <div class="wrap" style="text-align:center;max-width:600px;padding:40px 20px">
           <div style="font-size:64px;margin-bottom:20px">✅</div>
-          <h1 style="font-size:32px;margin-bottom:12px">Order Confirmed!</h1>
+          <h1 style="font-size:32px;margin-bottom:12px">Order Received!</h1>
           <p style="font-size:18px;color:var(--muted);margin-bottom:24px">
-            Thank you for your purchase. Your order is being processed and will ship within 1–2 business days.
+            Thank you for your order! We'll send you a secure payment link via email shortly.
           </p>
           <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:20px;margin-bottom:24px;text-align:left">
             <h3 style="margin:0 0 10px;color:#16a34a">What happens next?</h3>
             <ul style="margin:0;padding-left:20px;color:#15803d;line-height:2">
-              <li>You'll receive a confirmation email shortly</li>
-              <li>Tracking info will be sent once your order ships</li>
+              <li>Check your email for a secure payment link</li>
+              <li>Once payment is confirmed, your order ships within 1–2 business days</li>
               <li>Orders typically arrive within 3–5 business days</li>
             </ul>
           </div>
