@@ -56,7 +56,7 @@ async function sendCustomerEmail({ email, name, items, totalCents, shippingAddre
       </div>
       <div style="background:#fff;padding:24px;border:1px solid #e2e8f0">
         <p style="margin:0 0 16px">Hi ${name || 'there'},</p>
-        <p style="margin:0 0 20px;color:#475569">Your order has been received! We'll send you a payment link shortly via email so you can complete your purchase securely.</p>
+        <p style="margin:0 0 20px;color:#475569">Thank you for your order! We're currently upgrading our payment system to serve you better. In the meantime, we'll send you a secure payment link via email shortly to complete your purchase.</p>
         <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
           <thead>
             <tr style="background:#f8fafc">
@@ -80,7 +80,7 @@ async function sendCustomerEmail({ email, name, items, totalCents, shippingAddre
         <div style="background:#fef3c7;border:1px solid #fbbf24;padding:16px;border-radius:8px;margin-bottom:20px">
           <p style="margin:0;font-weight:700;color:#92400e">What's next?</p>
           <ul style="margin:8px 0 0;padding-left:20px;color:#78350f;font-size:14px">
-            <li>You'll receive a payment link via email shortly</li>
+            <li>You'll receive a secure payment link via email within a few hours</li>
             <li>Once payment is confirmed, your order ships within 1–2 business days</li>
             <li>Typical delivery: 3–5 business days</li>
           </ul>
@@ -92,7 +92,7 @@ async function sendCustomerEmail({ email, name, items, totalCents, shippingAddre
       </div>
     </div>`;
 
-  const text = `Order Received!\n\nHi ${name || 'there'},\n\nYour order of $${(totalCents / 100).toFixed(2)} has been received.\n\nItems:\n${(items || []).map(i => `- ${i.name} x${i.quantity || i.qty || 1}: $${((i.price * (i.quantity || i.qty || 1)) / 100).toFixed(2)}`).join('\n')}\n\nShipping to: ${addr}\n\nWe'll send you a payment link shortly via email.\n\nQuestions? Email glacierbiolabs@outlook.com\n\nGlacier BioLabs`;
+  const text = `Order Received!\n\nHi ${name || 'there'},\n\nYour order of $${(totalCents / 100).toFixed(2)} has been received.\n\nItems:\n${(items || []).map(i => `- ${i.name} x${i.quantity || i.qty || 1}: $${((i.price * (i.quantity || i.qty || 1)) / 100).toFixed(2)}`).join('\n')}\n\nShipping to: ${addr}\n\nWe're upgrading our payment system — you'll receive a secure payment link via email within a few hours to complete your purchase.\n\nQuestions? Email glacierbiolabs@outlook.com\n\nGlacier BioLabs`;
 
   try {
     await httpsPost('api.mailersend.com', '/v1/email', {
