@@ -66,9 +66,9 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { items, buyerEmail, buyerName, shippingAddress, discountCode, discountPercent } = JSON.parse(event.body);
+    const { items, buyerEmail, buyerName, buyerPhone, shippingAddress, discountCode, discountPercent } = JSON.parse(event.body);
 
-    if (!items || !items.length || !buyerEmail || !buyerName || !shippingAddress) {
+    if (!items || !items.length || !buyerEmail || !buyerName || !buyerPhone || !shippingAddress) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing required fields' }) };
     }
 
@@ -106,11 +106,13 @@ exports.handler = async (event) => {
       success_url: `${SITE_URL}/#/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#/shop`,
       'metadata[customer_name]': buyerName,
+      'metadata[customer_phone]': buyerPhone,
       'metadata[shipping_address]': shipAddr,
       'metadata[items_summary]': itemSummary.substring(0, 500),
       'metadata[discount_code]': discountCode || '',
       'payment_intent_data[statement_descriptor]': 'GLACIER BIOLABS',
       'payment_intent_data[metadata][customer_name]': buyerName,
+      'payment_intent_data[metadata][customer_phone]': buyerPhone,
       'payment_intent_data[metadata][shipping_address]': shipAddr,
     };
 

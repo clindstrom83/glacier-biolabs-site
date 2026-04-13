@@ -117,6 +117,7 @@ exports.handler = async (event) => {
       const amount = (session.amount_total / 100).toFixed(2);
       const customerEmail = session.customer_email || session.customer_details?.email;
       const customerName = metadata.customer_name || session.customer_details?.name || 'Unknown';
+      const customerPhone = metadata.customer_phone || 'N/A';
       const shippingAddress = metadata.shipping_address || 'N/A';
       const itemsSummary = metadata.items_summary || 'N/A';
       const discountCode = metadata.discount_code || '';
@@ -135,6 +136,7 @@ exports.handler = async (event) => {
             currency: 'USD',
             customer_name: customerName,
             customer_email: customerEmail,
+            customer_phone: customerPhone,
             shipping_address: shippingAddress,
             items: [],
             receipt_url: session.url || null,
@@ -148,6 +150,7 @@ exports.handler = async (event) => {
         `💰 PAYMENT RECEIVED (Stripe)\n\n` +
         `Amount: $${amount}\n` +
         `Customer: ${customerName}\n` +
+        `Phone: ${customerPhone}\n` +
         `Email: ${customerEmail}\n` +
         `Ship to: ${shippingAddress}\n` +
         `Items: ${itemsSummary}\n` +

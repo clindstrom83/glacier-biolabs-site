@@ -1210,6 +1210,10 @@
           <input type="text" id="checkout-name" placeholder="First Last" required>
         </div>
         <div class="checkout-field">
+          <label for="checkout-phone">Phone Number</label>
+          <input type="tel" id="checkout-phone" placeholder="(555) 123-4567" required>
+        </div>
+        <div class="checkout-field">
           <label for="checkout-address">Shipping Address</label>
           <input type="text" id="checkout-address" placeholder="123 Main St" required>
         </div>
@@ -1398,13 +1402,14 @@
     const errorEl = document.getElementById('checkout-error');
     const email = document.getElementById('checkout-email').value.trim();
     const name = document.getElementById('checkout-name').value.trim();
+    const phone = document.getElementById('checkout-phone').value.trim();
     const address = document.getElementById('checkout-address').value.trim();
     const city = document.getElementById('checkout-city').value.trim();
     const state = document.getElementById('checkout-state').value.trim();
     const zip = document.getElementById('checkout-zip').value.trim();
 
-    if (!email || !name || !address || !city || !state || !zip) {
-      if (errorEl) { errorEl.textContent = 'Please fill in all fields (email, name, and shipping address) before using Apple/Google Pay.'; errorEl.style.display = 'block'; }
+    if (!email || !name || !phone || !address || !city || !state || !zip) {
+      if (errorEl) { errorEl.textContent = 'Please fill in all fields (email, name, phone, and shipping address) before using Apple/Google Pay.'; errorEl.style.display = 'block'; }
       return;
     }
 
@@ -1423,6 +1428,7 @@
           items: pendingCheckoutItems,
           buyerEmail: email,
           buyerName: name,
+          buyerPhone: phone,
           shippingAddress: {
             firstName, lastName,
             addressLine1: address, city,
@@ -1490,13 +1496,14 @@
     // Gather form values
     const email = (document.getElementById('checkout-email').value || '').trim();
     const fullName = (document.getElementById('checkout-name').value || '').trim();
+    const phone = (document.getElementById('checkout-phone').value || '').trim();
     const address = (document.getElementById('checkout-address').value || '').trim();
     const city = (document.getElementById('checkout-city').value || '').trim();
     const stateVal = (document.getElementById('checkout-state').value || '').trim();
     const zip = (document.getElementById('checkout-zip').value || '').trim();
 
     // Validate
-    if (!email || !fullName || !address || !city || !stateVal || !zip) {
+    if (!email || !fullName || !phone || !address || !city || !stateVal || !zip) {
       if (errorEl) { errorEl.textContent = 'Please fill out all fields.'; errorEl.style.display = 'block'; }
       return;
     }
@@ -1513,6 +1520,7 @@
           items: pendingCheckoutItems,
           buyerEmail: email,
           buyerName: fullName,
+          buyerPhone: phone,
           shippingAddress: {
             firstName: fullName.split(' ')[0] || '',
             lastName: fullName.split(' ').slice(1).join(' ') || '',
