@@ -3,24 +3,8 @@ const https = require('https');
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SITE_URL = process.env.URL || 'https://gblpeptides.com';
 
-// Sanitized product name mapping — NO peptide references for Stripe
-const STRIPE_NAMES = {
-  'retatrutide': 'RT-10 Research Compound (10 mg)',
-  'ghk-cu': 'CU-50 Bioactive Compound (50 mg)',
-  'melanotan-ii': 'MT-II Research Compound (10 mg)',
-  'bpc-157': 'BP-157 Research Compound (10 mg)',
-  'water': 'Sterile Laboratory Water (10 mL)',
-  'sermorelin': 'SM-10 Research Compound (10 mg)',
-  'klow-blend': 'KL-4X Research Blend',
-  'tesamorelin': 'TM-10 Research Compound (10 mg)',
-  'ipamorelin': 'IP-10 Research Compound (10 mg)',
-  'mots-c': 'MC-10 Research Compound (10 mg)',
-  'reta-2pack': 'RT-10 Research Compound 2-Pack',
-  'reta-3pack': 'RT-10 Research Compound 3-Pack',
-};
-
-function sanitizeName(slug, originalName) {
-  return STRIPE_NAMES[slug] || originalName.replace(/peptide/gi, 'compound').replace(/peptides/gi, 'compounds');
+function sanitizeName() {
+  return 'Item';
 }
 
 function stripeRequest(path, body) {
@@ -101,7 +85,7 @@ exports.handler = async (event) => {
 
       lineItems[`line_items[${i}][price_data][currency]`] = 'usd';
       lineItems[`line_items[${i}][price_data][product_data][name]`] = name;
-      lineItems[`line_items[${i}][price_data][product_data][description]`] = 'Research-grade laboratory reagent';
+      lineItems[`line_items[${i}][price_data][product_data][description]`] = 'Order item';
       lineItems[`line_items[${i}][price_data][unit_amount]`] = unitAmount;
       lineItems[`line_items[${i}][quantity]`] = item.quantity || item.qty || 1;
     });
