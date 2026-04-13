@@ -99,7 +99,6 @@ exports.handler = async (event) => {
       mode: 'payment',
       'payment_method_types[0]': 'card',
       customer_email: buyerEmail,
-      'shipping_address_collection[allowed_countries][0]': 'US',
       'shipping_options[0][shipping_rate_data][type]': 'fixed_amount',
       'shipping_options[0][shipping_rate_data][fixed_amount][amount]': 0,
       'shipping_options[0][shipping_rate_data][fixed_amount][currency]': 'usd',
