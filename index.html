@@ -36,7 +36,7 @@
   <!-- End Meta Pixel Code -->
 
   <meta charset="utf-8" />
-  <title>Glacier BioLabs — Research Peptides</title>
+  <title>Glacier BioLabs — Research Compounds</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Glacier BioLabs — Research Use Only compounds." />
   <style>
@@ -1114,7 +1114,7 @@
       </a>
 
       <nav class="desktop-nav" aria-label="Main navigation" id="desktop-nav">
-        <a href="#/shop" data-nav="shop">BUY PEPTIDES</a>
+        <a href="#/shop" data-nav="shop">SHOP NOW</a>
         <a href="#/testing">COA / TESTING</a>
         <a href="#/learn" data-nav="learn">ABOUT</a>
         <a href="#/knowledge" data-nav="knowledge">KNOWLEDGE</a>
@@ -1144,7 +1144,7 @@
       <button type="button" class="close" id="close-drawer" aria-label="Close menu">✕</button>
     </div>
     <div class="body">
-      <a href="#/shop">BUY PEPTIDES</a>
+      <a href="#/shop">SHOP NOW</a>
       <a href="#/learn">ABOUT</a>
       <a href="#/knowledge">KNOWLEDGE</a>
       <a href="#/faq">CONTACT</a>
@@ -1188,7 +1188,7 @@
         <button id="checkout-from-cart" class="btn primary" style="flex:1" type="button">Checkout</button>
         <button id="clear-cart" class="btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Secure checkout — we're upgrading our payment system and will email you a secure payment link shortly.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Secure checkout powered by Stripe — your card details are never stored on our servers.</div>
     </div>
   </div>
 
@@ -1228,11 +1228,11 @@
           </div>
         </div>
         <div style="background:#f0fdf4;border:1px solid #86efac;padding:16px;border-radius:8px;margin:12px 0">
-          <p style="margin:0 0 8px;font-weight:700;color:#16a34a;font-size:14px">🔒 Secure Order Process</p>
-          <p style="margin:0;color:#15803d;font-size:13px">Place your order now — we're upgrading our payment system to serve you better. We'll email you a secure payment link within a few hours. Your order ships as soon as payment is confirmed.</p>
+          <p style="margin:0 0 8px;font-weight:700;color:#16a34a;font-size:14px">🔒 Secure Checkout</p>
+          <p style="margin:0;color:#15803d;font-size:13px">You'll be redirected to our secure payment page to complete your purchase. Your card information is handled securely by Stripe — we never see or store your card details.</p>
         </div>
         <div id="checkout-error" class="checkout-error"></div>
-        <button id="card-button" class="card-button" type="button">Place Order</button>
+        <button id="card-button" class="card-button" type="button">Proceed to Payment</button>
       </div>
     </div>
   </div>
@@ -1281,7 +1281,7 @@
         <div>
           <h4 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 16px">Why Choose Glacier BioLabs</h4>
           <p style="color:#94a3b8;font-size:14px;line-height:1.6;margin:0">
-            Glacier BioLabs supplies high-purity research reagents and peptides designed exclusively for laboratory and analytical applications. Every product is sold for research use only.
+            Glacier BioLabs supplies high-purity research reagents and compounds designed exclusively for laboratory and analytical applications. Every product is sold for research use only.
           </p>
         </div>
       </div>
@@ -1416,11 +1416,10 @@
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      const response = await fetch('/.netlify/functions/place-order', {
+      const response = await fetch('/.netlify/functions/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          totalCents: pendingCheckoutTotal,
           items: pendingCheckoutItems,
           buyerEmail: email,
           buyerName: name,
@@ -1429,17 +1428,15 @@
             addressLine1: address, city,
             state: state.toUpperCase(),
             postalCode: zip, country: 'US'
-          }
+          },
+          discountCode: discountState.valid ? discountState.code : '',
+          discountPercent: discountState.valid ? discountState.discountPercent : 0
         })
       });
       const data = await response.json();
-      if (data.success) {
-        if (window.fbq) fbq('track', 'Lead', { value: (pendingCheckoutTotal / 100).toFixed(2), currency: 'USD' });
-        closeCheckoutModal();
-        clearCart();
-        renderCartDrawer();
-        showToast('Order placed! Check your email for payment details.', 'success');
-        window.location.hash = '#/order-success';
+      if (data.url) {
+        if (window.fbq) fbq('track', 'InitiateCheckout', { value: (pendingCheckoutTotal / 100).toFixed(2), currency: 'USD' });
+        window.location.href = data.url;
       } else {
         throw new Error(data.error || 'Order failed');
       }
@@ -1505,15 +1502,14 @@
     }
 
     btn.disabled = true;
-    btn.textContent = 'Placing Order…';
+    btn.textContent = 'Redirecting to payment…';
     if (errorEl) { errorEl.style.display = 'none'; }
 
     try {
-      const resp = await fetch('/.netlify/functions/place-order', {
+      const resp = await fetch('/.netlify/functions/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          totalCents: pendingCheckoutTotal,
           items: pendingCheckoutItems,
           buyerEmail: email,
           buyerName: fullName,
@@ -1525,37 +1521,36 @@
             state: stateVal.toUpperCase(),
             postalCode: zip,
             country: 'US'
-          }
+          },
+          discountCode: discountState.valid ? discountState.code : '',
+          discountPercent: discountState.valid ? discountState.discountPercent : 0
         })
       });
 
       const data = await resp.json();
       if (!resp.ok || data.error) {
-        throw new Error(data.error || data.message || 'Order failed');
+        throw new Error(data.error || data.message || 'Checkout failed');
       }
 
-      // Success — track with Meta Pixel
+      // Track with Meta Pixel before redirect
       if (window.fbq) {
-        fbq('track', 'Lead', {
+        fbq('track', 'InitiateCheckout', {
           value: (pendingCheckoutTotal / 100).toFixed(2),
           currency: 'USD'
         });
       }
 
-      closeCheckoutModal();
-      clearCart();
-      renderCartDrawer();
-      showToast('Order placed! Check your email for payment details.', 'success');
-      window.location.hash = '#/order-success';
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
 
     } catch (err) {
-      console.error('Order error', err);
+      console.error('Checkout error', err);
       if (errorEl) {
-        errorEl.textContent = err.message || 'Order failed. Please try again.';
+        errorEl.textContent = err.message || 'Checkout failed. Please try again.';
         errorEl.style.display = 'block';
       }
       btn.disabled = false;
-      btn.textContent = 'Place Order';
+      btn.textContent = 'Proceed to Payment';
     }
   }
 
@@ -2144,7 +2139,7 @@
   <section style="background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:80px 20px;text-align:center;color:#fff">
     <div class="wrap" style="max-width:1000px">
       <h1 style="font-size:48px;font-weight:900;margin:0 0 20px;line-height:1.2">
-        Lab-Tested Research Peptides<br>+ Fast US Shipping + Verified COAs
+        Lab-Tested Research Compounds<br>+ Fast US Shipping + Verified COAs
       </h1>
       <p style="font-size:18px;color:#cbd5e1;margin:0 0 40px;max-width:700px;margin-left:auto;margin-right:auto">
         Third-party tested research compounds with batch documentation. Fast, discreet U.S. shipping and support that actually responds.
@@ -3102,7 +3097,7 @@
     <div class="wrap" style="max-width: 900px">
       <div style="font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #10b981; margin-bottom: 20px">AFFILIATE PROGRAM</div>
       <h1 style="font-size: 48px; font-weight: 900; margin: 0 0 20px; line-height: 1.2">
-        Earn 20% Commission Promoting Premium Research Peptides
+        Earn 20% Commission Promoting Premium Research Compounds
       </h1>
       <p style="font-size: 18px; color: #cbd5e1; margin: 0 0 40px">
         Partner with Glacier BioLabs and earn industry-leading commissions on every sale. High-purity products, high average order values, and a brand your audience will trust.
