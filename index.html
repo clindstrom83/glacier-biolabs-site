@@ -1246,18 +1246,6 @@
 
   <main id="app"></main>
 
-  <!-- Footer with policy links -->
-  <div class="policies">
-    <a href="#/terms">Terms & Conditions</a>
-    <a href="#/privacy">Privacy Policy</a>
-    <a href="#/refunds">Refund & Returns</a>
-    <a href="#/shipping">Shipping Policy</a>
-    <a href="#/disclaimer">Research Use Disclaimer</a>
-    <a href="#/safety">Safety & Compliance</a>
-    <a href="#/contact">Contact</a>
-    <a href="#/about">About</a>
-  </div>
-
   <footer style="background:#0f172a;color:#cbd5e1;padding:60px 20px 30px">
     <div class="wrap">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:50px">
@@ -3530,6 +3518,12 @@ Submitted: ${new Date().toLocaleString()}
   });
   document.getElementById('close-drawer').addEventListener('click', closeDrawer);
   document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
+  
+  // Auto-close drawer when clicking any menu link
+  document.querySelectorAll('#drawer .body a').forEach(link => {
+    link.addEventListener('click', closeDrawer);
+  });
+
   function closeDrawer(){
     const d = document.getElementById('drawer');
     const b = document.getElementById('drawer-backdrop');
