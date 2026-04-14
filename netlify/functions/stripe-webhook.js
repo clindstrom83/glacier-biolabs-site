@@ -37,39 +37,77 @@ async function notifyOwner(message) {
 }
 
 async function sendConfirmationEmail({ email, name, amount, items }) {
-  if (!MAILERSEND_API_KEY || !email) return;
+  const nodemailer = require('nodemailer');
+  const SMTP_USER = process.env.ZOHO_SMTP_USER || 'admin@gblpeptides.com';
+  const SMTP_PASS = process.env.ZOHO_SMTP_PASS;
+  
+  if (!SMTP_PASS || !email) return;
   
   const html = `
-    <div style="max-width:600px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a">
-      <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:32px;text-align:center;border-radius:12px 12px 0 0">
-        <h1 style="color:#fff;margin:0;font-size:24px">Payment Confirmed! ✅</h1>
-        <p style="color:#94a3b8;margin:8px 0 0;font-size:14px">Your order is being prepared for shipment</p>
-      </div>
-      <div style="background:#fff;padding:24px;border:1px solid #e2e8f0">
-        <p>Hi ${name || 'there'},</p>
-        <p>Your payment of <strong>$${amount}</strong> has been confirmed. We're preparing your order for shipment.</p>
-        <p><strong>What's next:</strong></p>
-        <ul>
-          <li>Your order ships within 1–2 business days</li>
-          <li>You'll receive tracking info via email</li>
-          <li>Typical delivery: 3–5 business days</li>
-        </ul>
-        <p style="color:#64748b;font-size:13px;margin-top:20px">Questions? Email us at <a href="mailto:glacierbiolabs@outlook.com">glacierbiolabs@outlook.com</a></p>
-      </div>
-      <div style="background:#f8fafc;padding:20px;text-align:center;border-radius:0 0 12px 12px;border:1px solid #e2e8f0;border-top:none">
-        <p style="margin:0;font-size:12px;color:#94a3b8">Glacier BioLabs — Research-Grade Compounds</p>
-      </div>
-    </div>`;
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 20px">
+        <tr>
+          <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1)">
+              <!-- Header -->
+              <tr>
+                <td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:40px 32px;text-align:center">
+                  <h1 style="color:#fff;margin:0;font-size:28px;font-weight:700">Payment Confirmed ✓</h1>
+                  <p style="color:#94a3b8;margin:12px 0 0;font-size:15px">Order confirmed and processing</p>
+                </td>
+              </tr>
+              <!-- Body -->
+              <tr>
+                <td style="padding:32px">
+                  <p style="margin:0 0 16px;font-size:16px;color:#0f172a">Hi ${name || 'there'},</p>
+                  <p style="margin:0 0 24px;font-size:16px;color:#475569;line-height:1.6">Thank you for your order! Your payment of <strong style="color:#0f172a">$${amount}</strong> has been successfully processed.</p>
+                  
+                  <div style="background:#f0fdf4;border-left:4px solid #10b981;padding:20px;margin:24px 0;border-radius:8px">
+                    <p style="margin:0 0 12px;font-weight:700;color:#065f46;font-size:15px">📦 What happens next:</p>
+                    <ul style="margin:0;padding-left:20px;color:#065f46">
+                      <li style="margin-bottom:8px">Your order will be carefully packaged and shipped within <strong>1–2 business days</strong></li>
+                      <li style="margin-bottom:8px">You'll receive tracking information via email as soon as your order ships</li>
+                      <li>Typical delivery time: <strong>4–7 business days via USPS</strong></li>
+                    </ul>
+                  </div>
+                  
+                  <p style="margin:24px 0 0;font-size:14px;color:#64748b">Questions or concerns? We're here to help! Email us at <a href="mailto:admin@gblpeptides.com" style="color:#2563eb;text-decoration:none">admin@gblpeptides.com</a></p>
+                </td>
+              </tr>
+              <!-- Footer -->
+              <tr>
+                <td style="background:#f8fafc;padding:24px 32px;text-align:center;border-top:1px solid #e2e8f0">
+                  <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f172a">Glacier BioLabs</p>
+                  <p style="margin:0;font-size:12px;color:#94a3b8">Research-Grade Compounds • For Laboratory Use Only</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>`;
 
   try {
-    await httpsPost('api.mailersend.com', '/v1/email', {
-      'Authorization': `Bearer ${MAILERSEND_API_KEY}`
-    }, {
-      from: { email: FROM_EMAIL, name: FROM_NAME },
-      to: [{ email, name: name || email }],
-      subject: 'Payment Confirmed — Glacier BioLabs',
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.zoho.com',
+      port: 465,
+      secure: true,
+      auth: { user: SMTP_USER, pass: SMTP_PASS }
+    });
+
+    await transporter.sendMail({
+      from: `"Glacier BioLabs" <${SMTP_USER}>`,
+      to: email,
+      subject: '✓ Order Confirmed — Glacier BioLabs',
       html,
-      text: `Payment Confirmed!\n\nHi ${name || 'there'},\n\nYour payment of $${amount} has been confirmed. Your order ships within 1-2 business days.\n\nQuestions? Email glacierbiolabs@outlook.com\n\nGlacier BioLabs`
+      text: `Payment Confirmed!\n\nHi ${name || 'there'},\n\nYour payment of $${amount} has been confirmed.\n\nWhat happens next:\n• Your order ships within 1–2 business days\n• You'll receive tracking info via email\n• Typical delivery: 4–7 business days via USPS\n\nQuestions? Email admin@gblpeptides.com\n\nGlacier BioLabs`
     });
   } catch (e) { console.error('Email error:', e); }
 }
