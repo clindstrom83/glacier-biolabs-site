@@ -3484,6 +3484,7 @@ Submitted: ${new Date().toLocaleString()}
   }
 
   function router(){
+    window.scrollTo(0, 0);
     setActiveNav();
     const hash = location.hash || '#/';
     if (hash === '#' || hash === '#/' || hash === '') {
