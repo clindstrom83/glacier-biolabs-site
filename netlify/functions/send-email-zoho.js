@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 const SMTP_HOST = 'smtp.zoho.com';
 const SMTP_PORT = 465;
-const SMTP_USER = process.env.ZOHO_SMTP_USER || 'admin@arcticlabsupply.com';
+const SMTP_USER = process.env.ZOHO_SMTP_USER || 'admin@gblpeptides.com';
 const SMTP_PASS = process.env.ZOHO_SMTP_PASS;
 const FROM_EMAIL = SMTP_USER;
 const FROM_NAME = 'Glacier BioLabs';
