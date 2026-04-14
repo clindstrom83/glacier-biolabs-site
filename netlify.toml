@@ -3,7 +3,3 @@
 
 [functions]
   directory = "netlify/functions"
-
-[[functions]]
-  name = "send-abandoned-cart-emails"
-  schedule = "0 * * * *"
