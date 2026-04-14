@@ -1,0 +1,8 @@
+{
+  "name": "glacier-biolabs-site",
+  "version": "1.0.0",
+  "description": "Glacier BioLabs website",
+  "dependencies": {
+    "nodemailer": "^6.9.9"
+  }
+}
