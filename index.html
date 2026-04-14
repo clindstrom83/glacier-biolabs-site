@@ -1630,6 +1630,18 @@
     coa: 'coa-sample.png'
   };
 
+  const COA_FILES = {
+    retatrutide: 'retatrutide-coa.png',
+    'ghk-cu': 'ghk-cu-coa.png',
+    'melanotan-ii': 'melanotan-ii-coa.png',
+    'bpc-157': 'bpc-157-coa.png',
+    sermorelin: 'sermorelin-coa.png',
+    'klow-blend': 'klow-blend-coa.png',
+    tesamorelin: 'tesamorelin-coa.png',
+    ipamorelin: 'ipamorelin-coa.png',
+    'mots-c': 'mots-c-coa.png'
+  };
+
   const PRODUCTS = [
     {
       slug: 'retatrutide',
@@ -2570,7 +2582,14 @@
                     <select id="qty">
                       <option value="1">1</option>
                       <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
                       <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
                     </select>
                   </div>
                   <div style="flex:1">
@@ -2594,6 +2613,18 @@
               </div>
             </div>
           </div>
+
+          ${COA_FILES[p.slug] ? `
+          <!-- Certificate of Analysis -->
+          <div style="margin-top:60px;padding-top:40px;border-top:2px solid #e5e7eb">
+            <h2 style="font-size:28px;font-weight:900;margin-bottom:20px;text-align:center">Certificate of Analysis (COA)</h2>
+            <p style="text-align:center;color:#64748b;margin-bottom:30px">Third-party tested for purity and authenticity. Click to view full details.</p>
+            <a href="${escapeHtml(imgPath(COA_FILES[p.slug]))}" target="_blank" style="display:block;max-width:800px;margin:0 auto">
+              <img src="${escapeHtml(imgPath(COA_FILES[p.slug]))}" alt="${escapeHtml(p.name)} COA" style="width:100%;border:2px solid #e5e7eb;border-radius:12px;transition:transform 0.2s;cursor:pointer" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            </a>
+            <p style="text-align:center;margin-top:16px;font-size:13px;color:#94a3b8">Click image to view full-size COA</p>
+          </div>
+          ` : ''}
         </div>
       </section>
 
