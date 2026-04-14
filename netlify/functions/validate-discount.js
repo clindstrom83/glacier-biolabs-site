@@ -47,18 +47,28 @@ exports.handler = async (event, context) => {
     const discounts = {
       'BB10': {
         percent: 10,
-        expires: new Date('2030-12-31T23:59:59-05:00'), // Active indefinitely
+        expires: new Date('2030-12-31T23:59:59-05:00'),
         description: '10% off all orders'
       },
       'ASU10': {
         percent: 10,
-        expires: new Date('2030-12-31T23:59:59-05:00'), // Active indefinitely
+        expires: new Date('2030-12-31T23:59:59-05:00'),
         description: '10% off all orders'
       },
       'FIRST10': {
         percent: 10,
-        expires: new Date('2030-12-31T23:59:59-05:00'), // Active indefinitely (exit popup code)
+        expires: new Date('2030-12-31T23:59:59-05:00'),
         description: '10% off your first order'
+      },
+      'SAVE10': {
+        percent: 10,
+        expires: new Date('2030-12-31T23:59:59-05:00'),
+        description: '10% off - abandoned cart recovery'
+      },
+      'SAVE20': {
+        percent: 20,
+        expires: new Date('2030-12-31T23:59:59-05:00'),
+        description: '20% off - final reminder'
       }
     };
 
