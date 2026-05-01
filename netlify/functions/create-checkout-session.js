@@ -72,6 +72,9 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing required fields' }) };
     }
 
+    // Calculate total before discount for free shipping check
+    const totalBeforeDiscount = items.reduce((sum, item) => sum + (item.price * (item.quantity || item.qty || 1)), 0);
+
     // Build line items with sanitized names
     const lineItems = {};
     items.forEach((item, i) => {
@@ -100,9 +103,9 @@ exports.handler = async (event) => {
       'payment_method_types[0]': 'card',
       customer_email: buyerEmail,
       'shipping_options[0][shipping_rate_data][type]': 'fixed_amount',
-      'shipping_options[0][shipping_rate_data][fixed_amount][amount]': 600,
+      'shipping_options[0][shipping_rate_data][fixed_amount][amount]': totalBeforeDiscount >= 14999 ? 0 : 600,
       'shipping_options[0][shipping_rate_data][fixed_amount][currency]': 'usd',
-      'shipping_options[0][shipping_rate_data][display_name]': 'Standard Shipping',
+      'shipping_options[0][shipping_rate_data][display_name]': totalBeforeDiscount >= 14999 ? 'Free Shipping' : 'Standard Shipping ($6.00)',
       success_url: `${SITE_URL}/#/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}/#/shop`,
       'metadata[customer_name]': buyerName,
