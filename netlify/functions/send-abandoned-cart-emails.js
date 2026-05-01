@@ -81,7 +81,35 @@ async function updateCartEmailsSent(email, count) {
   );
 }
 
-function emailTemplate({ title, message, ctaText, ctaUrl, code, codeDesc }) {
+function cartItemsHtml(cartItems, totalCents) {
+  if (!cartItems || cartItems.length === 0) return '';
+  const rows = cartItems.map(item => {
+    const price = item.price ? `$${(item.price / 100).toFixed(2)}` : '';
+    const qty = item.quantity || 1;
+    return `
+      <tr>
+        <td style="padding:12px;border-bottom:1px solid #e2e8f0;font-size:14px;font-weight:600">${item.name || 'Item'}</td>
+        <td style="padding:12px;border-bottom:1px solid #e2e8f0;font-size:14px;text-align:center">×${qty}</td>
+        <td style="padding:12px;border-bottom:1px solid #e2e8f0;font-size:14px;text-align:right;font-weight:700">${price}</td>
+      </tr>`;
+  }).join('');
+  const total = totalCents ? `$${(totalCents / 100).toFixed(2)}` : '';
+  return `
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+      <tr style="background:#f8fafc">
+        <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748b;text-transform:uppercase">Item</th>
+        <th style="padding:10px 12px;text-align:center;font-size:12px;color:#64748b;text-transform:uppercase">Qty</th>
+        <th style="padding:10px 12px;text-align:right;font-size:12px;color:#64748b;text-transform:uppercase">Price</th>
+      </tr>
+      ${rows}
+      ${total ? `<tr><td colspan="2" style="padding:12px;font-weight:900;font-size:15px">Total</td><td style="padding:12px;text-align:right;font-weight:900;font-size:15px">${total}</td></tr>` : ''}
+    </table>`;
+}
+
+function emailTemplate({ title, message, ctaText, ctaUrl, code, codeDesc, cartItems, totalCents, discountPercent }) {
+  const itemsTable = cartItemsHtml(cartItems, totalCents);
+  const savingsNote = discountPercent && totalCents ? `<p style="margin:8px 0 0;color:#065f46;font-size:14px;font-weight:700">You'd save $${((totalCents * discountPercent / 100) / 100).toFixed(2)} on this order!</p>` : '';
+  
   return `
 <!DOCTYPE html>
 <html>
@@ -98,21 +126,24 @@ function emailTemplate({ title, message, ctaText, ctaUrl, code, codeDesc }) {
         <tr>
           <td style="padding:32px">
             <p style="margin:0 0 20px;font-size:16px;color:#475569;line-height:1.6">${message}</p>
+            ${itemsTable}
             ${code ? `
             <div style="background:#f0fdf4;border:2px solid #10b981;padding:24px;margin:24px 0;text-align:center;border-radius:12px">
-              <p style="margin:0 0 8px;font-size:14px;color:#065f46;font-weight:600;text-transform:uppercase">Your Discount Code</p>
+              <p style="margin:0 0 8px;font-size:14px;color:#065f46;font-weight:600;text-transform:uppercase">Your Exclusive Code</p>
               <div style="font-size:32px;font-weight:900;color:#065f46;letter-spacing:2px;margin:8px 0">${code}</div>
               <p style="margin:8px 0 0;color:#065f46;font-size:14px">${codeDesc}</p>
+              ${savingsNote}
             </div>` : ''}
             <div style="text-align:center;margin-top:32px">
               <a href="${ctaUrl}" style="display:inline-block;background:#2563eb;color:#fff;padding:16px 48px;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px">${ctaText}</a>
             </div>
+            <p style="text-align:center;margin-top:16px;font-size:13px;color:#94a3b8">We saved your cart — it's ready when you are.</p>
           </td>
         </tr>
         <tr>
           <td style="background:#f8fafc;padding:24px 32px;text-align:center;border-top:1px solid #e2e8f0">
             <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f172a">Glacier BioLabs</p>
-            <p style="margin:0;font-size:12px;color:#94a3b8">Research-Grade Compounds</p>
+            <p style="margin:0;font-size:12px;color:#94a3b8">Research-Grade Compounds • gblpeptides.com</p>
           </td>
         </tr>
       </table>
@@ -135,19 +166,23 @@ exports.handler = async () => {
       const lastUpdated = new Date(cart.last_updated).getTime();
       const hoursSince = (now - lastUpdated) / (1000 * 60 * 60);
       const emailsSent = cart.emails_sent || 0;
+      const cartItems = cart.cart_items || [];
+      const totalCents = cart.total_cents || 0;
 
       // Email 1: 30 minutes (reminder, no code)
       if (hoursSince >= 0.5 && hoursSince < 1.5 && emailsSent === 0) {
         await sendEmail({
           to: cart.email,
-          subject: 'You left something behind...',
+          subject: 'Your cart is waiting for you...',
           html: emailTemplate({
-            title: 'Complete Your Order',
-            message: `You left items in your cart worth <strong>$${(cart.total_cents / 100).toFixed(2)}</strong>. We've saved them for you — complete your order now before they're gone!`,
-            ctaText: 'Complete Your Order',
-            ctaUrl: `${SITE_URL}/#/shop`
+            title: 'We Saved Your Cart',
+            message: `Hey! Looks like you left before finishing your order. No worries — we saved everything for you. Your items are reserved and ready to go:`,
+            ctaText: 'Complete My Order',
+            ctaUrl: `${SITE_URL}/#/cart`,
+            cartItems,
+            totalCents
           }),
-          text: `You left items in your cart at Glacier BioLabs ($${(cart.total_cents / 100).toFixed(2)}). Complete your order: ${SITE_URL}/#/shop`
+          text: `You left items in your cart at Glacier BioLabs ($${(totalCents / 100).toFixed(2)}). Complete your order: ${SITE_URL}/#/cart`
         });
         await updateCartEmailsSent(cart.email, 1);
       }
@@ -156,16 +191,19 @@ exports.handler = async () => {
       if (hoursSince >= 2 && hoursSince < 3 && emailsSent === 1) {
         await sendEmail({
           to: cart.email,
-          subject: '10% off your order — just for you',
+          subject: "Still thinking it over? Here's 10% off",
           html: emailTemplate({
-            title: 'Here's 10% Off',
-            message: `We noticed you didn't complete your order. Here's a special discount to help you decide:`,
+            title: 'A Little Incentive \ud83d\udcb0',
+            message: `We get it — sometimes you need a minute. Here's <strong>10% off</strong> your entire order to make the decision easier. Your cart is exactly how you left it:`,
             code: 'SAVE10',
-            codeDesc: 'Use at checkout for 10% off',
-            ctaText: 'Shop Now & Save',
-            ctaUrl: `${SITE_URL}/#/shop`
+            codeDesc: 'Use at checkout for 10% off your order',
+            ctaText: 'Apply Discount & Checkout',
+            ctaUrl: `${SITE_URL}/#/cart`,
+            cartItems,
+            totalCents,
+            discountPercent: 10
           }),
-          text: `10% off your Glacier BioLabs order! Use code SAVE10 at checkout: ${SITE_URL}/#/shop`
+          text: `10% off your Glacier BioLabs order! Use code SAVE10 at checkout: ${SITE_URL}/#/cart`
         });
         await updateCartEmailsSent(cart.email, 2);
       }
@@ -174,16 +212,19 @@ exports.handler = async () => {
       if (hoursSince >= 24 && hoursSince < 26 && emailsSent === 2) {
         await sendEmail({
           to: cart.email,
-          subject: 'Last chance: 20% off your order',
+          subject: 'Final offer: 20% off — your cart expires soon',
           html: emailTemplate({
-            title: 'Final Reminder: 20% Off',
-            message: `This is your last reminder. We're offering you our <strong>best discount ever</strong> — but this offer expires in 24 hours.`,
+            title: 'Last Chance — 20% Off \ud83d\udd25',
+            message: `This is it. Your cart won't be saved much longer, and this is our <strong>biggest discount</strong>. Use it before it's gone:`,
             code: 'SAVE20',
-            codeDesc: '20% off — expires in 24 hours!',
-            ctaText: 'Claim Your Discount Now',
-            ctaUrl: `${SITE_URL}/#/shop`
+            codeDesc: '20% off your entire order — 24 hours only',
+            ctaText: 'Claim 20% Off Now',
+            ctaUrl: `${SITE_URL}/#/cart`,
+            cartItems,
+            totalCents,
+            discountPercent: 20
           }),
-          text: `FINAL CHANCE: 20% off your Glacier BioLabs order! Use code SAVE20: ${SITE_URL}/#/shop`
+          text: `FINAL CHANCE: 20% off your Glacier BioLabs order! Use code SAVE20: ${SITE_URL}/#/cart`
         });
         await updateCartEmailsSent(cart.email, 3);
       }

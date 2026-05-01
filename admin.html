@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GBL Admin — Orders</title>
+  <title>GBL Admin — Dashboard</title>
   <meta name="robots" content="noindex, nofollow">
   <style>
     :root {
@@ -15,20 +15,18 @@
       --accent-2: #16a34a;
       --line: #e2e8f0;
       --danger: #dc2626;
+      --warn: #f59e0b;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
 
-    /* Login */
     #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; }
     #login-screen .box { background:var(--card); padding:32px; border-radius:14px; border:1px solid var(--line); max-width:380px; width:90%; text-align:center; }
     #login-screen h1 { font-size:22px; margin-bottom:16px; }
     #login-screen input { width:100%; padding:12px; border:1px solid var(--line); border-radius:8px; font-size:15px; margin-bottom:12px; }
     #login-screen button { width:100%; padding:12px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; }
-    #login-screen button:hover { opacity:0.9; }
     #login-error { color:var(--danger); font-size:13px; margin-top:8px; min-height:20px; }
 
-    /* Dashboard */
     #dashboard { display:none; }
     .topbar { background:var(--card); border-bottom:1px solid var(--line); padding:14px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
     .topbar h1 { font-size:18px; }
@@ -39,51 +37,57 @@
 
     .container { max-width:1200px; margin:0 auto; padding:20px; }
 
-    /* Stats */
-    .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:24px; }
+    .tabs { display:flex; gap:4px; margin-bottom:20px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:4px; }
+    .tab { flex:1; padding:10px; text-align:center; border-radius:8px; cursor:pointer; font-weight:700; font-size:14px; border:none; background:transparent; color:var(--muted); transition:all 0.2s; }
+    .tab.active { background:var(--accent); color:#fff; }
+    .tab:hover:not(.active) { background:#f1f5f9; }
+
+    .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:24px; }
     .stat-card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; }
     .stat-card .label { font-size:13px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
     .stat-card .value { font-size:28px; font-weight:900; margin-top:4px; }
     .stat-card .sub { font-size:12px; color:var(--muted); margin-top:2px; }
 
-    /* Filters */
     .filters { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
     .filters input, .filters select { padding:8px 12px; border:1px solid var(--line); border-radius:8px; font-size:13px; }
     .filters input { width:220px; }
 
-    /* Table */
-    .table-wrap { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    .table-wrap { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
     table { width:100%; border-collapse:collapse; font-size:13px; }
     th { background:#f8fafc; padding:10px 14px; text-align:left; font-weight:700; color:var(--muted); text-transform:uppercase; font-size:11px; letter-spacing:0.5px; border-bottom:1px solid var(--line); white-space:nowrap; }
     td { padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
     tr:last-child td { border-bottom:none; }
     tr:hover { background:#f8fafc; }
     .status-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; }
-    .status-completed { background:#dcfce7; color:#16a34a; }
-    .status-pending { background:#fef9c3; color:#a16207; }
+    .status-completed, .status-paid { background:#dcfce7; color:#16a34a; }
+    .status-pending, .status-pending_payment { background:#fef9c3; color:#a16207; }
     .status-failed { background:#fee2e2; color:#dc2626; }
+    .status-recovered { background:#dbeafe; color:#2563eb; }
+    .status-abandoned { background:#fee2e2; color:#dc2626; }
     .items-list { font-size:12px; color:var(--muted); }
     .empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
 
-    /* Detail modal */
     #order-detail { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); z-index:100; }
     #order-detail .modal { background:var(--card); border-radius:14px; padding:24px; max-width:500px; width:90%; max-height:80vh; overflow-y:auto; }
     #order-detail .modal h2 { font-size:18px; margin-bottom:16px; }
     #order-detail .modal .row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); font-size:14px; }
-    #order-detail .modal .row .lbl { color:var(--muted); font-weight:600; }
+    #order-detail .modal .row .lbl { color:var(--muted); font-weight:600; min-width:100px; }
     #order-detail .modal .close-btn { margin-top:16px; width:100%; padding:10px; background:var(--bg); border:1px solid var(--line); border-radius:8px; cursor:pointer; font-weight:600; }
+
+    .panel { display:none; }
+    .panel.active { display:block; }
 
     @media (max-width:768px) {
       .container { padding:12px; }
       .stats { grid-template-columns:1fr 1fr; }
       table { font-size:12px; }
       th, td { padding:8px 10px; }
+      .tabs { flex-wrap:wrap; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Login -->
   <div id="login-screen">
     <div class="box">
       <h1>🔒 GBL Admin</h1>
@@ -93,10 +97,9 @@
     </div>
   </div>
 
-  <!-- Dashboard -->
   <div id="dashboard">
     <div class="topbar">
-      <h1>📦 GBL Orders</h1>
+      <h1>📦 GBL Dashboard</h1>
       <div class="actions">
         <button id="refresh-btn">↻ Refresh</button>
         <button id="export-btn">📥 Export CSV</button>
@@ -107,43 +110,64 @@
     <div class="container">
       <div class="stats" id="stats-row"></div>
 
-      <div class="filters">
-        <input type="search" id="search-input" placeholder="Search orders...">
-        <select id="status-filter">
-          <option value="">All Statuses</option>
-          <option value="COMPLETED">Completed</option>
-          <option value="PENDING">Pending</option>
-          <option value="FAILED">Failed</option>
-        </select>
-        <select id="date-filter">
-          <option value="">All Time</option>
-          <option value="today">Today</option>
-          <option value="7d">Last 7 Days</option>
-          <option value="30d">Last 30 Days</option>
-        </select>
+      <div class="tabs">
+        <button class="tab active" data-tab="orders">📦 Orders</button>
+        <button class="tab" data-tab="carts">🛒 Abandoned Carts</button>
+        <button class="tab" data-tab="emails">📧 Email Subscribers</button>
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Customer</th>
-              <th>Email</th>
-              <th>Items</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Shipping</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="orders-body"></tbody>
-        </table>
+      <!-- Orders Panel -->
+      <div class="panel active" id="panel-orders">
+        <div class="filters">
+          <input type="search" id="search-input" placeholder="Search orders...">
+          <select id="status-filter">
+            <option value="">All Statuses</option>
+            <option value="PAID">Paid</option>
+            <option value="PENDING_PAYMENT">Pending</option>
+          </select>
+          <select id="date-filter">
+            <option value="">All Time</option>
+            <option value="today">Today</option>
+            <option value="7d">Last 7 Days</option>
+            <option value="30d">Last 30 Days</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Date</th><th>Customer</th><th>Email</th><th>Items</th><th>Amount</th><th>Status</th><th>Shipping</th><th></th>
+            </tr></thead>
+            <tbody id="orders-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Abandoned Carts Panel -->
+      <div class="panel" id="panel-carts">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Date</th><th>Email</th><th>Items</th><th>Cart Value</th><th>Emails Sent</th><th>Status</th>
+            </tr></thead>
+            <tbody id="carts-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Email Subscribers Panel -->
+      <div class="panel" id="panel-emails">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Date</th><th>Email</th><th>Source</th><th>Active</th>
+            </tr></thead>
+            <tbody id="emails-body"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Order Detail Modal -->
   <div id="order-detail">
     <div class="modal" id="detail-content"></div>
   </div>
@@ -153,77 +177,92 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJqZ3J3ZWRnYWhpdHJha3d6b29iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NDY5NjMsImV4cCI6MjA5MTEyMjk2M30.Gcpxpw6L7ca0qXIfOq2M4-l1HPOSy9dT4_XHsQp9Dts';
     const ADMIN_PASSWORD = 'gbl2026admin';
 
-    let allOrders = [];
+    let allOrders = [], allCarts = [], allSubscribers = [];
 
-    // Auth
     function isLoggedIn() { return sessionStorage.getItem('gbl_admin') === 'true'; }
     function doLogin() {
-      const pw = document.getElementById('admin-pw').value;
-      if (pw === ADMIN_PASSWORD) {
+      if (document.getElementById('admin-pw').value === ADMIN_PASSWORD) {
         sessionStorage.setItem('gbl_admin', 'true');
         showDashboard();
       } else {
         document.getElementById('login-error').textContent = 'Wrong password';
       }
     }
-    function doLogout() {
-      sessionStorage.removeItem('gbl_admin');
-      location.reload();
-    }
+    function doLogout() { sessionStorage.removeItem('gbl_admin'); location.reload(); }
 
     document.getElementById('admin-login-btn').addEventListener('click', doLogin);
     document.getElementById('admin-pw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
     document.getElementById('logout-btn').addEventListener('click', doLogout);
 
+    // Tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
     function showDashboard() {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
-      fetchOrders();
+      fetchAll();
     }
 
-    // Fetch orders from Supabase
-    async function fetchOrders() {
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?order=created_at.desc&limit=500`, {
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-          }
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        allOrders = await res.json();
-        renderStats();
-        renderOrders();
-      } catch (err) {
-        console.error('Fetch orders error:', err);
-        document.getElementById('orders-body').innerHTML = `<tr><td colspan="8" class="empty-state">Error loading orders: ${err.message}</td></tr>`;
-      }
+    async function sbGet(path) {
+      const res = await fetch(`${SUPABASE_URL}${path}`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      return res.ok ? res.json() : [];
+    }
+
+    async function fetchAll() {
+      [allOrders, allCarts, allSubscribers] = await Promise.all([
+        sbGet('/rest/v1/orders?order=created_at.desc&limit=500'),
+        sbGet('/rest/v1/abandoned_carts?order=last_updated.desc&limit=200'),
+        sbGet('/rest/v1/email_subscribers?order=subscribed_at.desc&limit=500')
+      ]);
+      renderStats();
+      renderOrders();
+      renderCarts();
+      renderSubscribers();
     }
 
     function renderStats() {
-      const total = allOrders.length;
-      const revenue = allOrders.reduce((s, o) => s + (o.amount_cents || 0), 0);
+      const paidOrders = allOrders.filter(o => o.status === 'PAID');
+      const revenue = paidOrders.reduce((s, o) => s + (o.amount_cents || 0), 0);
       const today = new Date().toDateString();
-      const todayOrders = allOrders.filter(o => new Date(o.created_at).toDateString() === today);
+      const todayOrders = paidOrders.filter(o => new Date(o.created_at).toDateString() === today);
       const todayRevenue = todayOrders.reduce((s, o) => s + (o.amount_cents || 0), 0);
+      const recoveredCarts = allCarts.filter(c => c.recovered).length;
+      const totalCarts = allCarts.length;
+      const cartValue = allCarts.filter(c => !c.recovered).reduce((s, c) => s + (c.total_cents || 0), 0);
 
       document.getElementById('stats-row').innerHTML = `
         <div class="stat-card">
-          <div class="label">Total Orders</div>
-          <div class="value">${total}</div>
-        </div>
-        <div class="stat-card">
           <div class="label">Total Revenue</div>
           <div class="value">$${(revenue / 100).toFixed(2)}</div>
+          <div class="sub">${paidOrders.length} paid orders</div>
         </div>
         <div class="stat-card">
-          <div class="label">Today's Orders</div>
-          <div class="value">${todayOrders.length}</div>
-          <div class="sub">$${(todayRevenue / 100).toFixed(2)} today</div>
+          <div class="label">Today</div>
+          <div class="value">$${(todayRevenue / 100).toFixed(2)}</div>
+          <div class="sub">${todayOrders.length} orders today</div>
         </div>
         <div class="stat-card">
-          <div class="label">Avg Order Value</div>
-          <div class="value">$${total > 0 ? (revenue / total / 100).toFixed(2) : '0.00'}</div>
+          <div class="label">Avg Order</div>
+          <div class="value">$${paidOrders.length > 0 ? (revenue / paidOrders.length / 100).toFixed(2) : '0.00'}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Abandoned Carts</div>
+          <div class="value">${totalCarts}</div>
+          <div class="sub">${recoveredCarts} recovered • $${(cartValue / 100).toFixed(2)} pending</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Email List</div>
+          <div class="value">${allSubscribers.length}</div>
+          <div class="sub">${allSubscribers.filter(s => s.active).length} active</div>
         </div>
       `;
     }
@@ -233,127 +272,115 @@
       const q = document.getElementById('search-input').value.toLowerCase().trim();
       const status = document.getElementById('status-filter').value;
       const dateFilter = document.getElementById('date-filter').value;
-
-      if (q) {
-        list = list.filter(o =>
-          (o.customer_name || '').toLowerCase().includes(q) ||
-          (o.customer_email || '').toLowerCase().includes(q) ||
-          (o.payment_id || '').toLowerCase().includes(q) ||
-          JSON.stringify(o.items || []).toLowerCase().includes(q)
-        );
-      }
-      if (status) {
-        list = list.filter(o => (o.status || '').toUpperCase() === status);
-      }
+      if (q) list = list.filter(o => (o.customer_name||'').toLowerCase().includes(q) || (o.customer_email||'').toLowerCase().includes(q) || JSON.stringify(o.items||[]).toLowerCase().includes(q));
+      if (status) list = list.filter(o => (o.status||'').toUpperCase() === status);
       if (dateFilter) {
         const now = new Date();
         let cutoff;
         if (dateFilter === 'today') cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        else if (dateFilter === '7d') cutoff = new Date(now - 7 * 86400000);
-        else if (dateFilter === '30d') cutoff = new Date(now - 30 * 86400000);
+        else if (dateFilter === '7d') cutoff = new Date(now - 7*86400000);
+        else if (dateFilter === '30d') cutoff = new Date(now - 30*86400000);
         if (cutoff) list = list.filter(o => new Date(o.created_at) >= cutoff);
       }
       return list;
     }
 
+    function fmtDate(d) { return new Date(d).toLocaleString('en-US', { timeZone:'America/New_York', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }); }
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
     function renderOrders() {
       const list = getFilteredOrders();
       const tbody = document.getElementById('orders-body');
-
-      if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No orders found</td></tr>`;
-        return;
-      }
-
+      if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No orders found</td></tr>`; return; }
       tbody.innerHTML = list.map(o => {
-        const date = new Date(o.created_at).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-        const items = (o.items || []).map(i => `${i.name} ×${i.qty}`).join(', ');
-        const statusClass = (o.status || '').toLowerCase().includes('complete') ? 'completed' : (o.status || '').toLowerCase().includes('fail') ? 'failed' : 'pending';
+        const items = (o.items||[]).map(i => `${i.name} ×${i.qty}`).join(', ');
+        const sc = (o.status||'').toLowerCase().replace(/_/g,'');
+        const statusClass = sc.includes('paid') ? 'paid' : sc.includes('pending') ? 'pending_payment' : 'failed';
         const shipping = [o.shipping_city, o.shipping_state, o.shipping_zip].filter(Boolean).join(', ');
-
         return `<tr>
-          <td style="white-space:nowrap">${date}</td>
-          <td><strong>${esc(o.customer_name || 'N/A')}</strong></td>
-          <td>${esc(o.customer_email || 'N/A')}</td>
-          <td class="items-list">${esc(items || 'N/A')}</td>
-          <td style="font-weight:700">$${((o.amount_cents || 0) / 100).toFixed(2)}</td>
-          <td><span class="status-badge status-${statusClass}">${esc(o.status || 'unknown')}</span></td>
-          <td style="font-size:12px">${esc(shipping || 'N/A')}</td>
+          <td style="white-space:nowrap">${fmtDate(o.created_at)}</td>
+          <td><strong>${esc(o.customer_name||'N/A')}</strong></td>
+          <td>${esc(o.customer_email||'N/A')}</td>
+          <td class="items-list">${esc(items||'N/A')}</td>
+          <td style="font-weight:700">$${((o.amount_cents||0)/100).toFixed(2)}</td>
+          <td><span class="status-badge status-${statusClass}">${esc(o.status||'unknown')}</span></td>
+          <td style="font-size:12px">${esc(shipping||'N/A')}</td>
           <td><button onclick="showDetail('${o.id}')" style="border:1px solid var(--line);background:var(--card);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px">View</button></td>
         </tr>`;
       }).join('');
     }
 
-    function showDetail(id) {
-      const o = allOrders.find(x => x.id === id);
-      if (!o) return;
-      const modal = document.getElementById('order-detail');
-      const content = document.getElementById('detail-content');
-      const date = new Date(o.created_at).toLocaleString('en-US', { timeZone: 'America/New_York' });
-      const items = (o.items || []).map(i => `${i.name} ×${i.qty} — $${((i.price * i.qty) / 100).toFixed(2)}`).join('<br>');
-      const address = [o.shipping_address, o.shipping_city, o.shipping_state, o.shipping_zip].filter(Boolean).join(', ');
+    function renderCarts() {
+      const tbody = document.getElementById('carts-body');
+      if (allCarts.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No abandoned carts yet</td></tr>`; return; }
+      tbody.innerHTML = allCarts.map(c => {
+        const items = (c.cart_items||[]).map(i => `${i.name} ×${i.quantity||1}`).join(', ');
+        const statusClass = c.recovered ? 'recovered' : 'abandoned';
+        const statusText = c.recovered ? 'RECOVERED' : (c.emails_sent >= 3 ? 'ALL SENT' : `${c.emails_sent||0}/3 EMAILS`);
+        const emailStage = c.emails_sent === 0 ? '⏳ Pending' : c.emails_sent === 1 ? '📧 Reminder sent' : c.emails_sent === 2 ? '💰 10% off sent' : '🔥 20% off sent';
+        return `<tr>
+          <td style="white-space:nowrap">${fmtDate(c.last_updated||c.created_at)}</td>
+          <td><strong>${esc(c.email)}</strong></td>
+          <td class="items-list">${esc(items||'N/A')}</td>
+          <td style="font-weight:700">$${((c.total_cents||0)/100).toFixed(2)}</td>
+          <td style="font-size:12px">${emailStage}</td>
+          <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
+        </tr>`;
+      }).join('');
+    }
 
-      content.innerHTML = `
+    function renderSubscribers() {
+      const tbody = document.getElementById('emails-body');
+      if (allSubscribers.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No subscribers yet</td></tr>`; return; }
+      tbody.innerHTML = allSubscribers.map(s => {
+        const source = s.source === 'exit-intent' ? '🎁 Exit Popup' : s.source === 'footer-signup' ? '📝 Footer' : s.source === 'checkout' ? '🛒 Checkout' : s.source||'Unknown';
+        return `<tr>
+          <td style="white-space:nowrap">${fmtDate(s.subscribed_at)}</td>
+          <td><strong>${esc(s.email)}</strong></td>
+          <td>${source}</td>
+          <td>${s.active ? '<span style="color:var(--accent-2);font-weight:700">✓ Active</span>' : '<span style="color:var(--muted)">Inactive</span>'}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function showDetail(id) {
+      const o = allOrders.find(x => String(x.id) === String(id));
+      if (!o) return;
+      const items = (o.items||[]).map(i => `${i.name} ×${i.qty}${i.price ? ' — $'+((i.price*i.qty)/100).toFixed(2) : ''}`).join('<br>');
+      const address = [o.shipping_address, o.shipping_city, o.shipping_state, o.shipping_zip].filter(Boolean).join(', ');
+      document.getElementById('detail-content').innerHTML = `
         <h2>Order Details</h2>
-        <div class="row"><span class="lbl">Date</span><span>${date}</span></div>
+        <div class="row"><span class="lbl">Date</span><span>${fmtDate(o.created_at)}</span></div>
         <div class="row"><span class="lbl">Payment ID</span><span style="font-size:12px;word-break:break-all">${esc(o.payment_id)}</span></div>
         <div class="row"><span class="lbl">Status</span><span>${esc(o.status)}</span></div>
-        <div class="row"><span class="lbl">Amount</span><span style="font-weight:700">$${((o.amount_cents || 0) / 100).toFixed(2)}</span></div>
-        <div class="row"><span class="lbl">Customer</span><span>${esc(o.customer_name || 'N/A')}</span></div>
-        <div class="row"><span class="lbl">Email</span><span>${esc(o.customer_email || 'N/A')}</span></div>
-        <div class="row"><span class="lbl">Ship To</span><span>${esc(address || 'N/A')}</span></div>
-        <div class="row"><span class="lbl">Items</span><span>${items || 'N/A'}</span></div>
-        ${o.receipt_url ? `<div class="row"><span class="lbl">Receipt</span><span><a href="${esc(o.receipt_url)}" target="_blank">View Receipt ↗</a></span></div>` : ''}
+        <div class="row"><span class="lbl">Amount</span><span style="font-weight:700">$${((o.amount_cents||0)/100).toFixed(2)}</span></div>
+        <div class="row"><span class="lbl">Customer</span><span>${esc(o.customer_name||'N/A')}</span></div>
+        <div class="row"><span class="lbl">Email</span><span>${esc(o.customer_email||'N/A')}</span></div>
+        <div class="row"><span class="lbl">Phone</span><span>${esc(o.customer_phone||'N/A')}</span></div>
+        <div class="row"><span class="lbl">Ship To</span><span>${esc(address||'N/A')}</span></div>
+        <div class="row"><span class="lbl">Items</span><span>${items||'N/A'}</span></div>
         ${o.notes ? `<div class="row"><span class="lbl">Notes</span><span>${esc(o.notes)}</span></div>` : ''}
-        <button class="close-btn" onclick="closeDetail()">Close</button>
-      `;
-      modal.style.display = 'flex';
+        <button class="close-btn" onclick="closeDetail()">Close</button>`;
+      document.getElementById('order-detail').style.display = 'flex';
     }
+    function closeDetail() { document.getElementById('order-detail').style.display = 'none'; }
+    document.getElementById('order-detail').addEventListener('click', e => { if (e.target === document.getElementById('order-detail')) closeDetail(); });
 
-    function closeDetail() {
-      document.getElementById('order-detail').style.display = 'none';
-    }
-
-    document.getElementById('order-detail').addEventListener('click', e => {
-      if (e.target === document.getElementById('order-detail')) closeDetail();
-    });
-
-    // Export CSV
     function exportCSV() {
       const list = getFilteredOrders();
-      const headers = ['Date', 'Customer', 'Email', 'Items', 'Amount', 'Status', 'Address', 'City', 'State', 'ZIP', 'Payment ID'];
-      const rows = list.map(o => [
-        new Date(o.created_at).toISOString(),
-        o.customer_name || '',
-        o.customer_email || '',
-        (o.items || []).map(i => `${i.name} x${i.qty}`).join('; '),
-        ((o.amount_cents || 0) / 100).toFixed(2),
-        o.status || '',
-        o.shipping_address || '',
-        o.shipping_city || '',
-        o.shipping_state || '',
-        o.shipping_zip || '',
-        o.payment_id || ''
-      ]);
-      const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `gbl-orders-${new Date().toISOString().slice(0,10)}.csv`;
-      a.click();
+      const headers = ['Date','Customer','Email','Phone','Items','Amount','Status','Address','City','State','ZIP','Payment ID'];
+      const rows = list.map(o => [new Date(o.created_at).toISOString(), o.customer_name||'', o.customer_email||'', o.customer_phone||'', (o.items||[]).map(i=>`${i.name} x${i.qty}`).join('; '), ((o.amount_cents||0)/100).toFixed(2), o.status||'', o.shipping_address||'', o.shipping_city||'', o.shipping_state||'', o.shipping_zip||'', o.payment_id||'']);
+      const csv = [headers,...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `gbl-orders-${new Date().toISOString().slice(0,10)}.csv`; a.click();
     }
 
     document.getElementById('export-btn').addEventListener('click', exportCSV);
-    document.getElementById('refresh-btn').addEventListener('click', fetchOrders);
-
-    // Filters
+    document.getElementById('refresh-btn').addEventListener('click', fetchAll);
     document.getElementById('search-input').addEventListener('input', renderOrders);
     document.getElementById('status-filter').addEventListener('change', renderOrders);
     document.getElementById('date-filter').addEventListener('change', renderOrders);
 
-    function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    // Init
     if (isLoggedIn()) showDashboard();
   </script>
 </body>
