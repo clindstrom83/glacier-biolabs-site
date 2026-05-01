@@ -167,6 +167,30 @@ exports.handler = async (event) => {
       // Save to Supabase
       if (SUPABASE_SERVICE_KEY) {
         try {
+          // Use explicit fields if available, fallback to parsing the address string
+          let shipAddr1, shipCity, shipState, shipZip;
+          if (metadata.shipping_city) {
+            const addrParts = shippingAddress.split(',').map(s => s.trim());
+            shipAddr1 = addrParts[0] || '';
+            shipCity = metadata.shipping_city || '';
+            shipState = metadata.shipping_state || '';
+            shipZip = metadata.shipping_zip || '';
+          } else {
+            const addrParts = shippingAddress.split(',').map(s => s.trim());
+            shipAddr1 = addrParts[0] || '';
+            shipCity = addrParts[1] || '';
+            const shipStateZip = (addrParts[2] || '').split(' ').filter(Boolean);
+            shipState = shipStateZip[0] || '';
+            shipZip = shipStateZip[1] || '';
+          }
+
+          // Parse items from summary string (e.g. "Retatrutide (10 mg) x1, BPC-157 (10 mg) x2")
+          const parsedItems = itemsSummary.split(',').map(s => {
+            const match = s.trim().match(/^(.+?)\s*x(\d+)$/);
+            if (match) return { name: match[1].trim(), qty: parseInt(match[2]) };
+            return { name: s.trim(), qty: 1 };
+          }).filter(i => i.name && i.name !== 'N/A');
+
           await httpsPost(SUPABASE_URL.replace('https://', ''), '/rest/v1/orders', {
             'apikey': SUPABASE_SERVICE_KEY,
             'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
@@ -179,8 +203,11 @@ exports.handler = async (event) => {
             customer_name: customerName,
             customer_email: customerEmail,
             customer_phone: customerPhone,
-            shipping_address: shippingAddress,
-            items: [],
+            shipping_address: shipAddr1,
+            shipping_city: shipCity,
+            shipping_state: shipState,
+            shipping_zip: shipZip,
+            items: parsedItems,
             receipt_url: session.url || null,
             notes: `Stripe checkout | ${discountCode ? 'Discount: ' + discountCode : 'No discount'} | Items: ${itemsSummary}`
           });
