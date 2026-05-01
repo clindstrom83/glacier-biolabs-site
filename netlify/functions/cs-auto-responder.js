@@ -6,7 +6,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const SMTP_USER = process.env.ZOHO_SMTP_USER || 'admin@gblpeptides.com';
 const SMTP_PASS = process.env.ZOHO_SMTP_PASS;
 const ZOHO_IMAP_HOST = 'imappro.zoho.com';
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 // Knowledge base for auto-responses
 const KNOWLEDGE_BASE = `
@@ -172,11 +172,9 @@ function extractEmail(fromStr) {
 }
 
 async function getAIResponse(email) {
-  if (!OPENAI_API_KEY) return null;
+  if (!ANTHROPIC_API_KEY) return null;
 
-  const prompt = `${KNOWLEDGE_BASE}
-
-CUSTOMER EMAIL:
+  const userMsg = `CUSTOMER EMAIL:
 From: ${email.from}
 Subject: ${email.subject}
 Body: ${email.body}
@@ -186,18 +184,19 @@ Otherwise, write a professional email response.`;
 
   return new Promise((resolve, reject) => {
     const data = JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 500,
-      temperature: 0.3
+      system: KNOWLEDGE_BASE,
+      messages: [{ role: 'user', content: userMsg }]
     });
 
     const req = https.request({
-      hostname: 'api.openai.com',
-      path: '/v1/chat/completions',
+      hostname: 'api.anthropic.com',
+      path: '/v1/messages',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data)
       }
@@ -207,7 +206,7 @@ Otherwise, write a professional email response.`;
       res.on('end', () => {
         try {
           const json = JSON.parse(d);
-          resolve(json.choices[0].message.content);
+          resolve(json.content[0].text);
         } catch (e) { resolve(null); }
       });
     });
@@ -309,7 +308,7 @@ function responseToHtml(text) {
 }
 
 exports.handler = async () => {
-  if (!SMTP_PASS || !OPENAI_API_KEY) {
+  if (!SMTP_PASS || !ANTHROPIC_API_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: 'Not configured' }) };
   }
 
