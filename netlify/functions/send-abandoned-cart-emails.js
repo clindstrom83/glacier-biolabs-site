@@ -136,8 +136,8 @@ exports.handler = async () => {
       const hoursSince = (now - lastUpdated) / (1000 * 60 * 60);
       const emailsSent = cart.emails_sent || 0;
 
-      // Email 1: 1 hour (reminder, no code)
-      if (hoursSince >= 1 && hoursSince < 2 && emailsSent === 0) {
+      // Email 1: 30 minutes (reminder, no code)
+      if (hoursSince >= 0.5 && hoursSince < 1.5 && emailsSent === 0) {
         await sendEmail({
           to: cart.email,
           subject: 'You left something behind...',
@@ -152,8 +152,8 @@ exports.handler = async () => {
         await updateCartEmailsSent(cart.email, 1);
       }
 
-      // Email 2: 12 hours (10% off)
-      if (hoursSince >= 12 && hoursSince < 13 && emailsSent === 1) {
+      // Email 2: 2 hours (10% off)
+      if (hoursSince >= 2 && hoursSince < 3 && emailsSent === 1) {
         await sendEmail({
           to: cart.email,
           subject: '10% off your order — just for you',
@@ -171,7 +171,7 @@ exports.handler = async () => {
       }
 
       // Email 3: 24 hours (20% off - final)
-      if (hoursSince >= 24 && hoursSince < 25 && emailsSent === 2) {
+      if (hoursSince >= 24 && hoursSince < 26 && emailsSent === 2) {
         await sendEmail({
           to: cart.email,
           subject: 'Last chance: 20% off your order',

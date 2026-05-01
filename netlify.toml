@@ -7,3 +7,15 @@
 # Run abandoned cart email recovery every hour
 [functions."send-abandoned-cart-emails"]
   schedule = "@hourly"
+
+# CS auto-responder - check emails every 30 min
+[functions."cs-auto-responder"]
+  schedule = "*/30 * * * *"
+
+# Order confirmation emails - check every 30 min
+[functions."send-order-confirmations"]
+  schedule = "*/30 * * * *"
+
+# Customer intelligence report - daily at 8am ET (noon UTC)
+[functions."customer-intelligence"]
+  schedule = "0 12 * * *"
