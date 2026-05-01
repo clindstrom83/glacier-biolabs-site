@@ -1739,24 +1739,24 @@
     {
       slug: 'reta-2pack',
       name: '2-Pack Retatrutide (10 mg)',
-      price: 12998,
-      regularPrice: 14998,
+      price: 15999,
+      regularPrice: 16998,
       category: 'Bundles',
       inStock: true,
       image: IMAGE_FILES.retatrutide,
-      short: '2x Retatrutide 10mg - Save $20',
-      long: `Bundle pack containing two (2) Retatrutide 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $20 compared to buying individually.`,
+      short: '2x Retatrutide 10mg - Save $10',
+      long: `Bundle pack containing two (2) Retatrutide 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $10 compared to buying individually.`,
       sale: true,
     },
     {
       slug: 'reta-3pack',
       name: '3-Pack Retatrutide (10 mg)',
-      price: 19499,
-      regularPrice: 22497,
+      price: 22999,
+      regularPrice: 25497,
       category: 'Bundles',
       inStock: true,
       image: IMAGE_FILES.retatrutide,
-      short: '3x Retatrutide 10mg - Save $30 (Best Value)',
+      short: '3x Retatrutide 10mg - Save $25 (Best Value)',
       long: `Bundle pack containing three (3) Retatrutide 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $30 compared to buying individually. Best value option.`,
       sale: true,
     }
@@ -1910,8 +1910,7 @@
     const showLowStock = ['retatrutide'].includes(p.slug);
     const showTrending = false; // Removed trending badges
     
-    // Random viewing count (2-8 people)
-    const viewingCount = Math.floor(Math.random() * 7) + 2;
+    // Viewing count removed
     
     return `
       <article class="card" data-slug="${escapeHtml(p.slug)}">
@@ -1929,7 +1928,7 @@
             <span style="color:var(--accent-2);font-weight:900">${money(p.price)}</span>
           </div>
           <div class="small">${escapeHtml(p.short || '')}</div>
-          <div class="viewing-count">${viewingCount} people viewing</div>
+          
           <div class="small" style="text-align:center;margin-top:10px;font-weight:900;color:${p.inStock ? 'var(--accent-2)' : 'var(--muted)'}">${escapeHtml(stockText)}</div>
           <div class="actions">
             <button class="btn small" data-add="${escapeHtml(p.slug)}">Add</button>
@@ -3235,8 +3234,8 @@
     if (cartSlugs.includes('retatrutide') && !cartSlugs.includes('reta-2pack') && !cartSlugs.includes('reta-3pack')) {
       const reta2 = PRODUCTS.find(p => p.slug === 'reta-2pack');
       const reta3 = PRODUCTS.find(p => p.slug === 'reta-3pack');
-      if (reta2) upsells.push({ product: reta2, reason: '💰 Save $40 with the 2-pack', replace: 'retatrutide' });
-      if (reta3) upsells.push({ product: reta3, reason: '🏆 Best value — save $60 with 3-pack', replace: 'retatrutide' });
+      if (reta2) upsells.push({ product: reta2, reason: '💰 Save $10 with the 2-pack', replace: 'retatrutide' });
+      if (reta3) upsells.push({ product: reta3, reason: '🏆 Best value — save $25 with 3-pack', replace: 'retatrutide' });
     }
 
     // If they have BPC-157, suggest GHK-Cu (common stack)
