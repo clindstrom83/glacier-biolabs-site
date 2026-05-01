@@ -1578,53 +1578,17 @@
 
   // Product checkout (Buy Now on product page)
   function startProductCheckout(product, qty = 1) {
-    // Apply discount if valid
-    let totalCents = product.price * qty;
-    if (discountState.valid && discountState.discountPercent > 0) {
-      totalCents = Math.round(totalCents * (1 - discountState.discountPercent / 100));
-    }
-
-    const items = [{
-      name: product.name,
-      slug: product.slug,
-      price: product.price,
-      quantity: qty
-    }];
-
-    trackPageView('/checkout', 'Checkout - ' + product.name);
-    openCheckoutModal(items, totalCents, `${product.name} — ${money(product.price)} × ${qty}`);
+    // Add to cart then go to checkout
+    addToCart(product.slug, qty);
+    renderCartBadge();
+    window.location.hash = '#/checkout';
   }
 
   // Cart checkout
   function startCartCheckout() {
     const cart = readCart();
     if (!cart || cart.length === 0) { showToast('Cart is empty', 'info'); return; }
-
-    const items = [];
-    let totalCents = 0;
-
-    for (const cartItem of cart) {
-      const p = PRODUCTS.find(x => x.slug === cartItem.slug);
-      if (!p) continue;
-      const qty = Number(cartItem.qty || 1);
-      items.push({
-        name: p.name,
-        slug: p.slug,
-        price: p.price,
-        quantity: qty
-      });
-      totalCents += p.price * qty;
-    }
-
-    if (items.length === 0) { showToast('No valid items in cart', 'error'); return; }
-
-    // Apply discount if valid
-    if (discountState.valid && discountState.discountPercent > 0) {
-      totalCents = Math.round(totalCents * (1 - discountState.discountPercent / 100));
-    }
-
-    trackPageView('/checkout', 'Checkout - Cart');
-    openCheckoutModal(items, totalCents, `Cart — ${items.length} item(s) — ${money(totalCents)}`);
+    window.location.hash = '#/checkout';
   }
 
   // Images + products config
@@ -2982,6 +2946,245 @@
     }
   };
 
+  function renderCheckoutPage(){
+    const cart = readCart();
+    if (!cart || cart.length === 0) {
+      window.location.hash = '#/cart';
+      return;
+    }
+
+    trackPageView('/checkout', 'Checkout');
+
+    // Build order summary
+    let subtotalCents = 0;
+    const itemRows = cart.map(item => {
+      const p = PRODUCTS.find(x => x.slug === item.slug);
+      if (!p) return '';
+      const lineTotal = p.price * (item.qty || 1);
+      subtotalCents += lineTotal;
+      return `
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
+          <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}" style="width:50px;height:50px;object-fit:contain;border-radius:8px;border:1px solid var(--line)" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+          <div style="flex:1">
+            <p style="margin:0;font-weight:700;font-size:14px">${escapeHtml(p.name)}</p>
+            <p style="margin:2px 0 0;color:var(--muted);font-size:13px">Qty: ${item.qty}</p>
+          </div>
+          <span style="font-weight:800;font-size:14px">${money(lineTotal)}</span>
+        </div>`;
+    }).join('');
+
+    const shipping = 600;
+    let discountCents = 0;
+    if (discountState.valid && discountState.discountPercent > 0) {
+      discountCents = Math.round(subtotalCents * discountState.discountPercent / 100);
+    }
+    const finalTotal = subtotalCents - discountCents + shipping;
+
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap" style="max-width:1000px;margin:0 auto">
+          <div style="margin-bottom:24px">
+            <a href="#/cart" style="color:var(--accent);font-weight:600;font-size:14px">← Back to Cart</a>
+          </div>
+          <h2 style="font-size:28px;font-weight:900;margin:0 0 24px">Secure Checkout</h2>
+          <div style="display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start">
+            
+            <!-- Left: Shipping Form -->
+            <div>
+              <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px">
+                <h3 style="margin:0 0 20px;font-size:18px;font-weight:800">Shipping Information</h3>
+                
+                <div style="margin-bottom:16px">
+                  <label style="display:block;font-weight:700;margin-bottom:6px;font-size:14px">Email <span style="color:#ef4444">*</span></label>
+                  <input type="email" id="co-email" placeholder="you@email.com" required style="width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;font-size:15px;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+                </div>
+
+                <div style="margin-bottom:16px">
+                  <label style="display:block;font-weight:700;margin-bottom:6px;font-size:14px">Full Name <span style="color:#ef4444">*</span></label>
+                  <input type="text" id="co-name" placeholder="First Last" required style="width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;font-size:15px;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+                </div>
+
+                <div style="margin-bottom:16px">
+                  <label style="display:block;font-weight:700;margin-bottom:6px;font-size:14px">Phone Number <span style="color:#ef4444">*</span></label>
+                  <input type="tel" id="co-phone" placeholder="(555) 123-4567" required style="width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;font-size:15px;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+                </div>
+
+                <div style="margin-bottom:16px">
+                  <label style="display:block;font-weight:700;margin-bottom:6px;font-size:14px">Shipping Address <span style="color:#ef4444">*</span></label>
+                  <input type="text" id="co-address" placeholder="123 Main St" required style="width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;font-size:15px;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+                </div>
+
+                <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:16px">
+                  <div>
+                    <label style="display:block;font-weight:700;margin-bottom:6px;font-size:14px">City <span style="color:#ef4444">*</span></label>
+                    <input type="text" id="co-city" placeholder="City" required style="width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;font-size:15px;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+                  </div>
+                  <div>
+                    <label style="display:block;font-weight:700;margin-bottom:6px;font-size:14px">State <span style="color:#ef4444">*</span></label>
+                    <input type="text" id="co-state" placeholder="NY" maxlength="2" required style="width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;font-size:15px;box-sizing:border-box;text-transform:uppercase;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+                  </div>
+                  <div>
+                    <label style="display:block;font-weight:700;margin-bottom:6px;font-size:14px">ZIP <span style="color:#ef4444">*</span></label>
+                    <input type="text" id="co-zip" placeholder="10001" required style="width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:10px;font-size:15px;box-sizing:border-box;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+                  </div>
+                </div>
+
+                <div id="co-error" style="display:none;padding:12px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;color:#dc2626;font-weight:600;font-size:14px;margin-bottom:16px"></div>
+
+                <button id="co-submit-btn" onclick="window.Glacier.submitCheckout()" style="width:100%;padding:18px;background:#16a34a;color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:18px;font-weight:900;letter-spacing:0.5px;transition:background 0.2s" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
+                  Proceed to Payment — ${money(finalTotal)}
+                </button>
+
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px">
+                  <span style="font-size:16px">🔒</span>
+                  <span style="color:var(--muted);font-size:13px">256-bit SSL encryption • Powered by Stripe</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div>
+              <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;position:sticky;top:100px">
+                <h3 style="margin:0 0 16px;font-size:18px;font-weight:800">Order Summary</h3>
+                ${itemRows}
+                
+                <div style="padding-top:16px">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:15px">
+                    <span>Subtotal</span><span style="font-weight:700">${money(subtotalCents)}</span>
+                  </div>
+                  ${discountCents > 0 ? `<div style="display:flex;justify-content:space-between;margin-bottom:8px;color:#16a34a;font-weight:700;font-size:15px">
+                    <span>Discount (${discountState.discountPercent}%)</span><span>-${money(discountCents)}</span>
+                  </div>` : ''}
+                  <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:15px;color:var(--muted)">
+                    <span>Shipping</span><span>$6.00</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:2px solid var(--line);font-size:20px;font-weight:900">
+                    <span>Total</span><span>${money(finalTotal)}</span>
+                  </div>
+                </div>
+
+                <div style="margin-top:20px;padding:16px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                    <span style="font-size:18px">✓</span>
+                    <span style="font-weight:700;color:#065f46;font-size:14px">Ships within 1-2 business days</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                    <span style="font-size:18px">✓</span>
+                    <span style="font-weight:700;color:#065f46;font-size:14px">Tracking provided via email</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:18px">✓</span>
+                    <span style="font-weight:700;color:#065f46;font-size:14px">Third-party tested with COA</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <style>
+        @media (max-width: 768px) {
+          .wrap [style*="grid-template-columns"] {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      </style>`;
+
+    // Track abandoned cart on email blur
+    const coEmail = document.getElementById('co-email');
+    if (coEmail) {
+      coEmail.addEventListener('blur', function() {
+        const email = this.value.trim();
+        if (email && email.includes('@')) {
+          const items = cart.map(item => {
+            const p = PRODUCTS.find(x => x.slug === item.slug);
+            return p ? { name: p.name, slug: p.slug, price: p.price, quantity: item.qty } : null;
+          }).filter(Boolean);
+          fetch('/.netlify/functions/track-cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, cartItems: items, totalCents: subtotalCents })
+          }).catch(function() {});
+          fetch('/.netlify/functions/save-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, source: 'checkout' })
+          }).catch(function() {});
+        }
+      });
+    }
+
+    // Checkout submit handler
+    if (!window.Glacier) window.Glacier = {};
+    window.Glacier.submitCheckout = async function() {
+      const email = (document.getElementById('co-email').value || '').trim();
+      const name = (document.getElementById('co-name').value || '').trim();
+      const phone = (document.getElementById('co-phone').value || '').trim();
+      const address = (document.getElementById('co-address').value || '').trim();
+      const city = (document.getElementById('co-city').value || '').trim();
+      const state = (document.getElementById('co-state').value || '').trim();
+      const zip = (document.getElementById('co-zip').value || '').trim();
+      const errorEl = document.getElementById('co-error');
+      const btn = document.getElementById('co-submit-btn');
+
+      if (!email || !name || !phone || !address || !city || !state || !zip) {
+        errorEl.textContent = 'Please fill out all fields.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Redirecting to payment…';
+      errorEl.style.display = 'none';
+
+      try {
+        const cartItems = readCart();
+        const items = cartItems.map(item => {
+          const p = PRODUCTS.find(x => x.slug === item.slug);
+          return p ? { name: p.name, slug: p.slug, price: p.price, quantity: item.qty } : null;
+        }).filter(Boolean);
+
+        const resp = await fetch('/.netlify/functions/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items,
+            buyerEmail: email,
+            buyerName: name,
+            buyerPhone: phone,
+            shippingAddress: {
+              firstName: name.split(' ')[0] || '',
+              lastName: name.split(' ').slice(1).join(' ') || '',
+              addressLine1: address,
+              city, state: state.toUpperCase(), postalCode: zip, country: 'US'
+            },
+            discountCode: discountState.valid ? discountState.code : '',
+            discountPercent: discountState.valid ? discountState.discountPercent : 0
+          })
+        });
+
+        const data = await resp.json();
+        if (!resp.ok || data.error) throw new Error(data.error || 'Checkout failed');
+
+        if (window.fbq) {
+          fbq('track', 'InitiateCheckout', {
+            value: (finalTotal / 100).toFixed(2),
+            currency: 'USD'
+          });
+        }
+
+        window.location.href = data.url;
+      } catch (err) {
+        console.error('Checkout error', err);
+        errorEl.textContent = err.message || 'Checkout failed. Please try again.';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Proceed to Payment — ' + money(finalTotal);
+      }
+    };
+  }
+
   function renderCartPage(){
     trackPageView('/cart', 'Shopping Cart');
     const cart = readCart();
@@ -3113,7 +3316,7 @@
             <span>Total</span><span>${money(finalTotal)}</span>
           </div>
         </div>
-        <button onclick="startCartCheckout()" style="width:100%;margin-top:16px;padding:18px;background:#16a34a;color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:18px;font-weight:900;letter-spacing:0.5px">Proceed to Checkout</button>
+        <button onclick="window.location.hash='#/checkout'" style="width:100%;margin-top:16px;padding:18px;background:#16a34a;color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:18px;font-weight:900;letter-spacing:0.5px">Proceed to Checkout</button>
         <p style="text-align:center;margin:10px 0 0;font-size:13px;color:var(--muted)">🔒 Secure checkout powered by Stripe</p>
         <a href="#/shop" style="display:block;text-align:center;margin-top:12px;color:var(--accent);font-weight:600;font-size:14px">← Continue Shopping</a>`;
     }
@@ -3731,6 +3934,10 @@ Submitted: ${new Date().toLocaleString()}
     }
     if (hash.startsWith('#/cart')) {
       renderCartPage();
+      return;
+    }
+    if (hash.startsWith('#/checkout')) {
+      renderCheckoutPage();
       return;
     }
       if (hash.startsWith('#/testing')) {
