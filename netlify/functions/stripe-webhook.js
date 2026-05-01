@@ -8,11 +8,11 @@ const MAILERSEND_API_KEY = process.env.MAILERSEND_API_KEY;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'orders@gblpeptides.com';
 const FROM_NAME = 'Glacier BioLabs';
 
-function httpsPost(hostname, path, headers, body) {
+function httpsRequest(hostname, path, method, headers, body) {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify(body);
     const req = https.request({
-      hostname, path, method: 'POST',
+      hostname, path, method,
       headers: { ...headers, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) }
     }, (res) => {
       let d = '';
@@ -23,6 +23,10 @@ function httpsPost(hostname, path, headers, body) {
     req.write(data);
     req.end();
   });
+}
+
+function httpsPost(hostname, path, headers, body) {
+  return httpsRequest(hostname, path, 'POST', headers, body);
 }
 
 async function notifyOwner(message) {
@@ -197,6 +201,22 @@ exports.handler = async (event) => {
         `Time: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })}\n\n` +
         `✅ Payment confirmed — ship this order!`
       );
+
+      // Mark abandoned cart as recovered
+      if (SUPABASE_SERVICE_KEY && customerEmail) {
+        try {
+          await httpsRequest(SUPABASE_URL.replace('https://', ''),
+            '/rest/v1/abandoned_carts?email=eq.' + encodeURIComponent(customerEmail),
+            'PATCH',
+            {
+              'apikey': SUPABASE_SERVICE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+              'Prefer': 'return=minimal'
+            },
+            { recovered: true }
+          );
+        } catch (e) { console.error('Cart recovery update error:', e); }
+      }
 
       // Send confirmation email
       await sendConfirmationEmail({

@@ -1461,6 +1461,32 @@
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
 
+    // Track abandoned cart when user enters email
+    const checkoutEmailEl = document.getElementById('checkout-email');
+    if (checkoutEmailEl && !checkoutEmailEl._cartTrackBound) {
+      checkoutEmailEl._cartTrackBound = true;
+      checkoutEmailEl.addEventListener('blur', function() {
+        const cartEmail = this.value.trim();
+        if (cartEmail && cartEmail.includes('@') && pendingCheckoutItems.length > 0) {
+          fetch('/.netlify/functions/track-cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: cartEmail,
+              cartItems: pendingCheckoutItems,
+              totalCents: pendingCheckoutTotal
+            })
+          }).catch(function() {}); // fire and forget
+          // Also save email to subscribers list
+          fetch('/.netlify/functions/save-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: cartEmail, source: 'checkout' })
+          }).catch(function() {});
+        }
+      });
+    }
+
     // Square card init disabled — manual order flow active
     if (errorEl) { errorEl.style.display = 'none'; }
   }
@@ -2308,16 +2334,21 @@
       if (!email) return;
       
       try {
-        const emails = JSON.parse(localStorage.getItem('gbl_emails') || '[]');
-        if (!emails.includes(email)) {
-          emails.push({email, date: new Date().toISOString()});
-          localStorage.setItem('gbl_emails', JSON.stringify(emails));
-        }
-        
+        const resp = await fetch('/.netlify/functions/save-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: 'footer-signup' })
+        });
+        if (!resp.ok) throw new Error('Failed');
         input.value = '';
         alert('✅ Thanks for subscribing! You will hear from us soon.');
       } catch (err) {
-        alert('Something went wrong. Please try again.');
+        // Fallback to localStorage if server fails
+        const emails = JSON.parse(localStorage.getItem('gbl_emails') || '[]');
+        emails.push({email, date: new Date().toISOString()});
+        localStorage.setItem('gbl_emails', JSON.stringify(emails));
+        input.value = '';
+        alert('✅ Thanks for subscribing! You will hear from us soon.');
       }
     });
   }
@@ -3750,16 +3781,20 @@ Submitted: ${new Date().toLocaleString()}
           if (!email) return;
           
           try {
+            await fetch('/.netlify/functions/save-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, source: 'exit-intent' })
+            });
+          } catch (saveErr) {
+            // Fallback to localStorage
             const emails = JSON.parse(localStorage.getItem('gbl_emails') || '[]');
             emails.push({email, date: new Date().toISOString(), source: 'exit-intent'});
             localStorage.setItem('gbl_emails', JSON.stringify(emails));
-            
-            hideExitPopup();
-            alert('🎉 Success! Use code FIRST10 for 10% off your first order!');
-            window.location.hash = '#/shop';
-          } catch (err) {
-            alert('Something went wrong. Please try again.');
           }
+          hideExitPopup();
+          alert('🎉 Success! Use code FIRST10 for 10% off your first order!');
+          window.location.hash = '#/shop';
         });
       }
     }, 500);

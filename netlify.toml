@@ -3,3 +3,7 @@
 
 [functions]
   directory = "netlify/functions"
+
+# Run abandoned cart email recovery every hour
+[functions."send-abandoned-cart-emails"]
+  schedule = "@hourly"
