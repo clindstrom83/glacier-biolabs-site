@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Bundles — Glacier BioLabs</title>
+  <meta name="description" content="Premium peptide bundles with exclusive savings. Free shipping on all bundles.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --line: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #06b6d4;
+      --accent-2: #8b5cf6;
+      --green: #10b981;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .back-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back-link:hover { opacity: 0.8; }
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 900;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 20px;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .bundles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      padding: 40px 20px;
+    }
+    .bundle-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .bundle-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .bundle-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 10;
+    }
+    .bundle-header {
+      padding: 32px 24px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .bundle-title {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .bundle-desc {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .bundle-items {
+      padding: 24px;
+    }
+    .bundle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .bundle-item:last-child { border-bottom: none; }
+    .item-name {
+      font-size: 15px;
+      color: var(--text);
+    }
+    .item-price {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .bundle-pricing {
+      padding: 24px;
+      background: rgba(6, 182, 212, 0.05);
+      border-top: 1px solid var(--line);
+    }
+    .regular-price {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .bundle-price {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .price-label {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .price-value {
+      font-size: 32px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .savings {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .free-shipping {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .add-bundle-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .add-bundle-btn:hover { opacity: 0.9; }
+    .add-bundle-btn:active { transform: scale(0.98); }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      .bundles-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">Glacier BioLabs</div>
+      <a href="/" class="back-link">← Back to Shop</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>Research Bundles</h1>
+    <p>Premium peptide combinations designed for serious research. All bundles include free shipping.</p>
+  </div>
+
+  <div class="container">
+    <div class="bundles-grid">
+      
+      <!-- Bundle 1: Complete Starter Pack -->
+      <div class="bundle-card">
+        <div class="bundle-badge">BEGINNER FRIENDLY</div>
+        <div class="bundle-header">
+          <div class="bundle-title">Complete Starter Pack</div>
+          <div class="bundle-desc">Everything you need to get started</div>
+        </div>
+        <div class="bundle-items">
+          <div class="bundle-item">
+            <span class="item-name">Retatrutide 10mg</span>
+            <span class="item-price">$75.00</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">GHK-Cu 50mg</span>
+            <span class="item-price">$55.00</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">Bacteriostatic Water 10mL</span>
+            <span class="item-price">$10.00</span>
+          </div>
+        </div>
+        <div class="bundle-pricing">
+          <div class="regular-price">
+            <span>Regular:</span>
+            <span>$140.00</span>
+          </div>
+          <div class="bundle-price">
+            <span class="price-label">Bundle:</span>
+            <span class="price-value">$129.99</span>
+          </div>
+          <div class="savings">💰 Save $10.01 (7%)</div>
+          <div class="free-shipping">✅ FREE Shipping</div>
+          <button class="add-bundle-btn" onclick="addBundle('starter')">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Bundle 2: Weight Loss Bundle -->
+      <div class="bundle-card">
+        <div class="bundle-badge">MOST POPULAR</div>
+        <div class="bundle-header">
+          <div class="bundle-title">Weight Loss Bundle</div>
+          <div class="bundle-desc">Serious results, serious value</div>
+        </div>
+        <div class="bundle-items">
+          <div class="bundle-item">
+            <span class="item-name">2x Retatrutide 10mg</span>
+            <span class="item-price">$75.00 each</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">BPC-157 10mg</span>
+            <span class="item-price">$65.00</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">2x Bacteriostatic Water 10mL</span>
+            <span class="item-price">$10.00 each</span>
+          </div>
+        </div>
+        <div class="bundle-pricing">
+          <div class="regular-price">
+            <span>Regular:</span>
+            <span>$245.00</span>
+          </div>
+          <div class="bundle-price">
+            <span class="price-label">Bundle:</span>
+            <span class="price-value">$209.99</span>
+          </div>
+          <div class="savings">💰 Save $35.01 (14%)</div>
+          <div class="free-shipping">✅ FREE Shipping</div>
+          <button class="add-bundle-btn" onclick="addBundle('weightloss')">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Bundle 3: Recovery Stack -->
+      <div class="bundle-card">
+        <div class="bundle-badge">HEALING FOCUSED</div>
+        <div class="bundle-header">
+          <div class="bundle-title">Recovery Stack</div>
+          <div class="bundle-desc">Focused on healing & tissue repair</div>
+        </div>
+        <div class="bundle-items">
+          <div class="bundle-item">
+            <span class="item-name">BPC-157 10mg</span>
+            <span class="item-price">$65.00</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">GHK-Cu 50mg</span>
+            <span class="item-price">$55.00</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">MOTS-c 10mg</span>
+            <span class="item-price">$79.99</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">Bacteriostatic Water 10mL</span>
+            <span class="item-price">$10.00</span>
+          </div>
+        </div>
+        <div class="bundle-pricing">
+          <div class="regular-price">
+            <span>Regular:</span>
+            <span>$209.99</span>
+          </div>
+          <div class="bundle-price">
+            <span class="price-label">Bundle:</span>
+            <span class="price-value">$139.99</span>
+          </div>
+          <div class="savings">💰 Save $70.00 (33%)</div>
+          <div class="free-shipping">✅ FREE Shipping</div>
+          <button class="add-bundle-btn" onclick="addBundle('recovery')">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Bundle 4: Complete Collection -->
+      <div class="bundle-card">
+        <div class="bundle-badge">BEST VALUE</div>
+        <div class="bundle-header">
+          <div class="bundle-title">Complete Collection</div>
+          <div class="bundle-desc">The ultimate research kit</div>
+        </div>
+        <div class="bundle-items">
+          <div class="bundle-item">
+            <span class="item-name">2x Retatrutide 10mg</span>
+            <span class="item-price">$75.00 each</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">BPC-157 10mg</span>
+            <span class="item-price">$65.00</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">GHK-Cu 50mg</span>
+            <span class="item-price">$55.00</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">MOTS-c 10mg</span>
+            <span class="item-price">$79.99</span>
+          </div>
+          <div class="bundle-item">
+            <span class="item-name">2x Bacteriostatic Water 10mL</span>
+            <span class="item-price">$10.00 each</span>
+          </div>
+        </div>
+        <div class="bundle-pricing">
+          <div class="regular-price">
+            <span>Regular:</span>
+            <span>$369.99</span>
+          </div>
+          <div class="bundle-price">
+            <span class="price-label">Bundle:</span>
+            <span class="price-value">$299.99</span>
+          </div>
+          <div class="savings">💰 Save $70.00 (19%)</div>
+          <div class="free-shipping">✅ FREE Shipping</div>
+          <button class="add-bundle-btn" onclick="addBundle('complete')">Add to Cart</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Redirect to main site with bundle in cart
+    function addBundle(bundleId) {
+      const bundles = {
+        starter: [
+          { slug: 'retatrutide', qty: 1 },
+          { slug: 'ghk-cu', qty: 1 },
+          { slug: 'water', qty: 1 }
+        ],
+        weightloss: [
+          { slug: 'retatrutide', qty: 2 },
+          { slug: 'bpc-157', qty: 1 },
+          { slug: 'water', qty: 2 }
+        ],
+        recovery: [
+          { slug: 'bpc-157', qty: 1 },
+          { slug: 'ghk-cu', qty: 1 },
+          { slug: 'mots-c', qty: 1 },
+          { slug: 'water', qty: 1 }
+        ],
+        complete: [
+          { slug: 'retatrutide', qty: 2 },
+          { slug: 'bpc-157', qty: 1 },
+          { slug: 'ghk-cu', qty: 1 },
+          { slug: 'mots-c', qty: 1 },
+          { slug: 'water', qty: 2 }
+        ]
+      };
+
+      const items = bundles[bundleId];
+      if (!items) return;
+
+      // Save to localStorage
+      localStorage.setItem('cart', JSON.stringify(items));
+      
+      // Redirect to main site cart
+      window.location.href = '/#/cart';
+    }
+  </script>
+</body>
+</html>
