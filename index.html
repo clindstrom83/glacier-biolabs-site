@@ -3201,20 +3201,22 @@
         const lineTotal = p.price * (item.qty || 1);
         subtotalCents += lineTotal;
         itemsHTML += `
-          <div style="display:flex;align-items:center;gap:16px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:12px">
-            <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}" style="width:80px;height:80px;object-fit:contain;border:1px solid var(--line);border-radius:10px" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
-            <div style="flex:1">
-              <h4 style="margin:0 0 4px;font-size:16px;font-weight:800">${escapeHtml(p.name)}</h4>
-              <p style="margin:0;color:var(--muted);font-size:14px">${money(p.price)} each</p>
+          <div class="cart-item-row" style="padding:16px;background:var(--card);border:1px solid var(--line);border-radius:12px">
+            <div style="display:flex;gap:12px;align-items:center">
+              <img src="${escapeHtml(imgPath(p.image))}" alt="${escapeHtml(p.name)}" style="width:64px;height:64px;object-fit:contain;border:1px solid var(--line);border-radius:10px;flex-shrink:0" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+              <div style="flex:1;min-width:0">
+                <h4 style="margin:0 0 4px;font-size:15px;font-weight:800">${escapeHtml(p.name)}</h4>
+                <p style="margin:0;font-weight:900;font-size:16px">${money(lineTotal)}</p>
+                <p style="margin:2px 0 0;color:var(--muted);font-size:13px">${money(p.price)} each</p>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px">
-              <button onclick="window.Glacier.cartQty('${escapeHtml(item.slug)}',-1)" style="width:36px;height:36px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer;font-size:18px;font-weight:700">−</button>
-              <span style="min-width:28px;text-align:center;font-weight:800;font-size:16px">${item.qty}</span>
-              <button onclick="window.Glacier.cartQty('${escapeHtml(item.slug)}',1)" style="width:36px;height:36px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer;font-size:18px;font-weight:700">＋</button>
-            </div>
-            <div style="text-align:right;min-width:80px">
-              <p style="margin:0;font-weight:900;font-size:16px">${money(lineTotal)}</p>
-              <button onclick="window.Glacier.cartRemove('${escapeHtml(item.slug)}')" style="margin-top:6px;border:none;background:none;color:#ef4444;cursor:pointer;font-size:13px;font-weight:600">Remove</button>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+              <div style="display:flex;align-items:center;gap:8px">
+                <button onclick="window.Glacier.cartQty('${escapeHtml(item.slug)}',-1)" style="width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">−</button>
+                <span style="min-width:24px;text-align:center;font-weight:800;font-size:15px">${item.qty}</span>
+                <button onclick="window.Glacier.cartQty('${escapeHtml(item.slug)}',1)" style="width:34px;height:34px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center">＋</button>
+              </div>
+              <button onclick="window.Glacier.cartRemove('${escapeHtml(item.slug)}')" style="border:none;background:none;color:#ef4444;cursor:pointer;font-size:13px;font-weight:600;padding:4px 8px">Remove</button>
             </div>
           </div>`;
       }
@@ -3263,15 +3265,17 @@
           <h3 style="font-size:20px;font-weight:900;margin:0 0 16px">Frequently Bought Together</h3>
           <div style="display:flex;flex-direction:column;gap:12px">
             ${upsells.map(u => `
-              <div style="display:flex;align-items:center;gap:16px;padding:16px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:2px solid #86efac;border-radius:12px">
-                <img src="${escapeHtml(imgPath(u.product.image))}" alt="${escapeHtml(u.product.name)}" style="width:64px;height:64px;object-fit:contain;border-radius:8px" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
-                <div style="flex:1">
-                  <h4 style="margin:0 0 2px;font-size:15px;font-weight:800">${escapeHtml(u.product.name)}</h4>
-                  <p style="margin:0;color:#065f46;font-size:13px;font-weight:600">${u.reason}</p>
+              <div style="padding:14px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:2px solid #86efac;border-radius:12px">
+                <div style="display:flex;gap:12px;align-items:center">
+                  <img src="${escapeHtml(imgPath(u.product.image))}" alt="${escapeHtml(u.product.name)}" style="width:52px;height:52px;object-fit:contain;border-radius:8px;flex-shrink:0" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
+                  <div style="flex:1;min-width:0">
+                    <h4 style="margin:0 0 2px;font-size:14px;font-weight:800">${escapeHtml(u.product.name)}</h4>
+                    <p style="margin:0;color:#065f46;font-size:12px;font-weight:600">${u.reason}</p>
+                  </div>
                 </div>
-                <div style="text-align:right">
-                  <p style="margin:0 0 6px;font-weight:900;font-size:16px">${money(u.product.price)}</p>
-                  <button onclick="window.Glacier.upsellAdd('${escapeHtml(u.product.slug)}','${u.replace || ''}')" style="padding:8px 16px;background:#16a34a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px">Add to Cart</button>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid #86efac">
+                  <span style="font-weight:900;font-size:16px">${money(u.product.price)}</span>
+                  <button onclick="window.Glacier.upsellAdd('${escapeHtml(u.product.slug)}','${u.replace || ''}')" style="padding:10px 20px;background:#16a34a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px">Add to Cart</button>
                 </div>
               </div>
             `).join('')}
