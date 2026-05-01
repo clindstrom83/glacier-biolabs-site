@@ -169,8 +169,8 @@ exports.handler = async () => {
       const cartItems = cart.cart_items || [];
       const totalCents = cart.total_cents || 0;
 
-      // Email 1: 30 minutes (reminder, no code)
-      if (hoursSince >= 0.5 && hoursSince < 1.5 && emailsSent === 0) {
+      // Email 1: 30 minutes+ (reminder, no code)
+      if (hoursSince >= 0.5 && emailsSent === 0) {
         await sendEmail({
           to: cart.email,
           subject: 'Your cart is waiting for you...',
@@ -187,8 +187,8 @@ exports.handler = async () => {
         await updateCartEmailsSent(cart.email, 1);
       }
 
-      // Email 2: 2 hours (10% off)
-      if (hoursSince >= 2 && hoursSince < 3 && emailsSent === 1) {
+      // Email 2: 2 hours+ (10% off)
+      if (hoursSince >= 2 && emailsSent === 1) {
         await sendEmail({
           to: cart.email,
           subject: "Still thinking it over? Here's 10% off",
@@ -208,8 +208,8 @@ exports.handler = async () => {
         await updateCartEmailsSent(cart.email, 2);
       }
 
-      // Email 3: 24 hours (20% off - final)
-      if (hoursSince >= 24 && hoursSince < 26 && emailsSent === 2) {
+      // Email 3: 24 hours+ (20% off - final)
+      if (hoursSince >= 24 && emailsSent === 2) {
         await sendEmail({
           to: cart.email,
           subject: 'Final offer: 20% off — your cart expires soon',
