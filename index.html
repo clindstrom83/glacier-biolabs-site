@@ -3151,6 +3151,21 @@
         errorEl.style.display = 'block';
         return;
       }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errorEl.textContent = 'Please enter a valid email address.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      if (state.length !== 2) {
+        errorEl.textContent = 'Please enter a valid 2-letter state code (e.g. NY, CA).';
+        errorEl.style.display = 'block';
+        return;
+      }
+      if (!/^\d{5}(-\d{4})?$/.test(zip)) {
+        errorEl.textContent = 'Please enter a valid ZIP code.';
+        errorEl.style.display = 'block';
+        return;
+      }
 
       btn.disabled = true;
       btn.textContent = 'Redirecting to payment…';
