@@ -2981,7 +2981,7 @@
     }).join('');
 
     const shipping = subtotalCents >= 14999 ? 0 : 600;
-      const shippingLabel = shipping === 0 ? '<span style="color:#16a34a;font-weight:700">FREE</span>' : '$' + '6.00';
+      const shippingLabel = shipping === 0 ? 'FREE ✓' : '$' + '6.00';
     let discountCents = 0;
     if (discountState.valid && discountState.discountPercent > 0) {
       discountCents = Math.round(subtotalCents * discountState.discountPercent / 100);
@@ -3327,7 +3327,7 @@
     let totalHTML = '';
     if (!isEmpty) {
       const shipping = subtotalCents >= 14999 ? 0 : 600;
-      const shippingLabel = shipping === 0 ? '<span style="color:#16a34a;font-weight:700">FREE</span>' : '$' + '6.00';
+      const shippingLabel = shipping === 0 ? 'FREE ✓' : '$' + '6.00';
       let discountCents = 0;
       if (discountState.valid && discountState.discountPercent > 0) {
         discountCents = Math.round(subtotalCents * discountState.discountPercent / 100);
@@ -4187,7 +4187,7 @@ Submitted: ${new Date().toLocaleString()}
         body: JSON.stringify({ name, email, message })
       });
       if (!resp.ok) throw new Error('Failed');
-      status.textContent = '✓ Message sent! We\\'ll get back to you within 1-2 business days.';
+      status.textContent = '✓ Message sent! We will get back to you within 1-2 business days.';
       status.style.display = 'block';
       status.style.background = '#f0fdf4';
       status.style.color = '#16a34a';
