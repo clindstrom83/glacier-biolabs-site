@@ -3099,12 +3099,14 @@
         }
       </style>`;
 
-    // Track abandoned cart on email blur
+    // Track abandoned cart on email blur + input (mobile autofill often skips blur)
     const coEmail = document.getElementById('co-email');
     if (coEmail) {
-      coEmail.addEventListener('blur', function() {
-        const email = this.value.trim();
-        if (email && email.includes('@')) {
+      let cartTracked = false;
+      function trackCartEmail() {
+        const email = coEmail.value.trim();
+        if (email && email.includes('@') && !cartTracked) {
+          cartTracked = true;
           const items = cart.map(item => {
             const p = PRODUCTS.find(x => x.slug === item.slug);
             return p ? { name: p.name, slug: p.slug, price: p.price, quantity: item.qty } : null;
@@ -3120,6 +3122,14 @@
             body: JSON.stringify({ email, source: 'checkout' })
           }).catch(function() {});
         }
+      }
+      coEmail.addEventListener('blur', trackCartEmail);
+      coEmail.addEventListener('change', trackCartEmail);
+      // Debounced input check for autofill
+      let inputTimer;
+      coEmail.addEventListener('input', function() {
+        clearTimeout(inputTimer);
+        inputTimer = setTimeout(trackCartEmail, 1500);
       });
     }
 
