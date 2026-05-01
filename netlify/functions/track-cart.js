@@ -44,25 +44,60 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Missing required fields' }) };
     }
 
-    // Upsert abandoned cart (update if exists, insert if new)
-    const result = await httpsRequest(
+    // Check if cart already exists for this email
+    const existing = await httpsRequest(
       SUPABASE_URL.replace('https://', ''),
-      '/rest/v1/abandoned_carts',
-      'POST',
+      '/rest/v1/abandoned_carts?email=eq.' + encodeURIComponent(email) + '&select=id',
+      'GET',
       {
         'apikey': SUPABASE_SERVICE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
       },
-      {
-        email,
-        cart_items: cartItems,
-        total_cents: totalCents,
-        last_updated: new Date().toISOString(),
-        emails_sent: 0,
-        recovered: false
-      }
+      null
     );
+
+    let result;
+    const existingData = existing.body ? JSON.parse(existing.body) : [];
+
+    if (Array.isArray(existingData) && existingData.length > 0) {
+      // Update existing cart (don't reset emails_sent)
+      result = await httpsRequest(
+        SUPABASE_URL.replace('https://', ''),
+        '/rest/v1/abandoned_carts?email=eq.' + encodeURIComponent(email),
+        'PATCH',
+        {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        {
+          cart_items: cartItems,
+          total_cents: totalCents,
+          last_updated: new Date().toISOString(),
+          recovered: false
+        }
+      );
+    } else {
+      // Insert new cart
+      result = await httpsRequest(
+        SUPABASE_URL.replace('https://', ''),
+        '/rest/v1/abandoned_carts',
+        'POST',
+        {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        {
+          email,
+          cart_items: cartItems,
+          total_cents: totalCents,
+          last_updated: new Date().toISOString(),
+          emails_sent: 0,
+          recovered: false
+        }
+      );
+    }
 
     return {
       statusCode: 200, headers,
