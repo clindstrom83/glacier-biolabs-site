@@ -3774,7 +3774,7 @@ Submitted: ${new Date().toLocaleString()}
         });
       }
       if (exitEmailForm) {
-        exitEmailForm.addEventListener('submit', (e) => {
+        exitEmailForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const input = document.getElementById('exit-email-input');
           const email = input.value.trim();
