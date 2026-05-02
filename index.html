@@ -271,7 +271,7 @@
         radial-gradient(circle at 30% 50%, rgba(79, 172, 254, 0.15), transparent 60%),
         radial-gradient(circle at 70% 50%, rgba(208,53,44, 0.1), transparent 50%),
         linear-gradient(180deg, #000000 0%, #0a0a14 100%);
-      min-height:580px;
+      min-height:380px;
       display:flex;
       align-items:center;
     }
@@ -298,15 +298,45 @@
     .hero h1{
       margin:0;
       color:#fff;
-      font-size:42px;
+      font-size:36px;
       letter-spacing:.4px;
+      line-height:1.2;
     }
     .hero p{
-      margin:10px 0 0;
+      margin:12px 0 24px;
       color:rgba(255,255,255,.88);
       font-size:16px;
       max-width: 56ch;
-      line-height:1.45;
+      line-height:1.5;
+    }
+    .hero-ctas{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .hero-ctas .btn{
+      padding:14px 28px;
+      font-size:15px;
+      font-weight:700;
+      border-radius:8px;
+      text-decoration:none;
+      display:inline-block;
+      transition:all 0.2s;
+    }
+    .hero-ctas .btn.primary{
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      color:#fff;
+      border:none;
+    }
+    .hero-ctas .btn.secondary{
+      background:rgba(255,255,255,0.1);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.2);
+    }
+    .hero-ctas .btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(0,0,0,0.3);
     }
     .hero .kicker{
       display:inline-flex;
@@ -776,10 +806,10 @@
     @media (max-width: 430px){
       .header{gap:10px}
       .brand-text strong{font-size:14px}
-      .hero{min-height:400px !important}
-      .hero h1{font-size:24px !important; line-height: 1.2 !important; margin-bottom: 8px !important}
-      .hero p{font-size:14px !important; line-height:1.5 !important}
-      .hero .wrap{padding:32px 16px !important; gap:16px !important}
+      .hero h1{font-size:22px !important; line-height: 1.25 !important; margin-bottom: 12px !important}
+      .hero p{font-size:14px !important; line-height:1.5 !important; margin-bottom: 20px !important}
+      section{padding:32px 16px !important}
+      .hero-ctas .btn, .btn{padding:12px 24px !important; font-size:14px !important}
       .grid{gap:14px}
       .card img{height:180px}
       .card{padding:14px}
@@ -2191,17 +2221,17 @@
   </div>
 
   <!-- HERO SECTION -->
-  <section style="background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:80px 20px;text-align:center;color:#fff">
-    <div class="wrap" style="max-width:1000px">
-      <h1 style="font-size:48px;font-weight:900;margin:0 0 20px;line-height:1.2">
-        Lab-Tested Research Compounds<br>+ Fast US Shipping + Verified COAs
+  <section style="background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);padding:50px 20px 40px;text-align:center;color:#fff">
+    <div class="wrap" style="max-width:900px">
+      <h1 style="font-size:36px;font-weight:900;margin:0 0 16px;line-height:1.15">
+        Lab-Tested Research Compounds<br>Fast US Shipping • Verified COAs
       </h1>
-      <p style="font-size:18px;color:#cbd5e1;margin:0 0 40px;max-width:700px;margin-left:auto;margin-right:auto">
-        Third-party tested research compounds with batch documentation. Fast, discreet U.S. shipping and support that actually responds.
+      <p style="font-size:16px;color:#cbd5e1;margin:0 0 28px;max-width:650px;margin-left:auto;margin-right:auto;line-height:1.5">
+        Third-party tested peptides with batch documentation. Fast, discreet U.S. shipping.
       </p>
-      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:50px;flex-wrap:wrap">
-        <a href="#/shop" class="btn primary" style="font-size:18px;padding:16px 40px">Shop Best Sellers</a>
-        <a href="#/testing" class="btn" style="font-size:18px;padding:16px 40px;background:#475569;border:none">🧪 View COAs</a>
+      <div style="display:flex;gap:12px;justify-content:center;margin-bottom:40px;flex-wrap:wrap">
+        <a href="#/shop" class="btn primary" style="font-size:16px;padding:14px 32px;font-weight:700;border-radius:8px">Shop Best Sellers</a>
+        <a href="/bundles.html" class="btn" style="font-size:16px;padding:14px 32px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);font-weight:700;border-radius:8px">View Bundles</a>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:900px;margin:0 auto">
         <div style="padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;backdrop-filter:blur(10px)">
