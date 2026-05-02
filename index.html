@@ -4422,10 +4422,13 @@ Submitted: ${new Date().toLocaleString()}
 
   // Apply discount code
   document.addEventListener('click', async (e) => {
+    console.log('Click event:', e.target.id);
     if (e.target.id !== 'apply-discount-btn') return;
     
+    console.log('Discount button clicked!');
     const input = document.getElementById('discount-code-input');
     const messageEl = document.getElementById('discount-message');
+    console.log('Input:', input, 'MessageEl:', messageEl);
     if (!input || !messageEl) return;
     
     const code = (input.value || '').trim();
