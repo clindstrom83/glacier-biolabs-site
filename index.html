@@ -4424,48 +4424,48 @@ Submitted: ${new Date().toLocaleString()}
   const applyBtn = document.getElementById('apply-discount-btn');
   if (applyBtn) {
     applyBtn.addEventListener('click', async () => {
-    const input = document.getElementById('discount-code-input');
-    const messageEl = document.getElementById('discount-message');
-    const code = input.value.trim();
+      const input = document.getElementById('discount-code-input');
+      const messageEl = document.getElementById('discount-message');
+      const code = input.value.trim();
 
-    if (!code) {
-      messageEl.style.color = '#dc2626';
-      messageEl.textContent = 'Please enter a discount code';
-      return;
-    }
+      if (!code) {
+        messageEl.style.color = '#dc2626';
+        messageEl.textContent = 'Please enter a discount code';
+        return;
+      }
 
-    // Calculate cart total
-    const cart = readCart();
-    const totalCents = cart.reduce((sum, item) => {
-      const p = PRODUCTS.find(x => x.slug === item.slug);
-      return sum + (p ? p.price * (item.qty || 0) : 0);
-    }, 0);
-    const totalDollars = totalCents / 100;
+      // Calculate cart total
+      const cart = readCart();
+      const totalCents = cart.reduce((sum, item) => {
+        const p = PRODUCTS.find(x => x.slug === item.slug);
+        return sum + (p ? p.price * (item.qty || 0) : 0);
+      }, 0);
+      const totalDollars = totalCents / 100;
 
-    messageEl.style.color = '#64748b';
-    messageEl.textContent = 'Validating...';
+      messageEl.style.color = '#64748b';
+      messageEl.textContent = 'Validating...';
 
-    const result = await validateDiscountCode(code, totalDollars);
+      const result = await validateDiscountCode(code, totalDollars);
 
-    if (result.valid) {
-      discountState.code = result.code;
-      discountState.valid = true;
-      discountState.discountPercent = result.discountPercent;
-      discountState.discountAmount = parseFloat(result.discountAmount);
-      
-      messageEl.style.color = '#16a34a';
-      messageEl.textContent = `✓ ${result.message} applied!`;
-      
-      renderCartDrawer();
-    } else {
-      messageEl.style.color = '#dc2626';
-      messageEl.textContent = result.message || 'Invalid code';
-      
-      discountState.code = '';
-      discountState.valid = false;
-      discountState.discountPercent = 0;
-      discountState.discountAmount = 0;
-    }
+      if (result.valid) {
+        discountState.code = result.code;
+        discountState.valid = true;
+        discountState.discountPercent = result.discountPercent;
+        discountState.discountAmount = parseFloat(result.discountAmount);
+        
+        messageEl.style.color = '#16a34a';
+        messageEl.textContent = `✓ ${result.message} applied!`;
+        
+        renderCartDrawer();
+      } else {
+        messageEl.style.color = '#dc2626';
+        messageEl.textContent = result.message || 'Invalid code';
+        
+        discountState.code = '';
+        discountState.valid = false;
+        discountState.discountPercent = 0;
+        discountState.discountAmount = 0;
+      }
     });
   }
 
