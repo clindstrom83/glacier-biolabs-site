@@ -1166,7 +1166,7 @@
 
       <div class="header-actions">
         <a class="pill" href="#/shop" title="Browse products" style="font-weight:700;font-size:14px">Shop</a>
-        <a class="pill" href="/bundles.html" title="View bundles" style="font-weight:700;font-size:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:none">Bundles</a>
+        <a class="pill" href="#/bundles" title="View bundles" style="font-weight:700;font-size:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:none">Bundles</a>
         <button type="button" id="cart-toggle" class="cart-pill" aria-label="Open cart" style="font-size:14px">
           Cart <span id="cart-count" style="background:var(--accent);color:#fff;padding:4px 8px;border-radius:999px;font-weight:900;margin-left:6px">0</span>
         </button>
@@ -2231,7 +2231,7 @@
       </p>
       <div style="display:flex;gap:12px;justify-content:center;margin-bottom:40px;flex-wrap:wrap">
         <a href="#/shop" class="btn primary" style="font-size:16px;padding:14px 32px;font-weight:700;border-radius:8px">Shop Best Sellers</a>
-        <a href="/bundles.html" class="btn" style="font-size:16px;padding:14px 32px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);font-weight:700;border-radius:8px">View Bundles</a>
+        <a href="#/bundles" class="btn" style="font-size:16px;padding:14px 32px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);font-weight:700;border-radius:8px">View Bundles</a>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;max-width:900px;margin:0 auto">
         <div style="padding:20px;background:rgba(255,255,255,0.1);border-radius:12px;backdrop-filter:blur(10px)">
@@ -2602,6 +2602,162 @@
     </section>
   `;
 }
+
+  function renderBundles(){
+    app.innerHTML = `
+      <section class="section">
+        <div class="wrap">
+          <h2 style="text-align:center;margin-bottom:12px">Research Bundles</h2>
+          <p class="subhead" style="text-align:center;max-width:700px;margin:0 auto 40px">
+            Premium peptide combinations designed for serious research. All bundles include FREE shipping.
+          </p>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;margin-bottom:40px">
+            
+            <!-- Bundle 1: Complete Starter Pack -->
+            <div class="card" style="padding:24px">
+              <div style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:16px">BEGINNER FRIENDLY</div>
+              <h3 style="font-size:22px;font-weight:900;margin:0 0 8px">Complete Starter Pack</h3>
+              <p style="color:var(--muted);font-size:14px;margin:0 0 20px">Everything you need to get started</p>
+              
+              <div style="border-top:1px solid var(--line);padding-top:16px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>Retatrutide 10mg</span><span style="color:var(--muted)">$75.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>GHK-Cu 50mg</span><span style="color:var(--muted)">$55.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:12px">
+                  <span>Bacteriostatic Water 10mL</span><span style="color:var(--muted)">$10.00</span>
+                </div>
+              </div>
+
+              <div style="background:rgba(6,182,212,0.05);padding:16px;border-radius:8px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:4px">
+                  <span>Regular:</span><span>$140.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                  <span style="font-weight:700">Bundle:</span>
+                  <span style="font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">$129.99</span>
+                </div>
+                <div style="background:var(--green);color:#fff;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700;display:inline-block;margin-bottom:8px">💰 Save $10.01 (7%)</div>
+                <div style="color:var(--green);font-size:13px;font-weight:600">✅ FREE Shipping</div>
+              </div>
+              <button onclick="window.Glacier.addBundleToCart('starter')" class="btn primary" style="width:100%;padding:14px;font-size:15px">Add to Cart</button>
+            </div>
+
+            <!-- Bundle 2: Weight Loss Bundle -->
+            <div class="card" style="padding:24px">
+              <div style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:16px">MOST POPULAR</div>
+              <h3 style="font-size:22px;font-weight:900;margin:0 0 8px">Weight Loss Bundle</h3>
+              <p style="color:var(--muted);font-size:14px;margin:0 0 20px">Serious results, serious value</p>
+              
+              <div style="border-top:1px solid var(--line);padding-top:16px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>2x Retatrutide 10mg</span><span style="color:var(--muted)">$75 each</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>BPC-157 10mg</span><span style="color:var(--muted)">$65.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:12px">
+                  <span>2x Bacteriostatic Water 10mL</span><span style="color:var(--muted)">$10 each</span>
+                </div>
+              </div>
+
+              <div style="background:rgba(6,182,212,0.05);padding:16px;border-radius:8px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:4px">
+                  <span>Regular:</span><span>$245.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                  <span style="font-weight:700">Bundle:</span>
+                  <span style="font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">$209.99</span>
+                </div>
+                <div style="background:var(--green);color:#fff;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700;display:inline-block;margin-bottom:8px">💰 Save $35.01 (14%)</div>
+                <div style="color:var(--green);font-size:13px;font-weight:600">✅ FREE Shipping</div>
+              </div>
+              <button onclick="window.Glacier.addBundleToCart('weightloss')" class="btn primary" style="width:100%;padding:14px;font-size:15px">Add to Cart</button>
+            </div>
+
+            <!-- Bundle 3: Recovery Stack -->
+            <div class="card" style="padding:24px">
+              <div style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:16px">HEALING FOCUSED</div>
+              <h3 style="font-size:22px;font-weight:900;margin:0 0 8px">Recovery Stack</h3>
+              <p style="color:var(--muted);font-size:14px;margin:0 0 20px">Focused on healing & tissue repair</p>
+              
+              <div style="border-top:1px solid var(--line);padding-top:16px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>BPC-157 10mg</span><span style="color:var(--muted)">$65.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>GHK-Cu 50mg</span><span style="color:var(--muted)">$55.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>MOTS-c 10mg</span><span style="color:var(--muted)">$79.99</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:12px">
+                  <span>Bacteriostatic Water 10mL</span><span style="color:var(--muted)">$10.00</span>
+                </div>
+              </div>
+
+              <div style="background:rgba(6,182,212,0.05);padding:16px;border-radius:8px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:4px">
+                  <span>Regular:</span><span>$209.99</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                  <span style="font-weight:700">Bundle:</span>
+                  <span style="font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">$179.99</span>
+                </div>
+                <div style="background:var(--green);color:#fff;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700;display:inline-block;margin-bottom:8px">💰 Save $30.00 (14%)</div>
+                <div style="color:var(--green);font-size:13px;font-weight:600">✅ FREE Shipping</div>
+              </div>
+              <button onclick="window.Glacier.addBundleToCart('recovery')" class="btn primary" style="width:100%;padding:14px;font-size:15px">Add to Cart</button>
+            </div>
+
+            <!-- Bundle 4: Complete Collection -->
+            <div class="card" style="padding:24px">
+              <div style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:inline-block;margin-bottom:16px">BEST VALUE</div>
+              <h3 style="font-size:22px;font-weight:900;margin:0 0 8px">Complete Collection</h3>
+              <p style="color:var(--muted);font-size:14px;margin:0 0 20px">The ultimate research kit</p>
+              
+              <div style="border-top:1px solid var(--line);padding-top:16px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>2x Retatrutide 10mg</span><span style="color:var(--muted)">$75 each</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>BPC-157 10mg</span><span style="color:var(--muted)">$65.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>GHK-Cu 50mg</span><span style="color:var(--muted)">$55.00</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px">
+                  <span>MOTS-c 10mg</span><span style="color:var(--muted)">$79.99</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:12px">
+                  <span>2x Bacteriostatic Water 10mL</span><span style="color:var(--muted)">$10 each</span>
+                </div>
+              </div>
+
+              <div style="background:rgba(6,182,212,0.05);padding:16px;border-radius:8px;margin-bottom:16px">
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:4px">
+                  <span>Regular:</span><span>$369.99</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                  <span style="font-weight:700">Bundle:</span>
+                  <span style="font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">$299.99</span>
+                </div>
+                <div style="background:var(--green);color:#fff;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700;display:inline-block;margin-bottom:8px">💰 Save $70.00 (19%)</div>
+                <div style="color:var(--green);font-size:13px;font-weight:600">✅ FREE Shipping</div>
+              </div>
+              <button onclick="window.Glacier.addBundleToCart('complete')" class="btn primary" style="width:100%;padding:14px;font-size:15px">Add to Cart</button>
+            </div>
+
+          </div>
+
+          <div class="ruo">Research Use Only — Not for human or veterinary use.</div>
+        </div>
+      </section>
+    `;
+  }
 
   function rerenderShopGrid(){
     const grid = document.getElementById('catalog-grid');
@@ -4079,9 +4235,13 @@ Submitted: ${new Date().toLocaleString()}
       renderCheckoutPage();
       return;
     }
-      if (hash.startsWith('#/testing')) {
-    renderTesting();
-    return;
+    if (hash.startsWith('#/testing')) {
+      renderTesting();
+      return;
+    }
+    if (hash.startsWith('#/bundles')) {
+      renderBundles();
+      return;
     }
     if (hash.startsWith('#/product/')) {
       const slug = decodeURIComponent(hash.replace('#/product/', '').split('?')[0]);
@@ -4317,8 +4477,48 @@ Submitted: ${new Date().toLocaleString()}
   });
 
   // expose helpers for debugging
+  // Add bundle to cart helper
+  function addBundleToCart(bundleId) {
+    const bundles = {
+      starter: [
+        { slug: 'retatrutide', qty: 1 },
+        { slug: 'ghk-cu', qty: 1 },
+        { slug: 'water', qty: 1 }
+      ],
+      weightloss: [
+        { slug: 'retatrutide', qty: 2 },
+        { slug: 'bpc-157', qty: 1 },
+        { slug: 'water', qty: 2 }
+      ],
+      recovery: [
+        { slug: 'bpc-157', qty: 1 },
+        { slug: 'ghk-cu', qty: 1 },
+        { slug: 'mots-c', qty: 1 },
+        { slug: 'water', qty: 1 }
+      ],
+      complete: [
+        { slug: 'retatrutide', qty: 2 },
+        { slug: 'bpc-157', qty: 1 },
+        { slug: 'ghk-cu', qty: 1 },
+        { slug: 'mots-c', qty: 1 },
+        { slug: 'water', qty: 2 }
+      ]
+    };
+
+    const items = bundles[bundleId];
+    if (!items) return;
+
+    // Clear cart and add bundle items
+    clearCart();
+    items.forEach(item => addToCart(item.slug, item.qty));
+    renderCartBadge();
+    
+    // Go to cart
+    window.location.hash = '#/cart';
+  }
+
   window.Glacier = {
-    PRODUCTS, addToCart, readCart, clearCart, startProductCheckout, startCartCheckout
+    PRODUCTS, addToCart, readCart, clearCart, startProductCheckout, startCartCheckout, addBundleToCart
   };
 
   // ===== Exit-Intent Popup =====
