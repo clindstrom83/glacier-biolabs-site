@@ -4508,8 +4508,7 @@ Submitted: ${new Date().toLocaleString()}
     const items = bundles[bundleId];
     if (!items) return;
 
-    // Clear cart and add bundle items
-    clearCart();
+    // Add bundle items to cart (doesn't clear existing items)
     items.forEach(item => addToCart(item.slug, item.qty));
     renderCartBadge();
     
