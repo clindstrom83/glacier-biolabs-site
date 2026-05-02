@@ -1799,6 +1799,54 @@
       sale: true,
     },
     {
+      slug: 'bundle-starter',
+      name: 'Complete Starter Pack',
+      price: 12999,
+      regularPrice: 14000,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'Complete starter bundle - Save $10',
+      long: `Complete starter bundle with everything you need. Includes research compounds and supplies. Save $10.01 compared to buying individually.`,
+      sale: true,
+    },
+    {
+      slug: 'bundle-weightloss',
+      name: 'Weight Loss Bundle',
+      price: 20999,
+      regularPrice: 24500,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'Weight loss focused bundle - Save $35',
+      long: `Premium weight loss research bundle. Comprehensive selection for serious research. Save $35.01 compared to buying individually.`,
+      sale: true,
+    },
+    {
+      slug: 'bundle-recovery',
+      name: 'Recovery Stack',
+      price: 17999,
+      regularPrice: 20999,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.bpc,
+      short: 'Recovery & healing focused - Save $30',
+      long: `Focused recovery and tissue research bundle. Save $30.00 compared to buying individually.`,
+      sale: true,
+    },
+    {
+      slug: 'bundle-complete',
+      name: 'Complete Collection',
+      price: 29999,
+      regularPrice: 36999,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'Ultimate research kit - Save $70',
+      long: `The ultimate complete research collection. Everything you need in one package. Save $70.00 compared to buying individually (19% off).`,
+      sale: true,
+    },
+    {
       slug: 'reta-5pack',
       name: '5-Pack Retatrutide (10 mg)',
       price: 30099,
@@ -4479,38 +4527,21 @@ Submitted: ${new Date().toLocaleString()}
   // expose helpers for debugging
   // Add bundle to cart helper
   function addBundleToCart(bundleId) {
-    const bundles = {
-      starter: [
-        { slug: 'retatrutide', qty: 1 },
-        { slug: 'ghk-cu', qty: 1 },
-        { slug: 'water', qty: 1 }
-      ],
-      weightloss: [
-        { slug: 'retatrutide', qty: 2 },
-        { slug: 'bpc-157', qty: 1 },
-        { slug: 'water', qty: 2 }
-      ],
-      recovery: [
-        { slug: 'bpc-157', qty: 1 },
-        { slug: 'ghk-cu', qty: 1 },
-        { slug: 'mots-c', qty: 1 },
-        { slug: 'water', qty: 1 }
-      ],
-      complete: [
-        { slug: 'retatrutide', qty: 2 },
-        { slug: 'bpc-157', qty: 1 },
-        { slug: 'ghk-cu', qty: 1 },
-        { slug: 'mots-c', qty: 1 },
-        { slug: 'water', qty: 2 }
-      ]
+    // Map bundle IDs to product slugs
+    const bundleMap = {
+      starter: 'bundle-starter',
+      weightloss: 'bundle-weightloss',
+      recovery: 'bundle-recovery',
+      complete: 'bundle-complete'
     };
 
-    const items = bundles[bundleId];
-    if (!items) return;
+    const bundleSlug = bundleMap[bundleId];
+    if (!bundleSlug) return;
 
-    // Add bundle items to cart (doesn't clear existing items)
-    items.forEach(item => addToCart(item.slug, item.qty));
+    // Add the bundle as a single product
+    addToCart(bundleSlug, 1);
     renderCartBadge();
+    showToast('Bundle added to cart');
     
     // Go to cart
     window.location.hash = '#/cart';

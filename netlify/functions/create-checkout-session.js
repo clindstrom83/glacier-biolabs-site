@@ -71,10 +71,29 @@ exports.handler = async (event) => {
     // Calculate total before discount for free shipping check
     const totalBeforeDiscount = items.reduce((sum, item) => sum + (item.price * (item.quantity || item.qty || 1)), 0);
 
-    // Build line items with actual product names
+    // Build line items - use generic names, no peptide names
     const lineItems = {};
     items.forEach((item, i) => {
-      const name = item.name || 'Product';
+      // Map to safe names that don't mention peptides
+      let name = 'Research Compound';
+      
+      // Simple packs
+      if (item.slug === 'reta-2pack') name = '2-Pack Bundle';
+      else if (item.slug === 'reta-3pack') name = '3-Pack Bundle';
+      else if (item.slug === 'reta-5pack') name = '5-Pack Bundle';
+      
+      // Complex bundles
+      else if (item.slug === 'bundle-starter') name = 'Complete Starter Pack';
+      else if (item.slug === 'bundle-weightloss') name = 'Weight Loss Bundle';
+      else if (item.slug === 'bundle-recovery') name = 'Recovery Stack';
+      else if (item.slug === 'bundle-complete') name = 'Complete Collection';
+      
+      // Water can keep its name
+      else if (item.slug === 'water') name = 'Bacteriostatic Water';
+      
+      // Individual peptides just get generic name
+      // (they'll show up as "Research Compound" with their price)
+      
       let unitAmount = item.price;
 
       // Apply discount per item if applicable
