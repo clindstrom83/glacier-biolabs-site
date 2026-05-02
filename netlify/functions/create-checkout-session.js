@@ -3,10 +3,6 @@ const https = require('https');
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const SITE_URL = process.env.URL || 'https://gblpeptides.com';
 
-function sanitizeName() {
-  return 'Item';
-}
-
 function stripeRequest(path, body) {
   return new Promise((resolve, reject) => {
     const formData = encodeBody(body);
@@ -75,10 +71,10 @@ exports.handler = async (event) => {
     // Calculate total before discount for free shipping check
     const totalBeforeDiscount = items.reduce((sum, item) => sum + (item.price * (item.quantity || item.qty || 1)), 0);
 
-    // Build line items with sanitized names
+    // Build line items with actual product names
     const lineItems = {};
     items.forEach((item, i) => {
-      const name = sanitizeName(item.slug, item.name);
+      const name = item.name || 'Product';
       let unitAmount = item.price;
 
       // Apply discount per item if applicable
