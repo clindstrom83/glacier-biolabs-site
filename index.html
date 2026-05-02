@@ -1893,6 +1893,62 @@
       short: '5x MOTS-c 10mg - Save 20%',
       long: `Bulk pack containing five (5) MOTS-c 10mg vials. Supplied as lyophilized research compounds intended exclusively for laboratory research. Save $79.99 (20% off) compared to buying individually.`,
       sale: true,
+    },
+    {
+      slug: 'starter-bundle',
+      name: 'Complete Starter Pack',
+      price: 12999,
+      regularPrice: 14000,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'Beginner Friendly - Retatrutide, GHK-Cu, Bacteriostatic Water',
+      long: `Complete Starter Pack includes: 1x Retatrutide 10mg, 1x GHK-Cu 50mg, 1x Bacteriostatic Water 10mL. Save $10 compared to buying individually. FREE shipping included.`,
+      sale: true,
+      stripeProductId: 'prod_URQzxCLij6ODYS',
+      stripePriceId: 'price_1TSY7TRztedIDFZCFtDpjm36'
+    },
+    {
+      slug: 'weightloss-bundle',
+      name: 'Weight Loss Bundle',
+      price: 20999,
+      regularPrice: 24500,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'Most Popular - 2x Retatrutide, BPC-157, Bacteriostatic Water',
+      long: `Weight Loss Bundle includes: 2x Retatrutide 10mg, 1x BPC-157 10mg, 2x Bacteriostatic Water 10mL. Save $35 compared to buying individually. FREE shipping included.`,
+      sale: true,
+      stripeProductId: 'prod_URQzgmORbiN8JU',
+      stripePriceId: 'price_1TSY7TRztedIDFZCzar9EfmK'
+    },
+    {
+      slug: 'recovery-bundle',
+      name: 'Recovery Stack',
+      price: 17999,
+      regularPrice: 20999,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.bpc,
+      short: 'Healing Focused - BPC-157, GHK-Cu, MOTS-c, Bacteriostatic Water',
+      long: `Recovery Stack includes: 1x BPC-157 10mg, 1x GHK-Cu 50mg, 1x MOTS-c 10mg, 1x Bacteriostatic Water 10mL. Save $30 compared to buying individually. FREE shipping included.`,
+      sale: true,
+      stripeProductId: 'prod_URQzHGZ4e9qXad',
+      stripePriceId: 'price_1TSY7TRztedIDFZCwrnDpQ2C'
+    },
+    {
+      slug: 'complete-bundle',
+      name: 'Complete Collection',
+      price: 29999,
+      regularPrice: 36999,
+      category: 'Bundles',
+      inStock: true,
+      image: IMAGE_FILES.retatrutide,
+      short: 'Best Value - All Peptides + Supplies',
+      long: `Complete Collection includes: 2x Retatrutide 10mg, 1x BPC-157 10mg, 1x GHK-Cu 50mg, 1x MOTS-c 10mg, 2x Bacteriostatic Water 10mL. Save $70 compared to buying individually. FREE shipping included.`,
+      sale: true,
+      stripeProductId: 'prod_URQzPlDXrDKjsK',
+      stripePriceId: 'price_1TSY7URztedIDFZCvqC9SQk2'
     }
   ];
 
@@ -3459,7 +3515,12 @@
         const cartItems = readCart();
         const items = cartItems.map(item => {
           const p = PRODUCTS.find(x => x.slug === item.slug);
-          return p ? { name: p.name, slug: p.slug, price: p.price, quantity: item.qty } : null;
+          if (!p) return null;
+          const itemData = { name: p.name, slug: p.slug, price: p.price, quantity: item.qty };
+          // Include Stripe IDs if this is a bundle
+          if (p.stripeProductId) itemData.stripeProductId = p.stripeProductId;
+          if (p.stripePriceId) itemData.stripePriceId = p.stripePriceId;
+          return itemData;
         }).filter(Boolean);
 
         const resp = await fetch('/.netlify/functions/create-checkout-session', {
