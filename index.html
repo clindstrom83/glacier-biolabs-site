@@ -1710,13 +1710,13 @@
     {
       slug: 'water',
       name: 'Bacteriostatic Water (10 mL)',
-      price: 1199,
-      regularPrice: 1200,
+      price: 1799,
+      regularPrice: 1800,
       category: 'Supplies',
       inStock: true,
       image: IMAGE_FILES.water,
-      short: 'Sterile diluent typically used for laboratory reconstitution workflows.',
-      long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This product is intended strictly for non-clinical laboratory use.`,
+      short: 'Sterile diluent for laboratory reconstitution - 10mL vial',
+      long: `Bacteriostatic water is a sterile solution supplied for laboratory handling and reconstitution workflows. This 10mL vial is standard for typical research applications. Also available in 3mL size. Intended strictly for non-clinical laboratory use.`,
       sale: true,
     },
     {
@@ -1949,6 +1949,44 @@
       sale: true,
       stripeProductId: 'prod_URQzPlDXrDKjsK',
       stripePriceId: 'price_1TSY7URztedIDFZCvqC9SQk2'
+    },
+    {
+      slug: 'dsip-10mg',
+      name: 'DSIP (10 mg)',
+      price: 4499,
+      regularPrice: 4499,
+      category: 'Peptides',
+      inStock: false,
+      preOrder: true,
+      image: null,
+      short: 'Pre-order Coming Soon - Sleep & Recovery Research',
+      long: `DSIP (Delta Sleep-Inducing Peptide) is a neuropeptide studied for its potential role in sleep regulation and recovery. Research suggests DSIP may influence sleep architecture and hormonal balance during rest cycles. Supplied as a lyophilized research compound for laboratory investigation only. Coming soon — pre-order now to secure your supply.`,
+      sale: false,
+      badge: 'Coming Soon'
+    },
+    {
+      slug: 'water-3ml',
+      name: 'Bacteriostatic Water (3 mL)',
+      price: 999,
+      regularPrice: 999,
+      category: 'Supplies',
+      inStock: true,
+      image: IMAGE_FILES.water,
+      short: 'Sterile diluent for reconstitution - 3mL vial',
+      long: `Sterile bacteriostatic water for laboratory reconstitution. 3mL size — convenient for smaller research applications. Single-use vial.`,
+      sale: true
+    },
+    {
+      slug: 'water-10ml',
+      name: 'Bacteriostatic Water (10 mL)',
+      price: 1799,
+      regularPrice: 1799,
+      category: 'Supplies',
+      inStock: true,
+      image: IMAGE_FILES.water,
+      short: 'Sterile diluent for reconstitution - 10mL vial',
+      long: `Sterile bacteriostatic water for laboratory reconstitution. 10mL size — standard vial for typical research workflows.`,
+      sale: true
     }
   ];
 
@@ -2907,6 +2945,12 @@
               <div class="ruo">Research Use Only — Not for human or veterinary use.</div>
 
               <div class="form">
+                ${p.preOrder ? `
+                <div style="background:#fef3c7;border:2px solid #f59e0b;border-radius:12px;padding:16px;margin-bottom:20px;text-align:center">
+                  <div style="font-weight:900;color:#d97706;font-size:16px">Coming Soon</div>
+                  <div style="color:#b45309;font-size:14px;margin-top:4px">Pre-order now to secure your supply when available</div>
+                </div>
+                ` : ''}
                 <div class="order-row">
                   <div class="field" style="max-width:120px">
                     <label for="qty">Qty</label>
@@ -2926,8 +2970,8 @@
                   <div style="flex:1">
                     <label class="sr-only">Add to cart</label>
                     <div class="order-cta" style="display:flex;gap:8px;align-items:center">
-                      <button id="add-to-cart" class="btn" type="button">Add to cart</button>
-                      <button id="buy-now" class="btn primary full" type="button">Buy now</button>
+                      <button id="add-to-cart" class="btn" type="button">${p.preOrder ? 'Pre-order Now' : 'Add to cart'}</button>
+                      <button id="buy-now" class="btn primary full" type="button">${p.preOrder ? 'Pre-order & Checkout' : 'Buy now'}</button>
                     </div>
                   </div>
                 </div>
