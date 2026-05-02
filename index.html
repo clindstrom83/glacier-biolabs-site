@@ -4421,7 +4421,9 @@ Submitted: ${new Date().toLocaleString()}
   });
 
   // Apply discount code
-  document.getElementById('apply-discount-btn').addEventListener('click', async () => {
+  const applyBtn = document.getElementById('apply-discount-btn');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', async () => {
     const input = document.getElementById('discount-code-input');
     const messageEl = document.getElementById('discount-message');
     const code = input.value.trim();
@@ -4464,7 +4466,8 @@ Submitted: ${new Date().toLocaleString()}
       discountState.discountPercent = 0;
       discountState.discountAmount = 0;
     }
-  });
+    });
+  }
 
   // Remove discount helper
   window.Glacier = window.Glacier || {};
