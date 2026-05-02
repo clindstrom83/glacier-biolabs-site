@@ -4445,7 +4445,9 @@ Submitted: ${new Date().toLocaleString()}
       messageEl.style.color = '#64748b';
       messageEl.textContent = 'Validating...';
 
+      console.log('Validating code:', code, 'Amount:', totalDollars);
       const result = await validateDiscountCode(code, totalDollars);
+      console.log('Validation result:', result);
 
       if (result.valid) {
         discountState.code = result.code;
