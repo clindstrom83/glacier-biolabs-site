@@ -4421,55 +4421,62 @@ Submitted: ${new Date().toLocaleString()}
   });
 
   // Apply discount code
-  const applyBtn = document.getElementById('apply-discount-btn');
-  if (applyBtn) {
-    applyBtn.addEventListener('click', async () => {
-      const input = document.getElementById('discount-code-input');
-      const messageEl = document.getElementById('discount-message');
-      const code = input.value.trim();
+  document.addEventListener('click', async (e) => {
+    if (e.target.id !== 'apply-discount-btn') return;
+    
+    const input = document.getElementById('discount-code-input');
+    const messageEl = document.getElementById('discount-message');
+    if (!input || !messageEl) return;
+    
+    const code = (input.value || '').trim();
 
-      if (!code) {
-        messageEl.style.color = '#dc2626';
-        messageEl.textContent = 'Please enter a discount code';
-        return;
-      }
+    if (!code) {
+      messageEl.style.color = '#dc2626';
+      messageEl.textContent = 'Please enter a discount code';
+      return;
+    }
 
-      // Calculate cart total
-      const cart = readCart();
-      const totalCents = cart.reduce((sum, item) => {
-        const p = PRODUCTS.find(x => x.slug === item.slug);
-        return sum + (p ? p.price * (item.qty || 0) : 0);
-      }, 0);
-      const totalDollars = totalCents / 100;
+    // Calculate cart total
+    const cart = readCart();
+    if (!cart || cart.length === 0) {
+      messageEl.style.color = '#dc2626';
+      messageEl.textContent = 'Cart is empty';
+      return;
+    }
 
-      messageEl.style.color = '#64748b';
-      messageEl.textContent = 'Validating...';
+    const totalCents = cart.reduce((sum, item) => {
+      const p = PRODUCTS.find(x => x.slug === item.slug);
+      return sum + (p ? p.price * (item.qty || 0) : 0);
+    }, 0);
+    const totalDollars = totalCents / 100;
 
-      console.log('Validating code:', code, 'Amount:', totalDollars);
-      const result = await validateDiscountCode(code, totalDollars);
-      console.log('Validation result:', result);
+    messageEl.style.color = '#64748b';
+    messageEl.textContent = 'Validating...';
 
-      if (result.valid) {
-        discountState.code = result.code;
-        discountState.valid = true;
-        discountState.discountPercent = result.discountPercent;
-        discountState.discountAmount = parseFloat(result.discountAmount);
-        
-        messageEl.style.color = '#16a34a';
-        messageEl.textContent = `✓ ${result.message} applied!`;
-        
-        renderCartDrawer();
-      } else {
-        messageEl.style.color = '#dc2626';
-        messageEl.textContent = result.message || 'Invalid code';
-        
-        discountState.code = '';
-        discountState.valid = false;
-        discountState.discountPercent = 0;
-        discountState.discountAmount = 0;
-      }
-    });
-  }
+    console.log('Validating code:', code, 'Amount:', totalDollars);
+    const result = await validateDiscountCode(code, totalDollars);
+    console.log('Validation result:', result);
+
+    if (result && result.valid) {
+      discountState.code = result.code;
+      discountState.valid = true;
+      discountState.discountPercent = result.discountPercent;
+      discountState.discountAmount = parseFloat(result.discountAmount);
+      
+      messageEl.style.color = '#16a34a';
+      messageEl.textContent = `✓ ${result.message} applied!`;
+      
+      renderCartDrawer();
+    } else {
+      messageEl.style.color = '#dc2626';
+      messageEl.textContent = (result && result.message) || 'Invalid code';
+      
+      discountState.code = '';
+      discountState.valid = false;
+      discountState.discountPercent = 0;
+      discountState.discountAmount = 0;
+    }
+  });
 
   // Remove discount helper
   window.Glacier = window.Glacier || {};
