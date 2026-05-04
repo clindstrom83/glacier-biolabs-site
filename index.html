@@ -17,6 +17,9 @@
   }
 </script>
 
+  <!-- GoAffPro Affiliate Tracking -->
+  <script type="text/javascript" src="https://api.goaffpro.com/loader.js?shop=wipovmpnnq"></script>
+
   <!-- Meta Pixel Code -->
   <script>
   !function(f,b,e,v,n,t,s)
@@ -3597,6 +3600,9 @@
           });
         }
 
+        // Store for GoAffPro tracking on order success page
+        window.checkoutTotal = finalTotal / 100;
+        
         window.location.href = data.url;
       } catch (err) {
         console.error('Checkout error', err);
@@ -4341,6 +4347,21 @@ Submitted: ${new Date().toLocaleString()}
 }
   function renderOrderSuccess() {
     trackPageView('/order-success', 'Order Confirmed');
+    
+    // GoAffPro conversion tracking
+    const params = new URLSearchParams(location.search);
+    const sessionId = params.get('session_id');
+    if (sessionId) {
+      // Fetch order amount from Stripe session (if available)
+      window.goaffpro_order = {
+        number: sessionId,
+        total: Math.round((window.checkoutTotal || 0) * 100) // Convert to cents
+      };
+      if (typeof window.goaffproTrackConversion !== 'undefined') {
+        window.goaffproTrackConversion(window.goaffpro_order);
+      }
+    }
+    
     app.innerHTML = `
       <section class="section" style="min-height:60vh;display:flex;align-items:center;justify-content:center">
         <div class="wrap" style="text-align:center;max-width:600px;padding:40px 20px">
