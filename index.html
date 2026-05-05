@@ -3818,24 +3818,25 @@
       if (!input) return;
       const code = input.value.trim().toUpperCase();
       if (!code) return;
-      try {
-        const resp = await fetch('/.netlify/functions/validate-discount', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code })
-        });
-        const data = await resp.json();
-        if (data.valid) {
-          discountState.valid = true;
-          discountState.code = code;
-          discountState.discountPercent = data.discountPercent;
-          if (msg) { msg.textContent = data.discountPercent + '% discount applied!'; msg.style.display = 'block'; msg.style.color = '#16a34a'; }
-          renderCartPage();
-        } else {
-          if (msg) { msg.textContent = 'Invalid code'; msg.style.display = 'block'; msg.style.color = '#ef4444'; }
-        }
-      } catch (e) {
-        if (msg) { msg.textContent = 'Error applying code'; msg.style.display = 'block'; msg.style.color = '#ef4444'; }
+      
+      const validCodes = {
+        'BB10': { percent: 10 },
+        'ASU10': { percent: 10 },
+        'FIRST10': { percent: 10 },
+        'SAVE10': { percent: 10 },
+        'SAVE20': { percent: 20 },
+        'J20': { percent: 20 }
+      };
+      
+      const discount = validCodes[code];
+      if (discount) {
+        discountState.valid = true;
+        discountState.code = code;
+        discountState.discountPercent = discount.percent;
+        if (msg) { msg.textContent = discount.percent + '% discount applied!'; msg.style.display = 'block'; msg.style.color = '#16a34a'; }
+        renderCartPage();
+      } else {
+        if (msg) { msg.textContent = 'Invalid code'; msg.style.display = 'block'; msg.style.color = '#ef4444'; }
       }
     };
   }
