@@ -4338,14 +4338,23 @@ Submitted: ${new Date().toLocaleString()}
   function renderOrderSuccess() {
     trackPageView('/order-success', 'Order Confirmed');
     
-    // GoAffPro conversion tracking
     const params = new URLSearchParams(location.search);
     const sessionId = params.get('session_id');
+    const orderTotal = window.checkoutTotal || 0;
+    
+    // Facebook Pixel Purchase event
+    if (window.fbq && orderTotal > 0) {
+      fbq('track', 'Purchase', {
+        value: orderTotal,
+        currency: 'USD'
+      });
+    }
+    
+    // GoAffPro conversion tracking
     if (sessionId) {
-      // Fetch order amount from Stripe session (if available)
       window.goaffpro_order = {
         number: sessionId,
-        total: Math.round((window.checkoutTotal || 0) * 100) // Convert to cents
+        total: Math.round(orderTotal * 100) // Convert to cents
       };
       if (typeof window.goaffproTrackConversion !== 'undefined') {
         window.goaffproTrackConversion(window.goaffpro_order);
