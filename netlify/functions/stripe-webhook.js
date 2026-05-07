@@ -252,6 +252,22 @@ exports.handler = async (event) => {
         amount,
         items: itemsSummary
       });
+
+      // Mark confirmation as sent in Supabase
+      if (SUPABASE_SERVICE_KEY && session.payment_intent) {
+        try {
+          await httpsRequest(SUPABASE_URL.replace('https://', ''),
+            '/rest/v1/orders?payment_id=eq.' + encodeURIComponent(session.payment_intent || session.id),
+            'PATCH',
+            {
+              'apikey': SUPABASE_SERVICE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+              'Prefer': 'return=minimal'
+            },
+            { confirmation_sent: true }
+          );
+        } catch (e) { console.error('Confirmation flag update error:', e); }
+      }
     }
 
     return { statusCode: 200, body: JSON.stringify({ received: true }) };
