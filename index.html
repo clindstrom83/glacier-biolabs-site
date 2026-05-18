@@ -1230,7 +1230,7 @@
         <button id="checkout-from-cart" class="btn primary" style="flex:1" type="button">Checkout</button>
         <button id="clear-cart" class="btn" style="border:1px solid var(--line);background:#fff" type="button">Clear</button>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px">Secure checkout powered by Stripe — your card details are never stored on our servers.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">Secure checkout — your order details are encrypted and protected.</div>
     </div>
   </div>
 
@@ -1275,7 +1275,7 @@
         </div>
         <div style="background:#f0fdf4;border:1px solid #86efac;padding:16px;border-radius:8px;margin:12px 0">
           <p style="margin:0 0 8px;font-weight:700;color:#16a34a;font-size:14px">🔒 Secure Checkout</p>
-          <p style="margin:0;color:#15803d;font-size:13px">You'll be redirected to our secure payment page to complete your purchase. Your card information is handled securely by Stripe — we never see or store your card details.</p>
+          <p style="margin:0;color:#15803d;font-size:13px">Your order will be placed securely. You'll receive a payment link via email to complete your purchase.</p>
         </div>
         <div id="checkout-error" class="checkout-error"></div>
         <button id="card-button" class="card-button" type="button">Proceed to Payment</button>
@@ -1451,28 +1451,28 @@
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      const response = await fetch('/.netlify/functions/create-checkout-session', {
+      const response = await fetch('/.netlify/functions/place-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items: pendingCheckoutItems,
+          totalCents: pendingCheckoutTotal,
           buyerEmail: email,
           buyerName: name,
-          buyerPhone: phone,
           shippingAddress: {
-            firstName, lastName,
             addressLine1: address, city,
             state: state.toUpperCase(),
-            postalCode: zip, country: 'US'
-          },
-          discountCode: discountState.valid ? discountState.code : '',
-          discountPercent: discountState.valid ? discountState.discountPercent : 0
+            postalCode: zip
+          }
         })
       });
       const data = await response.json();
-      if (data.url) {
+      if (data.success) {
         if (window.fbq) fbq('track', 'InitiateCheckout', { value: (pendingCheckoutTotal / 100).toFixed(2), currency: 'USD' });
-        window.location.href = data.url;
+        clearCart();
+        closeCheckoutModal();
+        showToast('Order placed! Check your email for next steps.', 'success');
+        window.location.hash = '#/shop';
       } else {
         throw new Error(data.error || 'Order failed');
       }
@@ -1569,34 +1569,29 @@
     if (errorEl) { errorEl.style.display = 'none'; }
 
     try {
-      const resp = await fetch('/.netlify/functions/create-checkout-session', {
+      const resp = await fetch('/.netlify/functions/place-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items: pendingCheckoutItems,
+          totalCents: pendingCheckoutTotal,
           buyerEmail: email,
           buyerName: fullName,
-          buyerPhone: phone,
           shippingAddress: {
-            firstName: fullName.split(' ')[0] || '',
-            lastName: fullName.split(' ').slice(1).join(' ') || '',
             addressLine1: address,
             city: city,
             state: stateVal.toUpperCase(),
-            postalCode: zip,
-            country: 'US'
-          },
-          discountCode: discountState.valid ? discountState.code : '',
-          discountPercent: discountState.valid ? discountState.discountPercent : 0
+            postalCode: zip
+          }
         })
       });
 
       const data = await resp.json();
       if (!resp.ok || data.error) {
-        throw new Error(data.error || data.message || 'Checkout failed');
+        throw new Error(data.error || data.message || 'Order failed');
       }
 
-      // Track with Meta Pixel before redirect
+      // Track with Meta Pixel
       if (window.fbq) {
         fbq('track', 'InitiateCheckout', {
           value: (pendingCheckoutTotal / 100).toFixed(2),
@@ -1604,8 +1599,11 @@
         });
       }
 
-      // Redirect to Stripe Checkout
-      window.location.href = data.url;
+      // Order placed - show success
+      clearCart();
+      closeCheckoutModal();
+      showToast('Order placed! Check your email for payment link.', 'success');
+      window.location.hash = '#/shop';
 
     } catch (err) {
       console.error('Checkout error', err);
@@ -3418,12 +3416,15 @@
                 <div id="co-error" style="display:none;padding:12px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;color:#dc2626;font-weight:600;font-size:14px;margin-bottom:16px"></div>
 
                 <button id="co-submit-btn" onclick="window.Glacier.submitCheckout()" style="width:100%;padding:18px;background:#16a34a;color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:18px;font-weight:900;letter-spacing:0.5px;transition:background 0.2s" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
-                  Proceed to Payment — ${money(finalTotal)}
+                  Place Order — ${money(finalTotal)}
                 </button>
 
                 <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px">
                   <span style="font-size:16px">🔒</span>
-                  <span style="color:var(--muted);font-size:13px">256-bit SSL encryption • Powered by Stripe</span>
+                  <span style="color:var(--muted);font-size:13px">256-bit SSL encryption • Secure order processing</span>
+                </div>
+                <div style="margin-top:12px;padding:12px;background:#fefce8;border:1px solid #fde047;border-radius:8px;text-align:center">
+                  <p style="margin:0;font-size:13px;color:#854d0e">After placing your order, you'll receive a secure payment link via email to complete your purchase.</p>
                 </div>
               </div>
             </div>
@@ -3546,7 +3547,7 @@
       }
 
       btn.disabled = true;
-      btn.textContent = 'Redirecting to payment…';
+      btn.textContent = 'Placing order…';
       errorEl.style.display = 'none';
 
       try {
@@ -3554,52 +3555,69 @@
         const items = cartItems.map(item => {
           const p = PRODUCTS.find(x => x.slug === item.slug);
           if (!p) return null;
-          const itemData = { name: p.name, slug: p.slug, price: p.price, quantity: item.qty };
-          // Include Stripe IDs if this is a bundle
-          if (p.stripeProductId) itemData.stripeProductId = p.stripeProductId;
-          if (p.stripePriceId) itemData.stripePriceId = p.stripePriceId;
-          return itemData;
+          return { name: p.name, slug: p.slug, price: p.price, quantity: item.qty };
         }).filter(Boolean);
 
-        const resp = await fetch('/.netlify/functions/create-checkout-session', {
+        // Calculate total with discount
+        let totalCents = items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        if (discountState.valid && discountState.discountPercent > 0) {
+          totalCents = Math.round(totalCents * (1 - discountState.discountPercent / 100));
+        }
+        // Add shipping
+        totalCents += totalCents >= 14999 ? 0 : 600;
+
+        const resp = await fetch('/.netlify/functions/place-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             items,
+            totalCents,
             buyerEmail: email,
             buyerName: name,
-            buyerPhone: phone,
             shippingAddress: {
-              firstName: name.split(' ')[0] || '',
-              lastName: name.split(' ').slice(1).join(' ') || '',
               addressLine1: address,
-              city, state: state.toUpperCase(), postalCode: zip, country: 'US'
-            },
-            discountCode: discountState.valid ? discountState.code : '',
-            discountPercent: discountState.valid ? discountState.discountPercent : 0
+              city, state: state.toUpperCase(), postalCode: zip
+            }
           })
         });
 
         const data = await resp.json();
-        if (!resp.ok || data.error) throw new Error(data.error || 'Checkout failed');
+        if (!resp.ok || data.error) throw new Error(data.error || 'Order failed');
 
         if (window.fbq) {
           fbq('track', 'InitiateCheckout', {
-            value: (finalTotal / 100).toFixed(2),
+            value: (totalCents / 100).toFixed(2),
             currency: 'USD'
           });
         }
 
-        // Store for GoAffPro tracking on order success page
-        window.checkoutTotal = finalTotal / 100;
-        
-        window.location.href = data.url;
+        // Clear cart and show success
+        clearCart();
+        app.innerHTML = `
+          <section class="section">
+            <div class="wrap" style="max-width:600px;margin:0 auto;text-align:center;padding:60px 20px">
+              <div style="font-size:64px;margin-bottom:20px">✅</div>
+              <h2 style="font-size:28px;font-weight:900;margin:0 0 12px">Order Received!</h2>
+              <p style="color:var(--muted);font-size:16px;margin:0 0 24px">Order #${data.orderId || ''}</p>
+              <div style="background:#f0fdf4;border:1px solid #86efac;padding:24px;border-radius:12px;text-align:left;margin-bottom:24px">
+                <h3 style="margin:0 0 12px;font-size:16px;font-weight:800;color:#065f46">What happens next?</h3>
+                <ol style="margin:0;padding-left:20px;color:#15803d;font-size:15px;line-height:1.8">
+                  <li>Check your email (<strong>${email}</strong>) for your order confirmation</li>
+                  <li>You'll receive a secure payment link via email shortly</li>
+                  <li>Once payment is confirmed, your order ships within 1–2 business days</li>
+                  <li>Tracking info will be sent to your email</li>
+                </ol>
+              </div>
+              <p style="color:var(--muted);font-size:14px">Questions? Email <a href="mailto:glacierbiolabs@outlook.com" style="color:var(--accent)">glacierbiolabs@outlook.com</a></p>
+              <a href="#/shop" style="display:inline-block;margin-top:20px;padding:14px 32px;background:var(--accent);color:#fff;text-decoration:none;border-radius:10px;font-weight:700">Continue Shopping</a>
+            </div>
+          </section>`;
       } catch (err) {
-        console.error('Checkout error', err);
-        errorEl.textContent = err.message || 'Checkout failed. Please try again.';
+        console.error('Order error', err);
+        errorEl.textContent = err.message || 'Order failed. Please try again.';
         errorEl.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Proceed to Payment — ' + money(finalTotal);
+        btn.textContent = 'Place Order — ' + money(finalTotal);
       }
     };
   }
