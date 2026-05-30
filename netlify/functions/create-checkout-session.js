@@ -71,12 +71,9 @@ exports.handler = async (event) => {
     // Calculate total before discount for free shipping check
     const totalBeforeDiscount = items.reduce((sum, item) => sum + (item.price * (item.quantity || item.qty || 1)), 0);
 
-    // Build line items - NO product names, just amounts
+    // Build line items - just price, no product names
     const lineItems = {};
     items.forEach((item, i) => {
-      // Use blank/generic name for everything
-      let name = 'Research Product';
-      
       let unitAmount = item.price;
 
       // Apply discount per item if applicable
@@ -85,8 +82,7 @@ exports.handler = async (event) => {
       }
 
       lineItems[`line_items[${i}][price_data][currency]`] = 'usd';
-      lineItems[`line_items[${i}][price_data][product_data][name]`] = name;
-      lineItems[`line_items[${i}][price_data][product_data][description]`] = 'Order item';
+      lineItems[`line_items[${i}][price_data][product_data][name]`] = 'Product';
       lineItems[`line_items[${i}][price_data][unit_amount]`] = unitAmount;
       lineItems[`line_items[${i}][quantity]`] = item.quantity || item.qty || 1;
     });
