@@ -79,6 +79,11 @@ exports.handler = async (event, context) => {
         percent: 30,
         expires: new Date('2030-12-31T23:59:59-05:00'),
         description: '30% off'
+      },
+      '70OFF': {
+        percent: 70,
+        expires: new Date('2030-12-31T23:59:59-05:00'),
+        description: '70% off'
       }
     };
 
